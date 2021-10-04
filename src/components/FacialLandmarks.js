@@ -52,20 +52,23 @@ const WEBCAM_STYLE = {
 
 const FacialLandmarks = (props) => {
     const [ isLoading, setIsLoading ] = React.useState(true);
+    const [ hasWebcam, setHasWebcam ] = React.useState(false);
     const webcamRef = React.useRef(null);
     const canvasRef = React.useRef(null);
 
     React.useEffect(
         () => {
-            console.log('here', new Date())
-            const timer = runFacemesh(webcamRef, canvasRef, setIsLoading);
-            return () => clearInterval(timer);
+            if (webcamRef.current.state.hasUserMedia) {
+                setHasWebcam(true);
+                const timer = runFacemesh(webcamRef, canvasRef, setIsLoading);
+                return () => clearInterval(timer);
+            }
         },
         [isLoading]
     );
 
     return (
-        <div className={`facemesh-container ${isLoading ? 'loading' : ''}`}>
+        <div className={`facemesh-container ${isLoading ? 'loading' : ''} ${hasWebcam ? '' : 'hidden'}`}>
             <Webcam
                 ref={webcamRef}
                 style={WEBCAM_STYLE}
