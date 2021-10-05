@@ -15,7 +15,7 @@ const runFacemesh = async (sourceRef, canvasRef, setIsLoading, choice) => {
     if (choice === 'video') {
         const timer = setInterval (
             () => {
-                detect(sourceRef, canvasRef, net, setIsLoading);
+                detectVideo(sourceRef, canvasRef, net, setIsLoading);
             },
             100
         );
@@ -25,7 +25,7 @@ const runFacemesh = async (sourceRef, canvasRef, setIsLoading, choice) => {
     }
 };
 
-const detect = async (webcamRef, canvasRef, net, setIsLoading) => {
+const detectVideo = async (webcamRef, canvasRef, net, setIsLoading) => {
     if (
         typeof webcamRef.current !== 'undefined' &&
         webcamRef.current !== null &&
