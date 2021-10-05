@@ -1,21 +1,28 @@
 import * as React from 'react';
 import * as tf from '@tensorflow/tfjs';
 import * as facemesh from '@tensorflow-models/facemesh';
+import { drawMesh } from '../utils';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Webcam from 'react-webcam';
 import './FacialLandmarks.scss';
+import TestPhoto from '../assets/test_photo.jpeg';
 
-const runFacemesh = async (webcamRef, canvasRef, setIsLoading) => {
+const runFacemesh = async (sourceRef, canvasRef, setIsLoading, choice) => {
     const net = await facemesh.load({
         inputResolution: { width: 640, height: 480 },
         scale: 0.8
     });
-    const timer = setInterval (
-        () => {
-            detect(webcamRef, canvasRef, net, setIsLoading)
-        },
-        100
-    );
-    return timer;
+    if (choice === 'video') {
+        const timer = setInterval (
+            () => {
+                detect(sourceRef, canvasRef, net, setIsLoading);
+            },
+            100
+        );
+        return timer;
+    } else if (choice === 'photo') {
+        detectPhoto(sourceRef, canvasRef, net, setIsLoading);
+    }
 };
 
 const detect = async (webcamRef, canvasRef, net, setIsLoading) => {
@@ -34,9 +41,21 @@ const detect = async (webcamRef, canvasRef, net, setIsLoading) => {
         canvas.height = videoHeight;
         const face = await net.estimateFaces(video);
         setIsLoading(false);
-        // console.log(face);
+        const ctx = canvas.getContext('2d');
+        drawMesh(face, ctx);
     }
 };
+
+const detectPhoto = async (photoRef, canvasRef, net, setIsLoading) => {
+    const photo = photoRef.current;
+    const canvas = canvasRef.current;
+    canvas.width = photo.width;
+    canvas.height = photo.height;
+    const face = await net.estimateFaces(photo);
+    setIsLoading(false);
+    const ctx = canvas.getContext('2d');
+    drawMesh(face, ctx);
+}
 
 const WEBCAM_STYLE = {
     position: 'absolute',
@@ -50,33 +69,61 @@ const WEBCAM_STYLE = {
     height: 480
 };
 
+const IMAGE_STYLE = {
+    ...WEBCAM_STYLE,
+    width: 480,
+    height: 480
+};
+
 const FacialLandmarks = (props) => {
     const [ isLoading, setIsLoading ] = React.useState(true);
-    const [ hasWebcam, setHasWebcam ] = React.useState(false);
+    const [ choice, setChoice ] = React.useState('');
     const webcamRef = React.useRef(null);
     const canvasRef = React.useRef(null);
-
+    const photoRef = React.useRef(null);
+    
     React.useEffect(
         () => {
-            if (webcamRef.current.state.hasUserMedia) {
-                setHasWebcam(true);
-                const timer = runFacemesh(webcamRef, canvasRef, setIsLoading);
-                return () => clearInterval(timer);
+            let timer;
+            if (webcamRef.current) {
+                timer = runFacemesh(webcamRef, canvasRef, setIsLoading, choice);
+            } else if (photoRef.current) {
+                timer = runFacemesh(photoRef, canvasRef, setIsLoading, choice);
             }
+            return () => clearInterval(timer);
         },
-        [isLoading]
+        [webcamRef, photoRef, choice]
     );
 
+    const getFaceMesh = (e) => {
+        setChoice(e.target.value);
+    };
+
     return (
-        <div className={`facemesh-container ${isLoading ? 'loading' : ''} ${hasWebcam ? '' : 'hidden'}`}>
-            <Webcam
-                ref={webcamRef}
-                style={WEBCAM_STYLE}
-            />
-            <canvas
-                ref={canvasRef}
-                style={WEBCAM_STYLE}
-            />
+        <div className="facial-landmarks-container">
+            <div className="user-choice-container" onChange={getFaceMesh}>
+                <label htmlFor="photo">
+                    <p>Photo</p>
+                    <input type="radio" name="choice" id="photo" value="photo" />
+                </label>
+                <label htmlFor="video">
+                    <p>Video</p>
+                    <input type="radio" name="choice" id="video" value="video" />
+                </label>
+            </div>
+            <div className="facemesh-container">
+                <div className={`webcam-container ${isLoading ? 'loading' : ''} `}>
+                    {
+                        choice === 'photo' ?
+                        <img ref={photoRef} src={TestPhoto} style={IMAGE_STYLE} alt="user-profile"/> :
+                        <Webcam ref={webcamRef} style={WEBCAM_STYLE} />
+                    }
+                    <canvas
+                        ref={canvasRef}
+                        style={choice === 'video' ? WEBCAM_STYLE : IMAGE_STYLE}
+                    />
+                </div>
+            </div>
         </div>
     );
 };
