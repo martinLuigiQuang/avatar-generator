@@ -2641,20 +2641,57 @@ export const TRIANGULATION = [
     255,
 ];
 
+export const PERIMETER = [
+    103,
+    54,
+    21,
+    162,
+    127,
+    234,
+    93,
+    132,
+    58,
+    172,
+    136,
+    150,
+    149,
+    176,
+    148,
+    152,
+    377,
+    400,
+    378,
+    379,
+    365,
+    397,
+    288,
+    361,
+    323,
+    454,
+    356,
+    389,
+    251,
+    284,
+    332,
+    297,
+    338,
+    10,
+    109,
+    67, 
+    103
+];
+
 // Triangle drawing method
 const drawPath = (ctx, points, closePath) => {
-    const region = new Path2D();
-    region.moveTo(points[0][0], points[0][1]);
+    ctx.moveTo(points[0][0], points[0][1]);
     for (let i = 1; i < points.length; i++) {
         const point = points[i];
-        region.lineTo(point[0], point[1]);
+        ctx.lineTo(point[0], point[1]);
     }
-
+    
     if (closePath) {
-        region.closePath();
+        ctx.closePath();
     }
-    ctx.strokeStyle = "grey";
-    ctx.stroke(region);
 };
 
 // Drawing Mesh
@@ -2685,6 +2722,26 @@ export const drawMesh = (predictions, ctx) => {
                 ctx.fillStyle = "aqua";
                 ctx.fill();
             }
+        });
+    }
+};
+
+// Cropping face
+export const crop = (predictions, ctx) => {
+    if (predictions.length > 0) {
+        predictions.forEach((prediction) => {
+            const keypoints = prediction.scaledMesh;
+            const points = PERIMETER.map(index => keypoints[index]);
+            const leftHalf = points.slice(0, 18);
+            const rightHalf = points.slice(17, 37);
+            rightHalf.unshift([480, 0, 0], [480, 480, 0]);
+            rightHalf.push([0, 0, 0]);
+            leftHalf.unshift([0, 480, 0], [0, 0, 0]);
+            leftHalf.push([480, 480, 0]);
+            drawPath(ctx, leftHalf, true);
+            drawPath(ctx, rightHalf, true);
+            ctx.fillStyle = 'black';
+            ctx.fill();
         });
     }
 };

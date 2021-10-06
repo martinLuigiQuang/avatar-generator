@@ -1,8 +1,7 @@
 import * as React from 'react';
 import * as tf from '@tensorflow/tfjs';
 import * as facemesh from '@tensorflow-models/facemesh';
-import { drawMesh } from '../utils';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { crop } from '../utils';
 import Webcam from 'react-webcam';
 import './FacialLandmarks.scss';
 import TestPhoto from '../assets/test_photo.jpeg';
@@ -42,7 +41,7 @@ const detectVideo = async (webcamRef, canvasRef, net, setIsLoading) => {
         const face = await net.estimateFaces(video);
         setIsLoading(false);
         const ctx = canvas.getContext('2d');
-        drawMesh(face, ctx);
+        crop(face, ctx);
     }
 };
 
@@ -54,7 +53,7 @@ const detectPhoto = async (photoRef, canvasRef, net, setIsLoading) => {
     const face = await net.estimateFaces(photo);
     setIsLoading(false);
     const ctx = canvas.getContext('2d');
-    drawMesh(face, ctx);
+    crop(face, ctx);
 }
 
 const WEBCAM_STYLE = {
