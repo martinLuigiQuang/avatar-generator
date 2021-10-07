@@ -2726,22 +2726,34 @@ export const drawMesh = (predictions, ctx) => {
     }
 };
 
+const getPoints = (keypoints, width) => {
+    const points = PERIMETER.map(index => keypoints[index]);
+    const leftHalf = points.slice(0, 18);
+    const rightHalf = points.slice(17, 37);
+    rightHalf.unshift([width, 0, 0], [width, 480, 0]);
+    rightHalf.push([0, 0, 0]);
+    leftHalf.unshift([0, 480, 0], [0, 0, 0]);
+    leftHalf.push([width, 480, 0]);
+    return [leftHalf, rightHalf];
+};
+
+const distance = (point1, point2) => {
+    const dx_sq = (point1[0] - point2[0]) * (point1[0] - point2[0]);
+    const dy_sq = (point1[1] - point2[1]) * (point1[1] - point2[1]);
+    return Math.sqrt(dx_sq + dy_sq);
+}
+
 // Cropping face
-export const crop = (predictions, ctx) => {
+export const crop = (predictions, ctx, width) => {
     if (predictions.length > 0) {
         predictions.forEach((prediction) => {
             const keypoints = prediction.scaledMesh;
-            const points = PERIMETER.map(index => keypoints[index]);
-            const leftHalf = points.slice(0, 18);
-            const rightHalf = points.slice(17, 37);
-            rightHalf.unshift([480, 0, 0], [480, 480, 0]);
-            rightHalf.push([0, 0, 0]);
-            leftHalf.unshift([0, 480, 0], [0, 0, 0]);
-            leftHalf.push([480, 480, 0]);
-            drawPath(ctx, leftHalf, true);
-            drawPath(ctx, rightHalf, true);
+            getPoints(keypoints, width).forEach(half => {
+                drawPath(ctx, half, true);
+            });
             ctx.fillStyle = 'black';
             ctx.fill();
+            console.log(distance(keypoints[234], keypoints[454]));
         });
     }
 };

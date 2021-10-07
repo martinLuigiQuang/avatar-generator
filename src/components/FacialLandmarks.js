@@ -12,13 +12,7 @@ const runFacemesh = async (sourceRef, canvasRef, setIsLoading, choice) => {
         scale: 0.8
     });
     if (choice === 'video') {
-        const timer = setInterval (
-            () => {
-                detectVideo(sourceRef, canvasRef, net, setIsLoading);
-            },
-            100
-        );
-        return timer;
+        detectVideo(sourceRef, canvasRef, net, setIsLoading);
     } else if (choice === 'photo') {
         detectPhoto(sourceRef, canvasRef, net, setIsLoading);
     }
@@ -41,7 +35,10 @@ const detectVideo = async (webcamRef, canvasRef, net, setIsLoading) => {
         const face = await net.estimateFaces(video);
         setIsLoading(false);
         const ctx = canvas.getContext('2d');
-        crop(face, ctx);
+        requestAnimationFrame(() => {
+            crop(face, ctx, videoWidth);
+        });
+        detectVideo(webcamRef, canvasRef, net, setIsLoading);
     }
 };
 
@@ -53,7 +50,7 @@ const detectPhoto = async (photoRef, canvasRef, net, setIsLoading) => {
     const face = await net.estimateFaces(photo);
     setIsLoading(false);
     const ctx = canvas.getContext('2d');
-    crop(face, ctx);
+    crop(face, ctx, photo.width);
 }
 
 const WEBCAM_STYLE = {
@@ -83,13 +80,11 @@ const FacialLandmarks = (props) => {
     
     React.useEffect(
         () => {
-            let timer;
             if (webcamRef.current) {
-                timer = runFacemesh(webcamRef, canvasRef, setIsLoading, choice);
+                runFacemesh(webcamRef, canvasRef, setIsLoading, choice);
             } else if (photoRef.current) {
-                timer = runFacemesh(photoRef, canvasRef, setIsLoading, choice);
+                runFacemesh(photoRef, canvasRef, setIsLoading, choice);
             }
-            return () => clearInterval(timer);
         },
         [webcamRef, photoRef, choice]
     );
