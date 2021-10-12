@@ -1,3 +1,5 @@
+import { HAIRS } from "./data/hair";
+
 export const PERIMETER = [
     103,
     54,
@@ -61,16 +63,20 @@ const getPoints = (keypoints, width) => {
     return [leftHalf, rightHalf];
 };
 
-const distance = (point1, point2) => {
+const getDistance = (point1, point2) => {
     const dx_sq = (point2[0] - point1[0]) * (point2[0] - point1[0]);
     const dy_sq = (point2[1] - point1[1]) * (point2[1] - point1[1]);
     return Math.sqrt(dx_sq + dy_sq);
 };
 
-const polarAngle = (point1, point2) => {
+const getPolarAngle = (point1, point2) => {
     const dx = (point2[0] - point1[0]);
     const dy = (point2[1] - point1[1]);
     return Math.atan(dy/dx) * Math.PI * 2;
+};
+
+const getTopOfHead = (point) => {
+    return [point[0], point[1]];
 };
 
 export const crop = (predictions, ctx, width) => {
@@ -84,42 +90,11 @@ export const crop = (predictions, ctx, width) => {
             ctx.fillStyle = 'white';
             ctx.fill();
             result = [
-                `${distance(keypoints[234], keypoints[454])*0.52}%`,
-                polarAngle(keypoints[234], keypoints[454])
+                getDistance(keypoints[234], keypoints[454]),
+                getPolarAngle(keypoints[234], keypoints[454]),
+                getTopOfHead(keypoints[10])
             ];
         });
     }
     return result;
 };
-
-// Drawing Mesh
-// export const drawMesh = (predictions, ctx) => {
-//     if (predictions.length > 0) {
-//         predictions.forEach((prediction) => {
-//             const keypoints = prediction.scaledMesh;
-
-//             //  Draw Triangles
-//             for (let i = 0; i < TRIANGULATION.length / 3; i++) {
-//                 // Get sets of three keypoints for the triangle
-//                 const points = [
-//                     TRIANGULATION[i * 3],
-//                     TRIANGULATION[i * 3 + 1],
-//                     TRIANGULATION[i * 3 + 2],
-//                 ].map((index) => keypoints[index]);
-//                 //  Draw triangle
-//                 drawPath(ctx, points, true);
-//             }
-
-//             // Draw Dots
-//             for (let i = 0; i < keypoints.length; i++) {
-//                 const x = keypoints[i][0];
-//                 const y = keypoints[i][1];
-
-//                 ctx.beginPath();
-//                 ctx.arc(x, y, 1 /* radius */, 0, 3 * Math.PI);
-//                 ctx.fillStyle = "aqua";
-//                 ctx.fill();
-//             }
-//         });
-//     }
-// };
