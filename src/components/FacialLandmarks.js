@@ -5,16 +5,17 @@ import { crop } from '../utils';
 import Webcam from 'react-webcam';
 import './FacialLandmarks.scss';
 import TestPhoto from '../assets/test_photo.jpeg';
+import stockImg from '../assets/hair_1.png';
 
-const runFacemesh = async (sourceRef, canvasRef, setIsLoading, choice) => {
+const runFacemesh = async (sourceRef, canvasRef, setIsLoading, setWidth, setPolarAngle, choice) => {
     const net = await facemesh.load({
         inputResolution: { width: 640, height: 480 },
         scale: 0.8
     });
     if (choice === 'video') {
-        detectVideo(sourceRef, canvasRef, net, setIsLoading);
+        detectVideo(sourceRef, canvasRef, net, setIsLoading, setWidth, setPolarAngle);
     } else if (choice === 'photo') {
-        detectPhoto(sourceRef, canvasRef, net, setIsLoading);
+        detectPhoto(sourceRef, canvasRef, net, setIsLoading, setWidth, setPolarAngle);
     }
 };
 
@@ -42,7 +43,7 @@ const detectVideo = async (webcamRef, canvasRef, net, setIsLoading) => {
     }
 };
 
-const detectPhoto = async (photoRef, canvasRef, net, setIsLoading) => {
+const detectPhoto = async (photoRef, canvasRef, net, setIsLoading, setWidth, setPolarAngle) => {
     const photo = photoRef.current;
     const canvas = canvasRef.current;
     canvas.width = photo.width;
@@ -50,7 +51,10 @@ const detectPhoto = async (photoRef, canvasRef, net, setIsLoading) => {
     const face = await net.estimateFaces(photo);
     setIsLoading(false);
     const ctx = canvas.getContext('2d');
-    crop(face, ctx, photo.width);
+    const [width, polarAngle] = crop(face, ctx, photo.width);
+    setWidth(width);
+    setPolarAngle(polarAngle);
+    console.log(width, polarAngle)
 }
 
 const WEBCAM_STYLE = {
@@ -73,7 +77,9 @@ const IMAGE_STYLE = {
 
 const FacialLandmarks = (props) => {
     const [ isLoading, setIsLoading ] = React.useState(true);
-    const [ choice, setChoice ] = React.useState('');
+    const [ choice, setChoice ] = React.useState('photo');
+    const [ width, setWidth ] = React.useState('100%');
+    const [ polarAngle, setPolarAngle ] = React.useState(0);
     const webcamRef = React.useRef(null);
     const canvasRef = React.useRef(null);
     const photoRef = React.useRef(null);
@@ -81,9 +87,9 @@ const FacialLandmarks = (props) => {
     React.useEffect(
         () => {
             if (webcamRef.current) {
-                runFacemesh(webcamRef, canvasRef, setIsLoading, choice);
+                runFacemesh(webcamRef, canvasRef, setIsLoading, setWidth, setPolarAngle, choice);
             } else if (photoRef.current) {
-                runFacemesh(photoRef, canvasRef, setIsLoading, choice);
+                runFacemesh(photoRef, canvasRef, setIsLoading, setWidth, setPolarAngle, choice);
             }
         },
         [webcamRef, photoRef, choice]
@@ -106,7 +112,7 @@ const FacialLandmarks = (props) => {
                 </label>
             </div>
             <div className="facemesh-container">
-                <div className={`webcam-container ${isLoading ? 'loading' : ''} `}>
+                <div className={`webcam-container ${isLoading ? 'loading' : ''}`} style={{width: 480}}>
                     {
                         choice === 'photo' ?
                         <img ref={photoRef} src={TestPhoto} style={IMAGE_STYLE} alt="user-profile"/> :
@@ -115,6 +121,13 @@ const FacialLandmarks = (props) => {
                     <canvas
                         ref={canvasRef}
                         style={choice === 'video' ? WEBCAM_STYLE : IMAGE_STYLE}
+                    />
+                    <img 
+                        src={stockImg} 
+                        alt="hair-option" 
+                        id="hair-option"
+                        className="hair-option" 
+                        style={{width, transform: `rotate(${polarAngle}deg)`}}
                     />
                 </div>
             </div>
