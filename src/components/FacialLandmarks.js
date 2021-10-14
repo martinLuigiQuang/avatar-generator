@@ -6,21 +6,22 @@ import Webcam from 'react-webcam';
 import './FacialLandmarks.scss';
 import TestPhoto from '../assets/test_photo.jpeg';
 import TestPhoto2 from '../assets/test_photo_2.jpeg';
+import TestPhoto3 from '../assets/test_photo_3.jpeg';
 import { HAIRS } from '../data/hair';
 
-const runFacemesh = async (sourceRef, canvasRef, setIsLoading, setWidth, setPolarAngle, setTopOfHead, choice) => {
+const runFacemesh = async (sourceRef, canvasRef, setIsLoading, setWidth, setPolarAngle, setTopOfHead, setChin, setHeight, choice) => {
     const net = await facemesh.load({
         inputResolution: { width: 640, height: 480 },
         scale: 0.8
     });
     if (choice === 'video') {
-        detectVideo(sourceRef, canvasRef, net, setIsLoading, setWidth, setPolarAngle);
+        detectVideo(sourceRef, canvasRef, net, setIsLoading, setWidth, setPolarAngle, setTopOfHead, setChin, setHeight);
     } else if (choice === 'photo') {
-        detectPhoto(sourceRef, canvasRef, net, setIsLoading, setWidth, setPolarAngle, setTopOfHead);
+        detectPhoto(sourceRef, canvasRef, net, setIsLoading, setWidth, setPolarAngle, setTopOfHead, setChin, setHeight);
     }
 };
 
-const detectVideo = async (webcamRef, canvasRef, net, setIsLoading) => {
+const detectVideo = async (webcamRef, canvasRef, net, setIsLoading, setWidth, setPolarAngle, setTopOfHead, setChin, setHeight) => {
     if (
         typeof webcamRef.current !== 'undefined' &&
         webcamRef.current !== null &&
@@ -38,13 +39,19 @@ const detectVideo = async (webcamRef, canvasRef, net, setIsLoading) => {
         setIsLoading(false);
         const ctx = canvas.getContext('2d');
         requestAnimationFrame(() => {
-            crop(face, ctx, videoWidth);
+            const [ height, width, polarAngle, topOfHead, chin ] = crop(face, ctx, videoWidth);
+            setHeight(height);
+            setWidth(width);
+            setPolarAngle(polarAngle);
+            setTopOfHead(topOfHead);
+            setChin(chin);
+            console.log(polarAngle)
         });
-        detectVideo(webcamRef, canvasRef, net, setIsLoading);
+        detectVideo(webcamRef, canvasRef, net, setIsLoading, setWidth, setPolarAngle, setTopOfHead, setChin, setHeight);
     }
 };
 
-const detectPhoto = async (photoRef, canvasRef, net, setIsLoading, setWidth, setPolarAngle, setTopOfHead) => {
+const detectPhoto = async (photoRef, canvasRef, net, setIsLoading, setWidth, setPolarAngle, setTopOfHead, setChin, setHeight) => {
     const photo = photoRef.current;
     const canvas = canvasRef.current;
     canvas.width = photo.width;
@@ -52,11 +59,13 @@ const detectPhoto = async (photoRef, canvasRef, net, setIsLoading, setWidth, set
     const face = await net.estimateFaces(photo);
     setIsLoading(false);
     const ctx = canvas.getContext('2d');
-    const [width, polarAngle, topOfHead] = crop(face, ctx, photo.width);
+    const [ height, width, polarAngle, topOfHead, chin ] = crop(face, ctx, photo.width);
+    setHeight(height);
     setWidth(width);
     setPolarAngle(polarAngle);
     setTopOfHead(topOfHead);
-    console.log(width)
+    setChin(chin);
+    console.log(polarAngle, Math.cos(polarAngle*(2*Math.PI)/360))
 }
 
 const WEBCAM_STYLE = {
@@ -79,10 +88,12 @@ const IMAGE_STYLE = {
 
 const FacialLandmarks = (props) => {
     const [ isLoading, setIsLoading ] = React.useState(true);
-    const [ choice, setChoice ] = React.useState('photo');
-    const [ width, setWidth ] = React.useState('100%');
+    const [ choice, setChoice ] = React.useState('');
+    const [ width, setWidth ] = React.useState(0);
     const [ polarAngle, setPolarAngle ] = React.useState(0);
     const [ topOfHead, setTopOfHead ] = React.useState([0, 0]);
+    const [ chin, setChin ] = React.useState([0, 0]);
+    const [ height, setHeight ] = React.useState(0);
 
     // getting hair index
     const [ hair, setHair ] = React.useState(0);
@@ -95,9 +106,9 @@ const FacialLandmarks = (props) => {
     React.useEffect(
         () => {
             if (webcamRef.current) {
-                runFacemesh(webcamRef, canvasRef, setIsLoading, setWidth, setPolarAngle, choice);
+                runFacemesh(webcamRef, canvasRef, setIsLoading, setWidth, setPolarAngle, setTopOfHead, setChin, setHeight, choice);
             } else if (photoRef.current) {
-                runFacemesh(photoRef, canvasRef, setIsLoading, setWidth, setPolarAngle, setTopOfHead, choice);
+                runFacemesh(photoRef, canvasRef, setIsLoading, setWidth, setPolarAngle, setTopOfHead, setChin, setHeight, choice);
             }
         },
         [webcamRef, photoRef, choice]
@@ -113,10 +124,10 @@ const FacialLandmarks = (props) => {
 
     const getHairStyles = (index) => ({
         width: `${getRatio(width, index) * HAIRS[index].width}px`,
-        transform: `rotate(${polarAngle}deg)`,
-        top: topOfHead[1] - getRatio(width, index) * (HAIRS[index].height - HAIRS[index].forehead[1]) - 10, // to replace manual adjustment with prediction
-        left: topOfHead[0] - getRatio(width, index) * (HAIRS[index].width - HAIRS[index].forehead[0] + HAIRS[index].foreheadOffSet) + 10, // to replace manual adjustment with prediction
+        top: topOfHead[1] - 1 * getRatio(width, index) * (HAIRS[index].height - HAIRS[index].forehead[1] + HAIRS[index].foreheadOffSet[1]),
+        left: topOfHead[0] - 1 * getRatio(width, index) * (HAIRS[index].width - HAIRS[index].forehead[0] + HAIRS[index].foreheadOffSet[0]),
         zIndex: isLoading ? -1 : 99,
+        transform: `rotateZ(${polarAngle}deg)`,
         display: isLoading ? 'none' : 'block'
     });
 

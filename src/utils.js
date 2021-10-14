@@ -72,10 +72,10 @@ const getDistance = (point1, point2) => {
 const getPolarAngle = (point1, point2) => {
     const dx = (point2[0] - point1[0]);
     const dy = (point2[1] - point1[1]);
-    return Math.atan(dy/dx) * Math.PI * 2;
+    return Math.atan(dy/dx) * 360 / (Math.PI * 2);
 };
 
-const getTopOfHead = (point) => {
+const getCoordinates = (point) => {
     return [point[0], point[1]];
 };
 
@@ -90,9 +90,11 @@ export const crop = (predictions, ctx, width) => {
             ctx.fillStyle = 'white';
             ctx.fill();
             result = [
+                getDistance(keypoints[10], keypoints[152]),
                 getDistance(keypoints[234], keypoints[454]),
                 getPolarAngle(keypoints[234], keypoints[454]),
-                getTopOfHead(keypoints[10])
+                getCoordinates(keypoints[10]),
+                getCoordinates(keypoints[152])
             ];
         });
     }
