@@ -1,5 +1,3 @@
-import { HAIRS } from "./data/hair";
-
 export const PERIMETER = [
     103,
     54,

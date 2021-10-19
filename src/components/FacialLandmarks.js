@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as tf from '@tensorflow/tfjs';
 import * as facemesh from '@tensorflow-models/facemesh';
 import { crop } from '../utils';
 import Webcam from 'react-webcam';
@@ -8,65 +7,7 @@ import TestPhoto from '../assets/test_photo.jpeg';
 import TestPhoto2 from '../assets/test_photo_2.jpeg';
 import TestPhoto3 from '../assets/test_photo_3.jpeg';
 import { HAIRS } from '../data/hair';
-
-const runFacemesh = async (sourceRef, canvasRef, setIsLoading, setWidth, setPolarAngle, setTopOfHead, setChin, setHeight, choice) => {
-    const net = await facemesh.load({
-        inputResolution: { width: 640, height: 480 },
-        scale: 0.8
-    });
-    if (choice === 'video') {
-        detectVideo(sourceRef, canvasRef, net, setIsLoading, setWidth, setPolarAngle, setTopOfHead, setChin, setHeight);
-    } else if (choice === 'photo') {
-        detectPhoto(sourceRef, canvasRef, net, setIsLoading, setWidth, setPolarAngle, setTopOfHead, setChin, setHeight);
-    }
-};
-
-const detectVideo = async (webcamRef, canvasRef, net, setIsLoading, setWidth, setPolarAngle, setTopOfHead, setChin, setHeight) => {
-    if (
-        typeof webcamRef.current !== 'undefined' &&
-        webcamRef.current !== null &&
-        webcamRef.current.video.readyState === 4
-    ) {
-        const video = webcamRef.current.video;
-        const canvas = canvasRef.current;
-        const videoWidth = video.videoWidth;
-        const videoHeight = video.videoHeight;
-        video.width = videoWidth;
-        video.height = videoHeight;
-        canvas.width = videoWidth;
-        canvas.height = videoHeight;
-        const face = await net.estimateFaces(video);
-        setIsLoading(false);
-        const ctx = canvas.getContext('2d');
-        requestAnimationFrame(() => {
-            const [ height, width, polarAngle, topOfHead, chin ] = crop(face, ctx, videoWidth);
-            setHeight(height);
-            setWidth(width);
-            setPolarAngle(polarAngle);
-            setTopOfHead(topOfHead);
-            setChin(chin);
-            console.log(polarAngle)
-        });
-        detectVideo(webcamRef, canvasRef, net, setIsLoading, setWidth, setPolarAngle, setTopOfHead, setChin, setHeight);
-    }
-};
-
-const detectPhoto = async (photoRef, canvasRef, net, setIsLoading, setWidth, setPolarAngle, setTopOfHead, setChin, setHeight) => {
-    const photo = photoRef.current;
-    const canvas = canvasRef.current;
-    canvas.width = photo.width;
-    canvas.height = photo.height;
-    const face = await net.estimateFaces(photo);
-    setIsLoading(false);
-    const ctx = canvas.getContext('2d');
-    const [ height, width, polarAngle, topOfHead, chin ] = crop(face, ctx, photo.width);
-    setHeight(height);
-    setWidth(width);
-    setPolarAngle(polarAngle);
-    setTopOfHead(topOfHead);
-    setChin(chin);
-    console.log(polarAngle, Math.cos(polarAngle*(2*Math.PI)/360))
-}
+import * as tf from '@tensorflow/tfjs';
 
 const WEBCAM_STYLE = {
     position: 'absolute',
@@ -94,21 +35,67 @@ const FacialLandmarks = (props) => {
     const [ topOfHead, setTopOfHead ] = React.useState([0, 0]);
     const [ chin, setChin ] = React.useState([0, 0]);
     const [ height, setHeight ] = React.useState(0);
-
-    // getting hair index
     const [ hair, setHair ] = React.useState(0);
 
     const webcamRef = React.useRef(null);
     const canvasRef = React.useRef(null);
     const photoRef = React.useRef(null);
     const hairRef = React.useRef(null);
+
+    const setFaceGeometry = (face, canvas, ctxWidth) => {
+        setIsLoading(false);
+        const ctx = canvas.getContext('2d');
+        const [height, width, polarAngle, topOfHead, chin] = crop(face, ctx, ctxWidth);
+        setHeight(height);
+        setWidth(width);
+        setPolarAngle(polarAngle);
+        setTopOfHead(topOfHead);
+        setChin(chin);
+    };
+
+    const runFacemesh = async () => {
+        const net = await facemesh.load({
+            inputResolution: { width: 640, height: 480 },
+            scale: 0.8
+        });
+        if (choice === 'video') {
+            detectVideo(net);
+        } else if (choice === 'photo') {
+            detectPhoto(net);
+        }
+    };
+
+    const detectVideo = async (net) => {
+        if (
+            typeof webcamRef.current !== 'undefined' &&
+            webcamRef.current !== null &&
+            webcamRef.current.video.readyState === 4
+        ) {
+            const video = webcamRef.current.video;
+            const canvas = canvasRef.current;
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const face = await net.estimateFaces(video);
+            requestAnimationFrame(() => {
+                setFaceGeometry(face, canvas, video.videoWidth);
+            });
+            detectVideo(net);
+        }
+    };
+
+    const detectPhoto = async (net) => {
+        const photo = photoRef.current;
+        const canvas = canvasRef.current;
+        canvas.width = photo.width;
+        canvas.height = photo.height;
+        const face = await net.estimateFaces(photo);
+        setFaceGeometry(face, canvas, photo.width);
+    };
     
     React.useEffect(
         () => {
-            if (webcamRef.current) {
-                runFacemesh(webcamRef, canvasRef, setIsLoading, setWidth, setPolarAngle, setTopOfHead, setChin, setHeight, choice);
-            } else if (photoRef.current) {
-                runFacemesh(photoRef, canvasRef, setIsLoading, setWidth, setPolarAngle, setTopOfHead, setChin, setHeight, choice);
+            if (webcamRef.current || photoRef.current) {
+                runFacemesh();
             }
         },
         [webcamRef, photoRef, choice]
@@ -124,8 +111,8 @@ const FacialLandmarks = (props) => {
 
     const getHairStyles = (index) => ({
         width: `${getRatio(width, index) * HAIRS[index].width}px`,
-        top: topOfHead[1] - 1 * getRatio(width, index) * (HAIRS[index].height - HAIRS[index].forehead[1] + HAIRS[index].foreheadOffSet[1]),
         left: topOfHead[0] - 1 * getRatio(width, index) * (HAIRS[index].width - HAIRS[index].forehead[0] + HAIRS[index].foreheadOffSet[0]),
+        top: topOfHead[1] - 1 * getRatio(width, index) * (HAIRS[index].height - HAIRS[index].forehead[1] + HAIRS[index].foreheadOffSet[1]),
         zIndex: isLoading ? -1 : 99,
         transform: `rotateZ(${polarAngle}deg)`,
         display: isLoading ? 'none' : 'block'
