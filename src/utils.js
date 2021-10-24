@@ -85,7 +85,7 @@ export const crop = (predictions, ctx, width) => {
             getPoints(keypoints, width).forEach(half => {
                 drawPath(ctx, half, true);
             });
-            ctx.fillStyle = 'white';
+            ctx.fillStyle = '';
             ctx.fill();
             result = [
                 getDistance(keypoints[10], keypoints[152]),
@@ -97,4 +97,22 @@ export const crop = (predictions, ctx, width) => {
         });
     }
     return result;
+};
+
+export const detectVideo = async (webcamRef, canvasRef, setFaceGeometry, net) => {
+    if (
+        typeof webcamRef.current !== 'undefined' &&
+        webcamRef.current !== null &&
+        webcamRef.current.video.readyState === 4
+    ) {
+        const video = webcamRef.current.video;
+        const canvas = canvasRef.current;
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const face = await net.estimateFaces(video);
+        requestAnimationFrame(() => {
+            setFaceGeometry(face, canvas, video.videoWidth);
+        });
+        detectVideo(net);
+    }
 };
