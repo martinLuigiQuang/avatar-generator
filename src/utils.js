@@ -85,7 +85,7 @@ export const crop = (predictions, ctx, width) => {
             getPoints(keypoints, width).forEach(half => {
                 drawPath(ctx, half, true);
             });
-            ctx.fillStyle = '';
+            ctx.fillStyle = 'white';
             ctx.fill();
             result = [
                 getDistance(keypoints[10], keypoints[152]),
@@ -97,6 +97,10 @@ export const crop = (predictions, ctx, width) => {
         });
     }
     return result;
+};
+
+export const checkPolarAngle = (polarAngle) => {
+    return polarAngle < 10 && polarAngle > -10;
 };
 
 export const detectVideo = async (webcamRef, canvasRef, setFaceGeometry, net) => {

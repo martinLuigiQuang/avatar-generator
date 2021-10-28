@@ -1,12 +1,7 @@
 import * as React from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
-import ReactDOM from 'react-dom';
 import * as facemesh from '@tensorflow-models/facemesh';
-import { crop } from '../utils';
+import * as Utils from '../utils';
 import './FacialLandmarks.scss';
-import TestPhoto from '../assets/test_photo.jpeg';
-import TestPhoto2 from '../assets/test_photo_2.jpeg';
-import TestPhoto3 from '../assets/test_photo_3.jpeg';
 import { HAIRS } from '../data/hair';
 import * as tf from '@tensorflow/tfjs';
 
@@ -31,35 +26,12 @@ const FacialLandmarks = (props) => {
     const [ chin, setChin ] = React.useState([0, 0]);
     const [ height, setHeight ] = React.useState(0);
     const [ hair, setHair ] = React.useState(0);
+    const [ isFaceTiltTooLarge, setIsFaceTiltTooLarge ] = React.useState(false);
+    const [ isPhotoUploaded, setIsPhotoUploaded ] = React.useState(false);
 
     const photoRef = React.useRef(null);
-    const rotatedPhotoRef = React.useRef(null);
     const canvasRef = React.useRef(null);
     const hairRef = React.useRef(null);
-    
-    React.useEffect(
-        () => {
-            const rotate = async (angle) => {
-                await runFacemesh();
-            };
-            console.log(polarAngle)
-            rotate(polarAngle);
-        },
-        [polarAngle]
-    );
-
-
-    const setFaceGeometry = async (face, canvas, ctxWidth) => {
-        setIsLoading(false);
-        const ctx = await canvas.getContext('2d');
-        const [height, width, polarAngle, topOfHead, chin] = crop(face, ctx, ctxWidth);
-        setHeight(height);
-        setWidth(width);
-        setTopOfHead(topOfHead);
-        setChin(chin);
-        setPolarAngle(polarAngle);
-        ReactDOM.render(getPhoto(TestPhoto, polarAngle), document.getElementsByClassName('image-container')[0]);
-    };
 
     const runFacemesh = async () => {
         const mesh = await facemesh.load({
@@ -76,6 +48,20 @@ const FacialLandmarks = (props) => {
         canvas.height = IMAGE_STYLE.height;
         const face = await mesh.estimateFaces(photo);
         setFaceGeometry(face, canvas, IMAGE_STYLE.width);
+    };
+
+    const setFaceGeometry = async (face, canvas, ctxWidth) => {
+        setIsLoading(false);
+        const ctx = await canvas.getContext('2d');
+        const [height, width, polarAngle, topOfHead, chin] = Utils.crop(face, ctx, ctxWidth);
+        setIsFaceTiltTooLarge(!Utils.checkPolarAngle(polarAngle));
+        if (Utils.checkPolarAngle(polarAngle)) {
+            setHeight(height);
+            setWidth(width);
+            setTopOfHead(topOfHead);
+            setChin(chin);
+            setPolarAngle(polarAngle);
+        }
     };
 
     const getRatio = (width, index) => {
@@ -97,31 +83,51 @@ const FacialLandmarks = (props) => {
         }
     };
 
-    const getPhoto = (src, polarAngle) => {
-        console.log(polarAngle)
-        return <img src={src} style={{transform: `rotateZ(-${polarAngle}deg)`}} alt="user-profile-2" />
+    const renderWarning = () => {
+        return (
+            <div className="warning-container">
+                <h2>Your face is tilted. Please upload a different photo.</h2>
+            </div>
+        );
+    };
+
+    const handleImageUpload = (e) => {
+        const files = e.target.files;
+        if (files && files[0]) {
+            setIsPhotoUploaded(true);
+            runFacemesh();
+            const imgTag = photoRef.current;
+            imgTag.onload = () => {
+                URL.revokeObjectURL(imgTag.src);
+            }
+            imgTag.src = URL.createObjectURL(files[0]);
+        }
     };
 
     return (
         <div className="facial-landmarks-container">
             <div className="facemesh-container">
-                <div className={`photo-container ${isLoading ? 'loading' : ''}`} style={{width: 480}}>
+                <div className={`photo-container ${isLoading || isFaceTiltTooLarge ? 'loading' : ''}`} style={{width: 480}}>
                     <div className="image-container">
-                        <img ref={photoRef} src={TestPhoto} style={IMAGE_STYLE} alt="user-profile" />
+                        <img ref={photoRef} src="#" style={IMAGE_STYLE} alt="user-profile" />
                     </div>
                     <canvas
                         ref={canvasRef}
                         style={IMAGE_STYLE}
-                        className='hidden'
+                        className={`${isLoading || isFaceTiltTooLarge? 'hidden' : ''}`}
                     />
-                    {/* <img 
+                    <img 
                         ref={hairRef}
                         src={HAIRS[hair].name} 
                         alt="hair-option" 
                         id="hair-option"
                         className="hair-option" 
                         style={getHairStyles(hair)}
-                    /> */}
+                    />
+                </div>
+                {isFaceTiltTooLarge ? renderWarning() : null}
+                <div className="upload-button">
+                    <input type="file" onChange={handleImageUpload}/>
                 </div>
                 <div className="buttons-container">
                     <button onClick={() => handleSetHair(-1)}>-</button>
