@@ -100,7 +100,7 @@ export const crop = (predictions, ctx, width) => {
 };
 
 export const checkPolarAngle = (polarAngle) => {
-    return polarAngle < 10 && polarAngle > -10;
+    return polarAngle < 20 && polarAngle > -20;
 };
 
 export const detectVideo = async (webcamRef, canvasRef, setFaceGeometry, net) => {

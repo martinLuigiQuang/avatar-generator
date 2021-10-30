@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as facemesh from '@tensorflow-models/facemesh';
 import * as Utils from '../utils';
 import './FacialLandmarks.scss';
-import { HAIRS } from '../data/hair';
+import { HAIRS } from '../data/hairs';
 import * as tf from '@tensorflow/tfjs';
 
 const IMAGE_STYLE = {
@@ -18,6 +18,8 @@ const IMAGE_STYLE = {
     height: 480
 };
 
+const GENDER = 'female';
+
 const FacialLandmarks = (props) => {
     const [ isLoading, setIsLoading ] = React.useState(true);
     const [ width, setWidth ] = React.useState(0);
@@ -25,7 +27,7 @@ const FacialLandmarks = (props) => {
     const [ topOfHead, setTopOfHead ] = React.useState([0, 0]);
     const [ chin, setChin ] = React.useState([0, 0]);
     const [ height, setHeight ] = React.useState(0);
-    const [ hair, setHair ] = React.useState(0);
+    const [ hairIndex, setHairIndex ] = React.useState(0);
     const [ isFaceTiltTooLarge, setIsFaceTiltTooLarge ] = React.useState(false);
     const [ isPhotoUploaded, setIsPhotoUploaded ] = React.useState(false);
 
@@ -65,21 +67,22 @@ const FacialLandmarks = (props) => {
     };
 
     const getRatio = (width, index) => {
-        return width / HAIRS[index].forehead[0];
+        return width / HAIRS[GENDER][index].forehead[0];
     };
 
-    const getHairStyles = (index) => ({
-        width: `${getRatio(width, index) * HAIRS[index].width}px`,
-        left: topOfHead[0] - 1 * getRatio(width, index) * (HAIRS[index].width - HAIRS[index].forehead[0] + HAIRS[index].foreheadOffSet[0]),
-        top: topOfHead[1] - 1 * getRatio(width, index) * (HAIRS[index].height - HAIRS[index].forehead[1] + HAIRS[index].foreheadOffSet[1]) + IMAGE_STYLE.top,
+    const getHairStyles = (index, hairsArray) => ({
+        width: `${getRatio(width, index) * hairsArray[index].width}px`,
+        left: topOfHead[0] - 1 * getRatio(width, index) * (hairsArray[index].width - hairsArray[index].forehead[0] + hairsArray[index].foreheadOffSet[0]),
+        top: topOfHead[1] - 1 * getRatio(width, index) * (hairsArray[index].height - hairsArray[index].forehead[1] + hairsArray[index].foreheadOffSet[1]) + IMAGE_STYLE.top,
         zIndex: isLoading ? -1 : 99,
         transform: `rotateZ(${polarAngle}deg)`,
+        transformOrigin: '50% 100px',
         display: isLoading ? 'none' : 'block'
     });
 
-    const handleSetHair = (change) => {
-        if ( hair + change >= 0 && hair + change < HAIRS.length) {
-            setHair(hair + change);
+    const handleSetHair = (change, hairsArray) => {
+        if ( hairIndex + change >= 0 && hairIndex + change < hairsArray.length) {
+            setHairIndex(hairIndex + change);
         }
     };
 
@@ -118,11 +121,11 @@ const FacialLandmarks = (props) => {
                     />
                     <img 
                         ref={hairRef}
-                        src={HAIRS[hair].name} 
+                        src={HAIRS[GENDER][hairIndex].name} 
                         alt="hair-option" 
                         id="hair-option"
                         className="hair-option" 
-                        style={getHairStyles(hair)}
+                        style={getHairStyles(hairIndex, HAIRS[GENDER])}
                     />
                 </div>
                 {isFaceTiltTooLarge ? renderWarning() : null}
@@ -130,8 +133,8 @@ const FacialLandmarks = (props) => {
                     <input type="file" onChange={handleImageUpload}/>
                 </div>
                 <div className="buttons-container">
-                    <button onClick={() => handleSetHair(-1)}>-</button>
-                    <button onClick={() => handleSetHair(1)}>+</button>
+                    <button onClick={() => handleSetHair(-1, HAIRS[GENDER])}>-</button>
+                    <button onClick={() => handleSetHair(1, HAIRS[GENDER])}>+</button>
                 </div>
             </div>
         </div>
