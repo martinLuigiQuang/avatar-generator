@@ -1,9 +1,11 @@
 import * as React from 'react';
 import * as facemesh from '@tensorflow-models/facemesh';
-import * as Utils from '../utils';
-import './FacialLandmarks.scss';
-import { HAIRS } from '../data/hairs';
+import Utils from '../utils';
+import * as Hairs from '../data/hairs';
 import * as tf from '@tensorflow/tfjs';
+import './FacialLandmarks.scss';
+
+const UTILS = new Utils();
 
 const IMAGE_STYLE = {
     position: 'absolute',
@@ -55,34 +57,14 @@ const FacialLandmarks = (props) => {
     const setFaceGeometry = async (face, canvas, ctxWidth) => {
         setIsLoading(false);
         const ctx = await canvas.getContext('2d');
-        const [height, width, polarAngle, topOfHead, chin] = Utils.crop(face, ctx, ctxWidth);
-        setIsFaceTiltTooLarge(!Utils.checkPolarAngle(polarAngle));
-        if (Utils.checkPolarAngle(polarAngle)) {
+        const [height, width, polarAngle, topOfHead, chin] = UTILS.crop(face, ctx, ctxWidth);
+        setIsFaceTiltTooLarge(!UTILS.checkPolarAngle(polarAngle));
+        if (UTILS.checkPolarAngle(polarAngle)) {
             setHeight(height);
             setWidth(width);
             setTopOfHead(topOfHead);
             setChin(chin);
             setPolarAngle(polarAngle);
-        }
-    };
-
-    const getRatio = (width, index) => {
-        return width / HAIRS[GENDER][index].forehead[0];
-    };
-
-    const getHairStyles = (index, hairsArray) => ({
-        width: `${getRatio(width, index) * hairsArray[index].width}px`,
-        left: topOfHead[0] - 1 * getRatio(width, index) * (hairsArray[index].width - hairsArray[index].forehead[0] + hairsArray[index].foreheadOffSet[0]),
-        top: topOfHead[1] - 1 * getRatio(width, index) * (hairsArray[index].height - hairsArray[index].forehead[1] + hairsArray[index].foreheadOffSet[1]) + IMAGE_STYLE.top,
-        zIndex: isLoading ? -1 : 99,
-        transform: `rotateZ(${polarAngle}deg)`,
-        transformOrigin: '50% 100px',
-        display: isLoading ? 'none' : 'block'
-    });
-
-    const handleSetHair = (change, hairsArray) => {
-        if ( hairIndex + change >= 0 && hairIndex + change < hairsArray.length) {
-            setHairIndex(hairIndex + change);
         }
     };
 
@@ -121,11 +103,11 @@ const FacialLandmarks = (props) => {
                     />
                     <img 
                         ref={hairRef}
-                        src={HAIRS[GENDER][hairIndex].name} 
+                        src={Hairs.getHair(hairIndex, GENDER)} 
                         alt="hair-option" 
                         id="hair-option"
                         className="hair-option" 
-                        style={getHairStyles(hairIndex, HAIRS[GENDER])}
+                        style={Hairs.getHairStyles(hairIndex, GENDER, width, topOfHead, polarAngle, isLoading, IMAGE_STYLE)}
                     />
                 </div>
                 {isFaceTiltTooLarge ? renderWarning() : null}
@@ -133,8 +115,12 @@ const FacialLandmarks = (props) => {
                     <input type="file" onChange={handleImageUpload}/>
                 </div>
                 <div className="buttons-container">
-                    <button onClick={() => handleSetHair(-1, HAIRS[GENDER])}>-</button>
-                    <button onClick={() => handleSetHair(1, HAIRS[GENDER])}>+</button>
+                    <button onClick={() => {
+                        setHairIndex(Hairs.getHairIndex(-1, GENDER, hairIndex))
+                    }}>-</button>
+                    <button onClick={() => {
+                        setHairIndex(Hairs.getHairIndex(1, GENDER, hairIndex))
+                    }}>+</button>
                 </div>
             </div>
         </div>
