@@ -68,7 +68,7 @@ const FacialLandmarks = (props) => {
         if (faceInformation) {
             const [height, faceWidth, headTiltAngle, topOfHead, chin, leftEyebrow] = faceInformation;
             const isHeadTiltAcceptable = UTILS.checkHeadTiltAngle(headTiltAngle);
-            setIsFaceTiltTooLarge(!isHeadTiltAcceptable);
+            setIsHeadTiltTooLarge(!isHeadTiltAcceptable);
             if (isHeadTiltAcceptable) {
                 setHeight(height);
                 setFaceWidth(faceWidth);
@@ -104,14 +104,14 @@ const FacialLandmarks = (props) => {
     return (
         <div className="facial-landmarks-container">
             <div className="facemesh-container">
-                <div ref={avatarRef} className={`photo-container ${isLoading || isFaceTiltTooLarge ? 'loading' : ''}`} style={{width: 480}}>
+                <div ref={avatarRef} className={`photo-container ${isLoading || isHeadTiltTooLarge ? 'loading' : ''}`} style={{width: 480}}>
                     <div className="image-container">
                         <img ref={photoRef} src="#" style={IMAGE_STYLE} alt="user-profile" />
                     </div>
                     <canvas
                         ref={canvasRef}
                         style={IMAGE_STYLE}
-                        className={`${isLoading || isFaceTiltTooLarge? 'hidden' : ''}`}
+                        className={`${isLoading || isHeadTiltTooLarge? 'hidden' : ''}`}
                     />
                     <img 
                         ref={hairRef}
@@ -130,7 +130,7 @@ const FacialLandmarks = (props) => {
                         style={Masks.getMaskStyles(width, topOfHead, leftEyebrow, headTiltAngle, isLoading)}
                     />
                 </div>
-                {isFaceTiltTooLarge ? renderWarning() : null}
+                {isHeadTiltTooLarge ? renderWarning() : null}
                 <div className="upload-button">
                     <input type="file" onChange={handleImageUpload}/>
                 </div>
