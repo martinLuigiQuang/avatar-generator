@@ -7,16 +7,23 @@
 .photo-container {
     position: relative;
     margin: 0 auto;
-    .hair-option {
+    .hair-option,
+    .mask-option {
         position: absolute;
         margin-left: auto;
         margin-right: auto;
         text-align: 'center';
     }
+    .mask-option {
+        border: 2px solid red;
+    }
 }
 .buttons-container {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    z-index: 199;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 25px;
+    h2 {
+        margin: 0 5px;
+    }
 }

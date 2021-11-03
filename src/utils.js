@@ -79,22 +79,23 @@ class Utils {
     };
     
     crop = (predictions, ctx, width) => {
-        let result = [0, 0, 0, [0, 0], [0, 0]];
-        console.log(predictions)
+        let result = [];
         if (predictions.length > 0) {
             predictions.forEach((prediction) => {
                 const keypoints = prediction.scaledMesh;
                 this.getPoints(keypoints, width).forEach(half => {
                     this.drawPath(ctx, half, true);
                 });
-                ctx.fillStyle = 'white';
+                ctx.fillStyle = 'black';
                 ctx.fill();
                 result = [
                     this.getDistance(keypoints[10], keypoints[152]),
                     this.getDistance(keypoints[234], keypoints[454]),
                     this.getPolarAngle(keypoints[234], keypoints[454]),
                     this.getCoordinates(keypoints[10]),
-                    this.getCoordinates(keypoints[152])
+                    this.getCoordinates(keypoints[152]),
+                    this.getCoordinates(keypoints[223])
+
                 ];
             });
         }

@@ -1,7 +1,11 @@
 import * as React from 'react';
 import * as facemesh from '@tensorflow-models/facemesh';
 import Utils from '../utils';
+import AvatarButtons from './AvatarButtons';
+import * as htmlToImage from 'html-to-image';
 import * as Hairs from '../data/hairs';
+import * as Masks from '../data/masks';
+import { saveAs } from 'file-saver';
 import * as tf from '@tensorflow/tfjs';
 import './FacialLandmarks.scss';
 
@@ -15,7 +19,7 @@ const IMAGE_STYLE = {
     left: 0,
     right: 0,
     textAlign: 'center',
-    zIndex: 99,
+    zIndex: 90,
     width: 480,
     height: 480
 };
@@ -28,14 +32,19 @@ const FacialLandmarks = (props) => {
     const [ polarAngle, setPolarAngle ] = React.useState(0);
     const [ topOfHead, setTopOfHead ] = React.useState([0, 0]);
     const [ chin, setChin ] = React.useState([0, 0]);
+    const [ leftEyebrow, setLeftEyebrow ] = React.useState([0, 0]);
     const [ height, setHeight ] = React.useState(0);
-    const [ hairIndex, setHairIndex ] = React.useState(0);
     const [ isFaceTiltTooLarge, setIsFaceTiltTooLarge ] = React.useState(false);
     const [ isPhotoUploaded, setIsPhotoUploaded ] = React.useState(false);
 
+    const [ hairIndex, setHairIndex ] = React.useState(0);
+    const [ maskIndex, setMaskIndex ] = React.useState(0);
+
+    const avatarRef = React.useRef(null);
     const photoRef = React.useRef(null);
     const canvasRef = React.useRef(null);
     const hairRef = React.useRef(null);
+    const maskRef = React.useRef(null);
 
     const runFacemesh = async () => {
         const mesh = await facemesh.load({
@@ -57,14 +66,19 @@ const FacialLandmarks = (props) => {
     const setFaceGeometry = async (face, canvas, ctxWidth) => {
         setIsLoading(false);
         const ctx = await canvas.getContext('2d');
-        const [height, width, polarAngle, topOfHead, chin] = UTILS.crop(face, ctx, ctxWidth);
-        setIsFaceTiltTooLarge(!UTILS.checkPolarAngle(polarAngle));
-        if (UTILS.checkPolarAngle(polarAngle)) {
-            setHeight(height);
-            setWidth(width);
-            setTopOfHead(topOfHead);
-            setChin(chin);
-            setPolarAngle(polarAngle);
+        const faceInformation = UTILS.crop(face, ctx, ctxWidth);
+        if (faceInformation) {
+            const [height, width, polarAngle, topOfHead, chin, leftEyebrow] = faceInformation;
+            const isHeadTiltAcceptable = UTILS.checkPolarAngle(polarAngle);
+            setIsFaceTiltTooLarge(!isHeadTiltAcceptable);
+            if (isHeadTiltAcceptable) {
+                setHeight(height);
+                setWidth(width);
+                setTopOfHead(topOfHead);
+                setChin(chin);
+                setPolarAngle(polarAngle);
+                captureCroppedImage();
+            }
         }
     };
 
@@ -88,11 +102,19 @@ const FacialLandmarks = (props) => {
             imgTag.src = URL.createObjectURL(files[0]);
         }
     };
+    
+    const captureCroppedImage = () => {
+        htmlToImage.toPng(avatarRef.current, { cacheBust: true }).then((dataUrl) => {
+            const img = new Image();
+            img.src = dataUrl;
+            document.body.appendChild(img);
+        });
+    }
 
     return (
         <div className="facial-landmarks-container">
             <div className="facemesh-container">
-                <div className={`photo-container ${isLoading || isFaceTiltTooLarge ? 'loading' : ''}`} style={{width: 480}}>
+                <div ref={avatarRef} className={`photo-container ${isLoading || isFaceTiltTooLarge ? 'loading' : ''}`} style={{width: 480}}>
                     <div className="image-container">
                         <img ref={photoRef} src="#" style={IMAGE_STYLE} alt="user-profile" />
                     </div>
@@ -114,14 +136,10 @@ const FacialLandmarks = (props) => {
                 <div className="upload-button">
                     <input type="file" onChange={handleImageUpload}/>
                 </div>
-                <div className="buttons-container">
-                    <button onClick={() => {
-                        setHairIndex(Hairs.getHairIndex(-1, GENDER, hairIndex))
-                    }}>-</button>
-                    <button onClick={() => {
-                        setHairIndex(Hairs.getHairIndex(1, GENDER, hairIndex))
-                    }}>+</button>
-                </div>
+                <AvatarButtons 
+                    value={hairIndex} 
+                    handleClick={(e) => setHairIndex(Hairs.getHairIndex(e.target.value, GENDER, hairIndex))}
+                />
             </div>
         </div>
     );
