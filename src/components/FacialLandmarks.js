@@ -2,10 +2,8 @@ import * as React from 'react';
 import * as facemesh from '@tensorflow-models/facemesh';
 import Utils from '../utils';
 import AvatarButtons from './AvatarButtons';
-import * as htmlToImage from 'html-to-image';
 import * as Hairs from '../data/hairs';
 import * as Masks from '../data/masks';
-import { saveAs } from 'file-saver';
 import * as tf from '@tensorflow/tfjs';
 import './FacialLandmarks.scss';
 
@@ -28,13 +26,13 @@ const GENDER = 'female';
 
 const FacialLandmarks = (props) => {
     const [ isLoading, setIsLoading ] = React.useState(true);
-    const [ width, setWidth ] = React.useState(0);
-    const [ polarAngle, setPolarAngle ] = React.useState(0);
+    const [ faceWidth, setFaceWidth ] = React.useState(0);
+    const [ faceHeight, setFaceHeight ] = React.useState(0);
+    const [ headTiltAngle, setHeadTiltAngle ] = React.useState(0);
     const [ topOfHead, setTopOfHead ] = React.useState([0, 0]);
     const [ chin, setChin ] = React.useState([0, 0]);
     const [ leftEyebrow, setLeftEyebrow ] = React.useState([0, 0]);
-    const [ height, setHeight ] = React.useState(0);
-    const [ isFaceTiltTooLarge, setIsFaceTiltTooLarge ] = React.useState(false);
+    const [ isHeadTiltTooLarge, setIsHeadTiltTooLarge ] = React.useState(false);
     const [ isPhotoUploaded, setIsPhotoUploaded ] = React.useState(false);
 
     const [ hairIndex, setHairIndex ] = React.useState(0);
@@ -68,16 +66,16 @@ const FacialLandmarks = (props) => {
         const ctx = await canvas.getContext('2d');
         const faceInformation = UTILS.crop(face, ctx, ctxWidth);
         if (faceInformation) {
-            const [height, width, polarAngle, topOfHead, chin, leftEyebrow] = faceInformation;
-            const isHeadTiltAcceptable = UTILS.checkPolarAngle(polarAngle);
+            const [height, faceWidth, headTiltAngle, topOfHead, chin, leftEyebrow] = faceInformation;
+            const isHeadTiltAcceptable = UTILS.checkHeadTiltAngle(headTiltAngle);
             setIsFaceTiltTooLarge(!isHeadTiltAcceptable);
             if (isHeadTiltAcceptable) {
                 setHeight(height);
-                setWidth(width);
+                setFaceWidth(faceWidth);
                 setTopOfHead(topOfHead);
+                setLeftEyebrow(leftEyebrow);
                 setChin(chin);
-                setPolarAngle(polarAngle);
-                captureCroppedImage();
+                setHeadTiltAngle(headTiltAngle);
             }
         }
     };
@@ -102,14 +100,6 @@ const FacialLandmarks = (props) => {
             imgTag.src = URL.createObjectURL(files[0]);
         }
     };
-    
-    const captureCroppedImage = () => {
-        htmlToImage.toPng(avatarRef.current, { cacheBust: true }).then((dataUrl) => {
-            const img = new Image();
-            img.src = dataUrl;
-            document.body.appendChild(img);
-        });
-    }
 
     return (
         <div className="facial-landmarks-container">
@@ -129,7 +119,15 @@ const FacialLandmarks = (props) => {
                         alt="hair-option" 
                         id="hair-option"
                         className="hair-option" 
-                        style={Hairs.getHairStyles(hairIndex, GENDER, width, topOfHead, polarAngle, isLoading, IMAGE_STYLE)}
+                        style={Hairs.getHairStyles(width, topOfHead, headTiltAngle, isLoading)}
+                    />
+                    <img 
+                        ref={maskRef}
+                        src={Masks.getMask(maskIndex, GENDER)} 
+                        alt="mask-option" 
+                        id="mask-option"
+                        className="mask-option" 
+                        style={Masks.getMaskStyles(width, topOfHead, leftEyebrow, headTiltAngle, isLoading)}
                     />
                 </div>
                 {isFaceTiltTooLarge ? renderWarning() : null}
@@ -139,6 +137,10 @@ const FacialLandmarks = (props) => {
                 <AvatarButtons 
                     value={hairIndex} 
                     handleClick={(e) => setHairIndex(Hairs.getHairIndex(e.target.value, GENDER, hairIndex))}
+                />
+                <AvatarButtons 
+                    value={maskIndex} 
+                    handleClick={(e) => setMaskIndex(Masks.getMaskIndex(e.target.value, GENDER, maskIndex))}
                 />
             </div>
         </div>

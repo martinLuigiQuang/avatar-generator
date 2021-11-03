@@ -68,7 +68,7 @@ class Utils {
         return Math.sqrt(dx_sq + dy_sq);
     };
     
-    getPolarAngle = (point1, point2) => {
+    getHeadTiltAngle = (point1, point2) => {
         const dx = (point2[0] - point1[0]);
         const dy = (point2[1] - point1[1]);
         return Math.atan(dy/dx) * 360 / (Math.PI * 2);
@@ -86,24 +86,23 @@ class Utils {
                 this.getPoints(keypoints, width).forEach(half => {
                     this.drawPath(ctx, half, true);
                 });
-                ctx.fillStyle = 'black';
+                ctx.fillStyle = 'white';
                 ctx.fill();
                 result = [
                     this.getDistance(keypoints[10], keypoints[152]),
                     this.getDistance(keypoints[234], keypoints[454]),
-                    this.getPolarAngle(keypoints[234], keypoints[454]),
+                    this.getHeadTiltAngle(keypoints[234], keypoints[454]),
                     this.getCoordinates(keypoints[10]),
                     this.getCoordinates(keypoints[152]),
                     this.getCoordinates(keypoints[223])
-
                 ];
             });
         }
         return result;
     };
     
-    checkPolarAngle = (polarAngle) => {
-        return polarAngle < 20 && polarAngle > -20;
+    checkHeadTiltAngle = (angle) => {
+        return angle < 20 && angle > -20;
     };
     
     detectVideo = async (webcamRef, canvasRef, setFaceGeometry, net) => {
