@@ -16,8 +16,8 @@ const HAIRS = {
     male: [M1, M2, M3]
 };
 
-const getRatio = (width) => {
-    return width / ApplicationConstants.ASSETS_IMAGE_FOREHEAD_WIDTH;
+const getRatio = (faceWidth) => {
+    return faceWidth / ApplicationConstants.ASSETS_IMAGE_FOREHEAD_WIDTH;
 };
 
 export const getHair = (index, gender) => {
@@ -25,13 +25,13 @@ export const getHair = (index, gender) => {
 }; 
 
 export const getHairStyles = (  
-    width,
+    faceWidth,
     topOfHead,
     headTiltAngle,
     offset,
     isLoading
 ) => {
-    const ratio = getRatio(width);
+    const ratio = getRatio(faceWidth);
     const assetImageWidth = ApplicationConstants.ASSETS_IMAGE_WIDTH;
     return {
         width: `${ratio * assetImageWidth}px`,

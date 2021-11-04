@@ -70,7 +70,7 @@ const FacialLandmarks = (props) => {
             const isHeadTiltAcceptable = UTILS.checkHeadTiltAngle(headTiltAngle);
             setIsHeadTiltTooLarge(!isHeadTiltAcceptable);
             if (isHeadTiltAcceptable) {
-                setHeight(height);
+                setFaceHeight(height);
                 setFaceWidth(faceWidth);
                 setTopOfHead(topOfHead);
                 setLeftEyebrow(leftEyebrow);
@@ -119,7 +119,7 @@ const FacialLandmarks = (props) => {
                         alt="hair-option" 
                         id="hair-option"
                         className="hair-option" 
-                        style={Hairs.getHairStyles(width, topOfHead, headTiltAngle, isLoading)}
+                        style={Hairs.getHairStyles(faceWidth, topOfHead, headTiltAngle, [0,0], isLoading)}
                     />
                     <img 
                         ref={maskRef}
@@ -127,7 +127,7 @@ const FacialLandmarks = (props) => {
                         alt="mask-option" 
                         id="mask-option"
                         className="mask-option" 
-                        style={Masks.getMaskStyles(width, topOfHead, leftEyebrow, headTiltAngle, isLoading)}
+                        style={Masks.getMaskStyles(faceWidth, topOfHead, leftEyebrow, headTiltAngle, isLoading)}
                     />
                 </div>
                 {isHeadTiltTooLarge ? renderWarning() : null}
