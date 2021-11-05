@@ -1,81 +1,51 @@
+import ApplicationConstants from './constants';
+
 import F1 from '../assets/body_female/FemaleBody1-01.png';
 import F2 from '../assets/body_female/FemaleBody2-01.png';
 import F3 from '../assets/body_female/FemaleBody3-01.png';
 
-import M1 from '../assets/body_female/MaleBody1-01.png';
-import M2 from '../assets/body_female/MaleBody2-01.png';
-import M3 from '../assets/body_female/MaleBody3-01.png';
-
-const dimensions = {
-    height: 100,
-    width: 750
-};
+import M1 from '../assets/body_male/MaleBody1-01.png';
+import M2 from '../assets/body_male/MaleBody2-01.png';
+import M3 from '../assets/body_male/MaleBody3-01.png';
 
 const BODIES = {
-    female: [
-        {
-            src: F1,
-            ...dimensions
-        },
-        {
-            src: F2,
-            ...dimensions
-        },
-        {
-            src: F3,
-            ...dimensions
-        }
-    ],
-    male: [
-        {
-            src: M1,
-            ...dimensions
-        },
-        {
-            src: M2,
-            ...dimensions
-        },
-        {
-            src: M3,
-            ...dimensions
-        }
-    ]
+    female: [F1, F2, F3],
+    male: [M1, M2, M3]
 };
 
-const getRatio = (width) => {
-    return width / 100;
+const getRatio = (faceWidth) => {
+    return faceWidth / ApplicationConstants.ASSETS_IMAGE_FOREHEAD_WIDTH;
 };
 
-export const getHair = (index, gender) => {
-    return HAIRS[gender][index].src;
+export const getItem = (index, gender) => {
+    return BODIES[gender][index];
 }; 
 
-export const getHairStyles = (
-    index, 
-    gender,    
-    width,
+export const getStyles = (   
+    faceWidth,
     topOfHead,
-    polarAngle,
-    isLoading
+    offset,
+    isLoading,
+    options
 ) => {
-    const hair = HAIRS[gender][index];
+    const ratio = getRatio(faceWidth);
+    const scaledImageWidth = ratio * ApplicationConstants.ASSETS_IMAGE_WIDTH;
     return {
-        width: `${getRatio(width, hair) * hair.width}px`,
-        left: topOfHead[0] - 0.5 * getRatio(width, hair) * hair.width,
-        top: topOfHead[1] + hair.foreheadOffSet[1],
-        zIndex: isLoading ? -1 : 99,
-        transform: `rotateZ(${polarAngle}deg)`,
+        width: `${scaledImageWidth}px`,
+        left: options.chin[0] - 0.5 * scaledImageWidth,
+        top: topOfHead[1] + offset[1],
+        zIndex: isLoading ? ApplicationConstants.Z_INDEX_HIDDEN : ApplicationConstants.Z_INDEX_BODY,
         transformOrigin: '50% 100px',
         display: isLoading ? 'none' : 'block'
-    }
+    };
 };
 
-export const getHairIndex = (value, gender, index) => {
+export const changeIndex = (value, gender, index) => {
     const change = parseInt(value);
-    const hairsArrayLength = HAIRS[gender].length;
+    const arrayLength = BODIES[gender].length;
     if (index + change < 0) {
-        return hairsArrayLength - 1;
-    } else if (index + change >= hairsArrayLength) {
+        return arrayLength - 1;
+    } else if (index + change >= arrayLength) {
         return 0;
     }
     return index + change;

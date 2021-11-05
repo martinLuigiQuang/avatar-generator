@@ -4,6 +4,7 @@ import Utils from '../utils';
 import AvatarButtons from './AvatarButtons';
 import * as Hairs from '../data/hairs';
 import * as Masks from '../data/masks';
+import * as Bodies from '../data/bodies';
 import * as tf from '@tensorflow/tfjs';
 import './FacialLandmarks.scss';
 
@@ -24,6 +25,32 @@ const IMAGE_STYLE = {
 
 const GENDER = 'female';
 
+const runFacemesh = async (detectFace) => {
+    const mesh = await facemesh.load({
+        inputResolution: { width: 640, height: 480 },
+        scale: 0.8
+    });
+    detectFace(mesh);
+};
+
+export const OptionsButton = (props) => {
+    const { index, handleClick } = props;
+    return <AvatarButtons value={index} handleClick={handleClick} />;
+};
+
+export const AvatarAccessory = React.forwardRef((props, ref) => {
+    const { title, src, style } = props;
+    return <img ref={ref} src={src} id={title} alt={title} className={title} style={style} />;
+});
+
+export const Warning = () => {
+    return (
+        <div className="warning-container">
+            <h2>Your face is tilted. Please upload a different photo.</h2>
+        </div>
+    );
+};
+
 const FacialLandmarks = (props) => {
     const [ isLoading, setIsLoading ] = React.useState(true);
     const [ faceWidth, setFaceWidth ] = React.useState(0);
@@ -37,19 +64,19 @@ const FacialLandmarks = (props) => {
 
     const [ hairIndex, setHairIndex ] = React.useState(0);
     const [ maskIndex, setMaskIndex ] = React.useState(0);
+    const [ bodyIndex, setBodyIndex ] = React.useState(0);
 
     const avatarRef = React.useRef(null);
     const photoRef = React.useRef(null);
     const canvasRef = React.useRef(null);
-    const hairRef = React.useRef(null);
-    const maskRef = React.useRef(null);
+    const hairRef = React.createRef(null);
+    const maskRef = React.createRef(null);
+    const bodyRef = React.createRef(null);
 
-    const runFacemesh = async () => {
-        const mesh = await facemesh.load({
-            inputResolution: { width: 640, height: 480 },
-            scale: 0.8
-        });
-        detectFace(mesh);
+    const AVATAR_ACCESSORIES = {
+        hair: { assets: Hairs, index: hairIndex, set: setHairIndex, ref: hairRef },
+        mask: { assets: Masks, index: maskIndex, set: setMaskIndex, ref: maskRef },
+        body: { assets: Bodies, index: bodyIndex, set: setBodyIndex, ref: bodyRef }
     };
 
     const detectFace = async (mesh) => {
@@ -80,19 +107,11 @@ const FacialLandmarks = (props) => {
         }
     };
 
-    const renderWarning = () => {
-        return (
-            <div className="warning-container">
-                <h2>Your face is tilted. Please upload a different photo.</h2>
-            </div>
-        );
-    };
-
     const handleImageUpload = (e) => {
         const files = e.target.files;
         if (files && files[0]) {
             setIsPhotoUploaded(true);
-            runFacemesh();
+            runFacemesh(detectFace);
             const imgTag = photoRef.current;
             imgTag.onload = () => {
                 URL.revokeObjectURL(imgTag.src);
@@ -104,6 +123,20 @@ const FacialLandmarks = (props) => {
     return (
         <div className="facial-landmarks-container">
             <div className="facemesh-container">
+                {isHeadTiltTooLarge ? <Warning /> : null}
+                <div className="upload-button">
+                    <input type="file" onChange={handleImageUpload} />
+                </div>
+                {
+                    Object.keys(AVATAR_ACCESSORIES).map(accessory => {
+                        const item = AVATAR_ACCESSORIES[accessory];
+                        const handleClick = (e) => {
+                            const newIndex = item.assets.changeIndex(e.target.value, GENDER, item.index);
+                            item.set(newIndex);
+                        };
+                        return <OptionsButton key={accessory} index={item.index} handleClick={handleClick}/>
+                    })
+                }
                 <div ref={avatarRef} className={`photo-container ${isLoading || isHeadTiltTooLarge ? 'loading' : ''}`} style={{width: 480}}>
                     <div className="image-container">
                         <img ref={photoRef} src="#" style={IMAGE_STYLE} alt="user-profile" />
@@ -113,35 +146,22 @@ const FacialLandmarks = (props) => {
                         style={IMAGE_STYLE}
                         className={`${isLoading || isHeadTiltTooLarge? 'hidden' : ''}`}
                     />
-                    <img 
-                        ref={hairRef}
-                        src={Hairs.getHair(hairIndex, GENDER)} 
-                        alt="hair-option" 
-                        id="hair-option"
-                        className="hair-option" 
-                        style={Hairs.getHairStyles(faceWidth, topOfHead, headTiltAngle, [0,0], isLoading)}
-                    />
-                    <img 
-                        ref={maskRef}
-                        src={Masks.getMask(maskIndex, GENDER)} 
-                        alt="mask-option" 
-                        id="mask-option"
-                        className="mask-option" 
-                        style={Masks.getMaskStyles(faceWidth, topOfHead, leftEyebrow, headTiltAngle, isLoading)}
-                    />
+                    {
+                        Object.keys(AVATAR_ACCESSORIES).map(accessory => {
+                            const item = AVATAR_ACCESSORIES[accessory];
+                            const style = item.assets.getStyles(faceWidth, topOfHead, [0, 0], isLoading, { headTiltAngle, chin });
+                            return (
+                                <AvatarAccessory 
+                                    key={accessory}
+                                    title={`${accessory} accessory-option`}
+                                    src={item.assets.getItem(item.index, GENDER)}
+                                    ref={item.ref}
+                                    style={style}
+                                />
+                            );
+                        })
+                    }
                 </div>
-                {isHeadTiltTooLarge ? renderWarning() : null}
-                <div className="upload-button">
-                    <input type="file" onChange={handleImageUpload}/>
-                </div>
-                <AvatarButtons 
-                    value={hairIndex} 
-                    handleClick={(e) => setHairIndex(Hairs.getHairIndex(e.target.value, GENDER, hairIndex))}
-                />
-                <AvatarButtons 
-                    value={maskIndex} 
-                    handleClick={(e) => setMaskIndex(Masks.getMaskIndex(e.target.value, GENDER, maskIndex))}
-                />
             </div>
         </div>
     );

@@ -20,36 +20,37 @@ const getRatio = (faceWidth) => {
     return faceWidth / ApplicationConstants.ASSETS_IMAGE_FOREHEAD_WIDTH;
 };
 
-export const getHair = (index, gender) => {
+export const getItem = (index, gender) => {
     return HAIRS[gender][index];
 }; 
 
-export const getHairStyles = (  
+export const getStyles = (  
     faceWidth,
     topOfHead,
-    headTiltAngle,
     offset,
-    isLoading
+    isLoading,
+    options
 ) => {
     const ratio = getRatio(faceWidth);
-    const assetImageWidth = ApplicationConstants.ASSETS_IMAGE_WIDTH;
+    const scaledImageWidth = ratio * ApplicationConstants.ASSETS_IMAGE_WIDTH;
     return {
-        width: `${ratio * assetImageWidth}px`,
-        left: topOfHead[0] - 0.5 * ratio * assetImageWidth,
+        width: `${scaledImageWidth}px`,
+        left: topOfHead[0] - 0.5 * scaledImageWidth + offset[0],
         top: topOfHead[1] + offset[1],
         zIndex: isLoading ? ApplicationConstants.Z_INDEX_HIDDEN : ApplicationConstants.Z_INDEX_HAIR,
-        transform: `rotateZ(${headTiltAngle}deg)`,
+        transform: `rotateZ(${options.headTiltAngle}deg)`,
         transformOrigin: '50% 100px',
         display: isLoading ? 'none' : 'block'
-    }
+    };
 };
 
-export const getHairIndex = (value, gender, index) => {
+export const changeIndex = (value, gender, index) => {
+    console.log(value)
     const change = parseInt(value);
-    const hairsArrayLength = HAIRS[gender].length;
+    const arrayLength = HAIRS[gender].length;
     if (index + change < 0) {
-        return hairsArrayLength - 1;
-    } else if (index + change >= hairsArrayLength) {
+        return arrayLength - 1;
+    } else if (index + change >= arrayLength) {
         return 0;
     }
     return index + change;
