@@ -45,7 +45,6 @@ export const getStyles = (
 };
 
 export const changeIndex = (value, gender, index) => {
-    console.log(value)
     const change = parseInt(value);
     const arrayLength = HAIRS[gender].length;
     if (index + change < 0) {
