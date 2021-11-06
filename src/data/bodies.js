@@ -30,11 +30,14 @@ export const getStyles = (
 ) => {
     const ratio = getRatio(faceWidth);
     const scaledImageWidth = ratio * ApplicationConstants.ASSETS_IMAGE_WIDTH;
+    const displayZIndex = options.isBehindBody ? ApplicationConstants.Z_INDEX_ACCESSORY : ApplicationConstants.Z_INDEX_BODY;
+    const verticalOffset = (options.chin[1] - topOfHead[1]) - ratio * ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_CHIN;
+    const imageVerticalOffset = (ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_CHIN - ApplicationConstants.ASSETS_IMAGE_FACE_HEIGHT);
     return {
         width: `${scaledImageWidth}px`,
-        left: options.chin[0] - 0.5 * scaledImageWidth,
-        top: topOfHead[1] + offset[1],
-        zIndex: isLoading ? ApplicationConstants.Z_INDEX_HIDDEN : ApplicationConstants.Z_INDEX_BODY,
+        left: 0.52 * (topOfHead[0] + options.chin[0]) - 0.5 * scaledImageWidth,
+        top: verticalOffset + offset[1],
+        zIndex: isLoading ? ApplicationConstants.Z_INDEX_HIDDEN : displayZIndex,
         transformOrigin: '50% 100px',
         display: isLoading ? 'none' : 'block'
     };

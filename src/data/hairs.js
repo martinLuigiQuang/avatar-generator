@@ -33,13 +33,15 @@ export const getStyles = (
 ) => {
     const ratio = getRatio(faceWidth);
     const scaledImageWidth = ratio * ApplicationConstants.ASSETS_IMAGE_WIDTH;
+    const verticalOffset = ratio * ApplicationConstants.ASSETS_IMAGE_FOREHEAD_HEIGHT - (options.leftEyebrow[1] - topOfHead[1]);
+    const imageVerticalOffset = ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_CHIN - ApplicationConstants.ASSETS_IMAGE_FACE_HEIGHT;
     return {
         width: `${scaledImageWidth}px`,
         left: topOfHead[0] - 0.5 * scaledImageWidth + offset[0],
-        top: topOfHead[1] + offset[1],
+        top: verticalOffset - ratio * imageVerticalOffset + offset[1],
         zIndex: isLoading ? ApplicationConstants.Z_INDEX_HIDDEN : ApplicationConstants.Z_INDEX_HAIR,
         transform: `rotateZ(${options.headTiltAngle}deg)`,
-        transformOrigin: '50% 100px',
+        transformOrigin: '50% 80px',
         display: isLoading ? 'none' : 'block'
     };
 };

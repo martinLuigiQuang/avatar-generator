@@ -6,30 +6,20 @@ import * as Hairs from '../data/hairs';
 import * as Masks from '../data/masks';
 import * as Bodies from '../data/bodies';
 import * as Tops from '../data/tops';
+import * as Accessories from '../data/accessories';
 import * as tf from '@tensorflow/tfjs';
 import './FacialLandmarks.scss';
+import ApplicationConstants from '../data/constants';
 
 const UTILS = new Utils();
-
-const IMAGE_STYLE = {
-    position: 'absolute',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    top: 100,
-    left: 0,
-    right: 0,
-    textAlign: 'center',
-    zIndex: 90,
-    width: 480,
-    height: 480
-};
+const IMAGE_STYLE = ApplicationConstants.IMAGE_STYLE;
 
 const GENDER = 'female';
 
 const runFacemesh = async (detectFace) => {
     const mesh = await facemesh.load({
-        inputResolution: { width: 640, height: 480 },
-        scale: 0.8
+        inputResolution: { width: 400, height: 400 },
+        scale: 1
     });
     detectFace(mesh);
 };
@@ -67,6 +57,7 @@ const FacialLandmarks = (props) => {
     const [ maskIndex, setMaskIndex ] = React.useState(0);
     const [ bodyIndex, setBodyIndex ] = React.useState(0);
     const [ topIndex, setTopIndex ] = React.useState(0);
+    const [ accessoryIndex, setAccessoryIndex ] = React.useState(0);
 
     const avatarRef = React.useRef(null);
     const photoRef = React.useRef(null);
@@ -75,12 +66,14 @@ const FacialLandmarks = (props) => {
     const maskRef = React.createRef(null);
     const bodyRef = React.createRef(null);
     const topRef = React.createRef(null);
+    const accessoryRef = React.createRef(null);
 
     const AVATAR_ACCESSORIES = {
         hair: { assets: Hairs, index: hairIndex, setIndex: setHairIndex, ref: hairRef },
         mask: { assets: Masks, index: maskIndex, setIndex: setMaskIndex, ref: maskRef },
         body: { assets: Bodies, index: bodyIndex, setIndex: setBodyIndex, ref: bodyRef },
-        top: { assets: Tops, index: topIndex, setIndex: setTopIndex, ref: topRef }
+        top: { assets: Tops, index: topIndex, setIndex: setTopIndex, ref: topRef },
+        accessory: { assets: Accessories, index: accessoryIndex, setIndex: setAccessoryIndex, ref: accessoryRef }
     };
 
     const detectFace = async (mesh) => {
@@ -141,7 +134,7 @@ const FacialLandmarks = (props) => {
                         return <OptionsButton key={accessory} index={item.index.get} handleClick={handleClick}/>
                     })
                 }
-                <div ref={avatarRef} className={`photo-container ${isLoading || isHeadTiltTooLarge ? 'loading' : ''}`} style={{width: 480}}>
+                <div ref={avatarRef} className={`photo-container ${isLoading || isHeadTiltTooLarge ? 'loading' : ''}`} style={{width: 400}}>
                     <div className="image-container">
                         <img ref={photoRef} src="#" style={IMAGE_STYLE} alt="user-profile" />
                     </div>
@@ -153,11 +146,12 @@ const FacialLandmarks = (props) => {
                     {
                         Object.keys(AVATAR_ACCESSORIES).map(accessory => {
                             const item = AVATAR_ACCESSORIES[accessory];
+                            const isBehindBody = accessory === 'accessory';
                             let style;
                             if (!item.assets.getStyles) {
-                                style = Bodies.getStyles(faceWidth, topOfHead, [0, 0], isLoading, { headTiltAngle, chin });
+                                style = Bodies.getStyles(faceWidth, topOfHead, [0, 0], isLoading, { headTiltAngle, chin, isBehindBody });
                             } else {
-                                style = item.assets.getStyles(faceWidth, topOfHead, [0, 0], isLoading, { headTiltAngle, chin });
+                                style = item.assets.getStyles(faceWidth, topOfHead, [0, 0], isLoading, { headTiltAngle, chin, leftEyebrow });
                             }
                             return (
                                 <AvatarAccessory 
