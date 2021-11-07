@@ -77,11 +77,11 @@ const FacialLandmarks = (props) => {
 
     React.useEffect(
         () => {
-            if (!isFirstPass) {
+            if (isPhotoUploaded) {
                 runFacemesh();
             };
         },
-        [isFirstPass]
+        [isFirstPass, isPhotoUploaded]
     );
 
     const AVATAR_ACCESSORIES = {
@@ -152,7 +152,6 @@ const FacialLandmarks = (props) => {
         const files = e.target.files;
         if (files && files[0]) {
             checkPhotoUpload();
-            runFacemesh();
             photoRef.current.onload = () => URL.revokeObjectURL(photoRef.current.src);
             scaledPhotoRef.current.onload = () => URL.revokeObjectURL(scaledPhotoRef.current.src);
             const uploadedFile = URL.createObjectURL(files[0]);
