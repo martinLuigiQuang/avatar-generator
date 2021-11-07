@@ -1,3 +1,5 @@
+import Background from './assets/Pg4.jpg';
+
 class Utils {
     PERIMETER = [
         103,
@@ -51,14 +53,14 @@ class Utils {
         }
     };
     
-    getPoints = (keypoints, width) => {
+    getPoints = (keypoints, width, height) => {
         const points = this.PERIMETER.map(index => keypoints[index]);
         const leftHalf = points.slice(0, 18);
         const rightHalf = points.slice(17, 37);
-        rightHalf.unshift([width, 0, 0], [width, 480, 0]);
+        rightHalf.unshift([width, 0, 0], [width, height, 0]);
         rightHalf.push([0, 0, 0]);
-        leftHalf.unshift([0, 480, 0], [0, 0, 0]);
-        leftHalf.push([width, 480, 0]);
+        leftHalf.unshift([0, height, 0], [0, 0, 0]);
+        leftHalf.push([width, height, 0]);
         return [leftHalf, rightHalf];
     };
     
@@ -66,6 +68,14 @@ class Utils {
         const dx_sq = (point2[0] - point1[0]) * (point2[0] - point1[0]);
         const dy_sq = (point2[1] - point1[1]) * (point2[1] - point1[1]);
         return Math.sqrt(dx_sq + dy_sq);
+    };
+
+    getFaceWidth = (predictions) => {
+        if (predictions.length === 1) {
+            const keypoints = predictions[0].scaledMesh;
+            return { faceWidth: this.getDistance(keypoints[234], keypoints[454]) };
+        }
+        return { status: 'error' };
     };
     
     getHeadTiltAngle = (point1, point2) => {
@@ -78,31 +88,41 @@ class Utils {
         return [point[0], point[1]];
     };
     
-    crop = (predictions, ctx, width) => {
-        let result = [];
-        if (predictions.length > 0) {
-            predictions.forEach((prediction) => {
-                const keypoints = prediction.scaledMesh;
-                this.getPoints(keypoints, width).forEach(half => {
+    crop = async (predictions, ctx, width, height) => {
+        if (predictions.length === 1) {
+            const keypoints = predictions.map((prediction) => {
+                this.getPoints(prediction.scaledMesh, width, height).forEach(half => {
                     this.drawPath(ctx, half, true);
                 });
                 ctx.fillStyle = 'white';
                 ctx.fill();
-                result = [
-                    this.getDistance(keypoints[10], keypoints[152]),
-                    this.getDistance(keypoints[234], keypoints[454]),
-                    this.getHeadTiltAngle(keypoints[234], keypoints[454]),
-                    this.getCoordinates(keypoints[10]),
-                    this.getCoordinates(keypoints[152]),
-                    this.getCoordinates(keypoints[223])
-                ];
-            });
+                return prediction.scaledMesh;
+            })[0];
+            return {
+                headTiltAngle: this.getHeadTiltAngle(keypoints[234], keypoints[454]),
+                topOfHead: this.getCoordinates(keypoints[10]),
+                chin: this.getCoordinates(keypoints[152]),
+                leftEyebrow: this.getCoordinates(keypoints[223])
+            };
         }
-        return result;
+        return { status: 'error' };
     };
     
     checkHeadTiltAngle = (angle) => {
         return angle < 20 && angle > -20;
+    };
+
+    isPixelWhite = (data, index) => {
+        return data[index] === 255 && data[index + 1] === 255 && data[index + 2] === 255 && data[index + 3] === 255;
+    };
+
+    turnPixelTransparent = (imageData) => {
+        const data = imageData.data;
+        for (let i = 0; i < data.length; i += 4) {
+            if (this.isPixelWhite(data, i)) {
+                data[i + 3] = 0;
+            }
+        }
     };
     
     detectVideo = async (webcamRef, canvasRef, setFaceGeometry, net) => {

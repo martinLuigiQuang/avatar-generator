@@ -12,6 +12,8 @@ import M4 from '../assets/tops_male/MaleTopOrange-01.png';
 import M5 from '../assets/tops_male/MaleTopRed-01.png';
 import M6 from '../assets/tops_male/MaleTopYellow-01.png';
 
+import * as Bodies from './bodies';
+
 const TOPS = {
     female: [F1, F2, F3, F4, F5, F6],
     male: [M1, M2, M3, M4, M5, M6]
@@ -19,6 +21,15 @@ const TOPS = {
 
 export const getItem = (index, gender) => {
     return TOPS[gender][index];
+};
+
+export const getStyles = (
+    faceWidth,
+    topOfHead,
+    isLoading,
+    options
+) => {
+    return Bodies.getStyles(faceWidth, topOfHead, isLoading, options);
 };
 
 export const changeIndex = (value, gender, index) => {

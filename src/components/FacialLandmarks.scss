@@ -1,20 +1,20 @@
-.loading {
-    opacity: 0.4;
+.facial-landmarks-container {
+    background: url('../assets/Pg4.jpg');
+    background-size: cover;
+    height: 100vh;
 }
-.hidden {
-    display: none;
-}
+
 .photo-container {
     position: relative;
-    margin: 0 auto;
+    margin: 50px auto;
+    #scaled-uploaded-photo {
+        opacity: 0;
+    }
     .accessory-option {
         position: absolute;
         margin-left: auto;
         margin-right: auto;
         text-align: 'center';
-    }
-    .body {
-        border: 2px solid red;
     }
 }
 .buttons-container {

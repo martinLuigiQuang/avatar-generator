@@ -27,21 +27,20 @@ export const getItem = (index, gender) => {
 export const getStyles = (  
     faceWidth,
     topOfHead,
-    offset,
     isLoading,
     options
 ) => {
     const ratio = getRatio(faceWidth);
+    const imageLeftMargin = 0.5 * (1 - options.scalingRatio) * ApplicationConstants.IMAGE_STYLE.width;
     const scaledImageWidth = ratio * ApplicationConstants.ASSETS_IMAGE_WIDTH;
-    const verticalOffset = ratio * ApplicationConstants.ASSETS_IMAGE_FOREHEAD_HEIGHT - (options.leftEyebrow[1] - topOfHead[1]);
-    const imageVerticalOffset = ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_CHIN - ApplicationConstants.ASSETS_IMAGE_FACE_HEIGHT;
+    const rotationAxisYCoord = ratio * ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_TOP_OF_HEAD;
     return {
         width: `${scaledImageWidth}px`,
-        left: topOfHead[0] - 0.5 * scaledImageWidth + offset[0],
-        top: verticalOffset - ratio * imageVerticalOffset + offset[1],
+        left: topOfHead[0] + imageLeftMargin - 0.5 * scaledImageWidth,
+        top: topOfHead[1] - ratio * ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_TOP_OF_HEAD,
         zIndex: isLoading ? ApplicationConstants.Z_INDEX_HIDDEN : ApplicationConstants.Z_INDEX_HAIR,
         transform: `rotateZ(${options.headTiltAngle}deg)`,
-        transformOrigin: '50% 80px',
+        transformOrigin: `50% ${rotationAxisYCoord}px`,
         display: isLoading ? 'none' : 'block'
     };
 };
