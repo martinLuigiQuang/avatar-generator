@@ -4,12 +4,14 @@ import * as Facemesh from '@tensorflow-models/facemesh';
 import Utils from '../utils';
 import LoadingSpinner from './LoadingSpinner';
 import AvatarButtons from './AvatarButtons';
+import Button from '@material-ui/core/Button';
 import * as Hairs from '../data/hairs';
 import * as Masks from '../data/masks';
 import * as Bodies from '../data/bodies';
 import * as Tops from '../data/tops';
 import * as Bottoms from '../data/bottoms';
 import * as Footwares from '../data/footwares';
+import * as Gloves from '../data/gloves';
 import * as Accessories from '../data/accessories';
 import ApplicationConstants from '../data/constants';
 import './FacialLandmarks.scss';
@@ -17,7 +19,7 @@ import './FacialLandmarks.scss';
 const UTILS = new Utils();
 const IMAGE_STYLE = ApplicationConstants.IMAGE_STYLE;
 
-const GENDER = 'male';
+const GENDER = 'female';
 
 export const OptionsButton = (props) => {
     const { index, handleClick } = props;
@@ -61,18 +63,21 @@ const FacialLandmarks = (props) => {
     const [ topIndex, setTopIndex ] = React.useState(0);
     const [ bottomIndex, setBottomIndex ] = React.useState(0);
     const [ footwareIndex, setFootwareIndex ] = React.useState(0);
+    const [ gloveIndex, setGloveIndex ] = React.useState(0);
     const [ accessoryIndex, setAccessoryIndex ] = React.useState(0);
 
     const avatarRef = React.useRef(null);
     const photoRef = React.useRef(null);
     const canvasRef = React.useRef(null);
     const scaledPhotoRef = React.useRef(null);
+    const fileUploadRef = React.useRef(null);
     const hairRef = React.createRef(null);
     const maskRef = React.createRef(null);
     const bodyRef = React.createRef(null);
     const topRef = React.createRef(null);
     const bottomRef = React.createRef(null);
     const footwareRef = React.createRef(null);
+    const gloveRef = React.createRef(null);
     const accessoryRef = React.createRef(null);
 
     React.useEffect(
@@ -90,6 +95,7 @@ const FacialLandmarks = (props) => {
         top: { assets: Tops, index: topIndex, setIndex: setTopIndex, ref: topRef },
         bottom: { assets: Bottoms, index: bottomIndex, setIndex: setBottomIndex, ref: bottomRef },
         mask: { assets: Masks, index: maskIndex, setIndex: setMaskIndex, ref: maskRef },
+        glove: { assets: Gloves, index: gloveIndex, setIndex: setGloveIndex, ref: gloveRef },
         accessory: { assets: Accessories, index: accessoryIndex, setIndex: setAccessoryIndex, ref: accessoryRef },
         footware: { assets: Footwares, index: footwareIndex, setIndex: setFootwareIndex, ref: footwareRef},
     };
@@ -162,17 +168,23 @@ const FacialLandmarks = (props) => {
 
     const body = (
         <>
-            <div className="upload-button">
+            <Button 
+                className="upload-button"
+                onClick={() => fileUploadRef.current.click()}
+            >
                 <input
+                    ref={fileUploadRef}
                     type="file"
                     onChange={handleImageUpload}
                 />
-            </div>
+                {isLoading && isPhotoUploaded ? 'Scanning face...' : 'Photo Upload'}
+            </Button>
             {
                 Object.keys(AVATAR_ACCESSORIES).map(accessory => {
                     const item = AVATAR_ACCESSORIES[accessory];
                     const handleClick = (e) => {
-                        const newIndex = item.assets.changeIndex(e.target.value, GENDER, item.index);
+                        const value = e.target.innerText === '+' ? 1 : -1;
+                        const newIndex = item.assets.changeIndex(value, GENDER, item.index);
                         item.setIndex(newIndex);
                     };
                     return (
@@ -218,11 +230,12 @@ const FacialLandmarks = (props) => {
                     Object.keys(AVATAR_ACCESSORIES).map(accessory => {
                         const item = AVATAR_ACCESSORIES[accessory];
                         const isBehindBody = accessory === 'accessory' && accessoryIndex < 2;
+                        const isInFrontOfHair = accessory === 'accessory' && accessoryIndex === 2;
                         const style = item.assets.getStyles(
                             faceWidth, 
                             topOfHead,
                             isLoading, 
-                            { scalingRatio, headTiltAngle, chin, leftEyebrow, isBehindBody }
+                            { scalingRatio, headTiltAngle, chin, leftEyebrow, isBehindBody, isInFrontOfHair }
                         );
                         return (
                             <AvatarAccessory 

@@ -1,12 +1,21 @@
 .facial-landmarks-container {
-    background: url('../assets/Pg4.jpg');
-    background-size: cover;
-    height: 100vh;
+    // background: url('../assets/Pg4.jpg');
+    // background-size: cover;
+    // height: 100vh;
+    input[type="file"] {
+        display: none;
+    }
     .photo-container {
         position: relative;
         margin: 50px auto;
         #scaled-uploaded-photo {
             opacity: 0;
+        }
+        .spinner-container {
+            position: absolute;
+            left: calc(50% - 22px);
+            display: flex;
+            align-items: center;
         }
         .accessory-option {
             position: absolute;

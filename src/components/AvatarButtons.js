@@ -1,7 +1,6 @@
 import * as React from 'react';
-
-const DECREASE_INDEX = '-';
-const INCREASE_INDEX = '+';
+import Button from '@material-ui/core/Button';
+import ApplicationConstants from '../data/constants';
 
 const AvatarButtons = (props) => {
     const {
@@ -10,13 +9,13 @@ const AvatarButtons = (props) => {
     } = props;
     return (
         <div className="buttons-container">
-            <button onClick={handleClick} value={-1}>
-                {DECREASE_INDEX}
-            </button>
+            <Button onClick={handleClick}>
+                {ApplicationConstants.DECREASE_INDEX}
+            </Button>
             <h2>{value}</h2>
-            <button onClick={handleClick} value={1}>
-                {INCREASE_INDEX}
-            </button>
+            <Button onClick={handleClick}>
+                {ApplicationConstants.INCREASE_INDEX}
+            </Button>
         </div>
     );
 };

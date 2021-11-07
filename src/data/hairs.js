@@ -6,14 +6,16 @@ import F3 from '../assets/headware_female/HairFemShortBrown-01.png';
 import F4 from '../assets/headware_female/HairLongBlack-01.png';
 import F5 from '../assets/headware_female/HairLongBlonde-01.png';
 import F6 from '../assets/headware_female/HairLongBrown-01.png';
+import F7 from '../assets/headware_female/MaskRed-01.png';
 
 import M1 from '../assets/headware_male/HairMaleShortBlack-01.png';
 import M2 from '../assets/headware_male/HairMaleShortBlonde-01.png';
 import M3 from '../assets/headware_male/HairMaleShortBrown-01.png';
+import M4 from '../assets/headware_male/MaskRed-01.png';
 
 const HAIRS = {
-    female: [F1, F2, F3, F4, F5, F6],
-    male: [M1, M2, M3]
+    female: [F1, F2, F3, F4, F5, F6, F7],
+    male: [M1, M2, M3, M4]
 };
 
 const getRatio = (faceWidth) => {
