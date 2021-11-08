@@ -1,5 +1,3 @@
-import Background from './assets/Pg4.jpg';
-
 class Utils {
     PERIMETER = [
         103,
@@ -129,7 +127,7 @@ class Utils {
         const genderNeutralAccessoriesArray = [];
         assets.female.forEach((item, index) => {
             genderNeutralAccessoriesArray.push(item);
-            if (assets.male[index]) {
+            if (index > 0 && assets.male[index]) {
                 genderNeutralAccessoriesArray.push(assets.male[index]);
             }
         });

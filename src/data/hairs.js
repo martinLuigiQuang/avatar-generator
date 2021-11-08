@@ -13,11 +13,13 @@ import M2 from '../assets/headware_male/HairMaleShortBlonde-01.png';
 import M3 from '../assets/headware_male/HairMaleShortBrown-01.png';
 import M4 from '../assets/headware_male/MaskRed-01.png';
 
+const nullAsset = ApplicationConstants.NULL_ASSETS_CODE;
+
 const HAIRS = {
-    female: [F1, F2, F3, F4, F5, F6, F7],
-    male: [M1, M2, M3, M4]
+    female: [nullAsset, F1, F2, F3, F4, F5, F6, F7],
+    male: [nullAsset, M1, M2, M3, M4]
 };
-HAIRS.genderNeutral = [...HAIRS.female, ...HAIRS.male];
+HAIRS.genderNeutral = [...HAIRS.female, ...HAIRS.male.slice(1, HAIRS.male.length)];
 
 const HAIR_NAMES = {
     female: [],

@@ -1,5 +1,3 @@
-import Utils from '../utils';
-
 import F1 from '../assets/accessories_female/GlovesBlue-01.png';
 import F2 from '../assets/accessories_female/GlovesGreen-01.png';
 import F3 from '../assets/accessories_female/GlovesMagenta-01.png';
@@ -18,8 +16,6 @@ import M7 from '../assets/accessories_male/GlovesYellow-01.png';
 
 import * as Bodies from './bodies';
 
-const UTILS = new Utils();
-
 const GLOVES = {
     female: [F1, F2, F3, F4, F5, F6, F7],
     male: [M1, M2, M3, M4, M5, M6, M7]
@@ -36,7 +32,8 @@ export const getStyles = (
     isLoading,
     options
 ) => {
-    return Bodies.getStyles(faceWidth, topOfHead, isLoading, options);
+    const isTop = true;
+    return Bodies.getStyles(faceWidth, topOfHead, isLoading, {...options, isTop});
 };
 
 export const changeIndex = (value, gender, index) => {

@@ -35,7 +35,8 @@ export const getStyles = (
     isLoading,
     options
 ) => {
-    return Bodies.getStyles(faceWidth, topOfHead, isLoading, options);
+    const isTop = true;
+    return Bodies.getStyles(faceWidth, topOfHead, isLoading, {...options, isTop});
 };
 
 export const changeIndex = (value, gender, index) => {

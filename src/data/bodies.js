@@ -40,7 +40,8 @@ export const getStyles = (
     const ratio = getRatio(faceWidth);
     const imageLeftMargin = 0.5 * (1 - options.scalingRatio) * ApplicationConstants.IMAGE_STYLE.width;
     const scaledImageWidth = ratio * ApplicationConstants.ASSETS_IMAGE_WIDTH;
-    const displayZIndex = options.isBehindBody ? ApplicationConstants.Z_INDEX_CAPE : ApplicationConstants.Z_INDEX_BODY;
+    const displayZIndex = options.isBehindBody ? ApplicationConstants.Z_INDEX_CAPE : 
+                          options.isTop ? ApplicationConstants.Z_INDEX_TOP : ApplicationConstants.Z_INDEX_BODY;
     return {
         width: `${scaledImageWidth}px`,
         left: getAverage(topOfHead[0], options.chin[0]) + imageLeftMargin - 0.5 * scaledImageWidth,
