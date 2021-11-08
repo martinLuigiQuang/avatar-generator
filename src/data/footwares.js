@@ -20,10 +20,9 @@ const UTILS = new Utils();
 
 const FOOTWARES = {
     female: [F1, F2, F3, F4, F5, F6],
-    male: [M1, M2, M3, M4, M5, M6],
-    genderNeutral: []
+    male: [M1, M2, M3, M4, M5, M6]
 };
-FOOTWARES.genderNeutral = UTILS.generateGenderNeutralAccessoriesArray(FOOTWARES);
+FOOTWARES.genderNeutral = FOOTWARES.male;
 
 
 export const getItem = (index, gender) => {

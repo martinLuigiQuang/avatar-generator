@@ -22,10 +22,9 @@ const UTILS = new Utils();
 
 const GLOVES = {
     female: [F1, F2, F3, F4, F5, F6, F7],
-    male: [M1, M2, M3, M4, M5, M6, M7],
-    genderNeutral: []
+    male: [M1, M2, M3, M4, M5, M6, M7]
 };
-GLOVES.genderNeutral = UTILS.generateGenderNeutralAccessoriesArray(GLOVES);
+GLOVES.genderNeutral = GLOVES.male;
 
 export const getItem = (index, gender) => {
     return GLOVES[gender][index];
