@@ -1,36 +1,76 @@
-.facial-landmarks-container {
-    // background: url('../assets/Pg4.jpg');
-    // background-size: cover;
-    // height: 100vh;
+.avatar-generator-container {
+    background: url('../assets/Pg4.jpg');
+    background-size: cover;
+    background-position: top;
+    width: 1280px;
+    height: 1100px;
+    margin: 0 auto;
     input[type="file"] {
         display: none;
     }
-    .photo-container {
-        position: relative;
-        margin: 50px auto;
-        #scaled-uploaded-photo {
-            opacity: 0;
-        }
-        .spinner-container {
-            position: absolute;
-            left: calc(50% - 22px);
-            display: flex;
-            align-items: center;
-        }
-        .accessory-option {
-            position: absolute;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: 'center';
+    .MuiButton-root.upload-button {
+        width: 100%;
+        background-color: black;
+        font-family: 'Komika';
+        font-size: var(--very-big-font-size);
+        color: white;
+        border-bottom: 4px solid white;
+        margin-bottom: 20px;
+        &:hover {
+            color: black;
+            background-color: gainsboro;
         }
     }
-    .buttons-container {
+    .avatar-generator {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 25px;
-        h2 {
-            margin: 0 5px;
+        height: 700px;
+        .avatar-options-selection-panel {
+            background-color: rgba(240, 248, 255, 0.639);
+            margin: 0 0 20px 20px;
+            border-radius: 5px;
+            .avatar-options-container {
+                h2 {
+                    text-transform: uppercase;
+                }
+                .option-button-container {
+                    display: flex;
+                    width: 400px;
+                    justify-content: space-around;
+                    align-items: center;
+                    margin: 0 auto;
+                    p {
+                        width: 150px;
+                        text-align: right;
+                    }
+                    .buttons-container {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        height: 25px;
+                        .MuiButton-root {
+                            font-family: 'Komika';
+                            font-size: var(--medium-font-size);
+                        }
+                        h3 {
+                            width: 150px;
+                            margin: 0 5px;
+                        }
+                    }
+                }
+            }
+        }
+        .photo-container {
+            position: relative;
+            margin: 0 auto;
+            #scaled-uploaded-photo {
+                opacity: 0;
+            }
+            .accessory-option {
+                position: absolute;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: 'center';
+            }
         }
     }
 }

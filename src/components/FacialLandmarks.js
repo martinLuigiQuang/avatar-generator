@@ -2,7 +2,6 @@ import * as React from 'react';
 import * as tf from '@tensorflow/tfjs';
 import * as Facemesh from '@tensorflow-models/facemesh';
 import Utils from '../utils';
-import LoadingSpinner from './LoadingSpinner';
 import AvatarButtons from './AvatarButtons';
 import Button from '@material-ui/core/Button';
 import * as Hairs from '../data/hairs';
@@ -18,12 +17,57 @@ import './FacialLandmarks.scss';
 
 const UTILS = new Utils();
 const IMAGE_STYLE = ApplicationConstants.IMAGE_STYLE;
-
-const GENDER = 'female';
+const GENDER = ['genderNeutral', 'female', 'male'];
 
 export const OptionsButton = (props) => {
-    const { index, handleClick } = props;
-    return <AvatarButtons value={index} handleClick={handleClick} />;
+    const { index, handleClick, name } = props;
+    return (
+        <div className="option-button-container">
+            <p>{name}</p>
+            <AvatarButtons value={index} handleClick={handleClick} />
+        </div>
+    );
+};
+
+export const AvatarOptions = (props) => {
+    const { options, title, gender } = props;
+    return (
+        <div className={`avatar-options-container`} id={title}>
+            <h2>{title.split('-').join(' ')}</h2>
+            {
+                Object.keys(options).map(key => {
+                    const item = options[key];
+                    const handleClick = (e) => {
+                        const change = e.target.innerText === ApplicationConstants.INCREASE_INDEX ? 1 : -1;
+                        let newIndex;
+                        if (key === 'gender') {
+                            switch (item.index + change) {
+                                case -1: 
+                                    newIndex = 2;
+                                    break;
+                                case 3:
+                                    newIndex = 0
+                                    break;
+                                default:
+                                    newIndex = item.index + change; 
+                            }
+                        } else {
+                            newIndex = item.assets.changeIndex(change, gender, item.index);
+                        }
+                        item.setIndex(newIndex);
+                    };
+                    return (
+                        <OptionsButton
+                            key={key}
+                            name={key}
+                            index={key === 'gender' ? GENDER[item.index] : item.index}
+                            handleClick={handleClick}
+                        />
+                    );
+                })
+            }
+        </div>
+    );
 };
 
 export const AvatarAccessory = React.forwardRef((props, ref) => {
@@ -57,6 +101,7 @@ const FacialLandmarks = (props) => {
     const [ isPhotoUploaded, setIsPhotoUploaded ] = React.useState(false);
     const [ isFirstPass, setIsFirstPass ] = React.useState(true);
 
+    const [ genderIndex, setGenderIndex ] = React.useState(0)
     const [ hairIndex, setHairIndex ] = React.useState(0);
     const [ maskIndex, setMaskIndex ] = React.useState(0);
     const [ bodyIndex, setBodyIndex ] = React.useState(0);
@@ -90,14 +135,18 @@ const FacialLandmarks = (props) => {
     );
 
     const AVATAR_ACCESSORIES = {
-        hair: { assets: Hairs, index: hairIndex, setIndex: setHairIndex, ref: hairRef },
-        body: { assets: Bodies, index: bodyIndex, setIndex: setBodyIndex, ref: bodyRef },
-        top: { assets: Tops, index: topIndex, setIndex: setTopIndex, ref: topRef },
-        bottom: { assets: Bottoms, index: bottomIndex, setIndex: setBottomIndex, ref: bottomRef },
-        mask: { assets: Masks, index: maskIndex, setIndex: setMaskIndex, ref: maskRef },
-        glove: { assets: Gloves, index: gloveIndex, setIndex: setGloveIndex, ref: gloveRef },
-        accessory: { assets: Accessories, index: accessoryIndex, setIndex: setAccessoryIndex, ref: accessoryRef },
-        footware: { assets: Footwares, index: footwareIndex, setIndex: setFootwareIndex, ref: footwareRef},
+        'mask / headware': { assets: Masks, index: maskIndex, setIndex: setMaskIndex, ref: maskRef },
+        'top': { assets: Tops, index: topIndex, setIndex: setTopIndex, ref: topRef },
+        'bottom': { assets: Bottoms, index: bottomIndex, setIndex: setBottomIndex, ref: bottomRef },
+        'glove': { assets: Gloves, index: gloveIndex, setIndex: setGloveIndex, ref: gloveRef },
+        'accessory': { assets: Accessories, index: accessoryIndex, setIndex: setAccessoryIndex, ref: accessoryRef },
+        'footware': { assets: Footwares, index: footwareIndex, setIndex: setFootwareIndex, ref: footwareRef},
+    };
+
+    const APPEARANCE_OPTIONS = {
+        'gender': { index: genderIndex, setIndex: setGenderIndex },
+        'hair': { assets: Hairs, index: hairIndex, setIndex: setHairIndex, ref: hairRef },
+        'body': { assets: Bodies, index: bodyIndex, setIndex: setBodyIndex, ref: bodyRef },
     };
 
     const runFacemesh = async () => {
@@ -166,96 +215,104 @@ const FacialLandmarks = (props) => {
         }
     };
 
-    const body = (
-        <>
-            <Button 
-                className="upload-button"
-                onClick={() => fileUploadRef.current.click()}
-            >
-                <input
-                    ref={fileUploadRef}
-                    type="file"
-                    onChange={handleImageUpload}
-                />
-                {isLoading && isPhotoUploaded ? 'Scanning face...' : 'Photo Upload'}
-            </Button>
+    const UploadButton = (
+        <Button
+            className="upload-button"
+            onClick={() => fileUploadRef.current.click()}
+        >
+            <input
+                ref={fileUploadRef}
+                type="file"
+                onChange={handleImageUpload}
+            />
+            {isLoading && isPhotoUploaded ? 'Scanning face...' : 'Photo Upload'}
+        </Button>
+    );
+
+    const SelectPanel = (
+        <div className="avatar-options-selection-panel">
+            <AvatarOptions
+                options={APPEARANCE_OPTIONS}
+                title="appearance-options"
+                gender={GENDER[genderIndex]}
+            />
+            <AvatarOptions
+                options={AVATAR_ACCESSORIES}
+                title="avatar-accessories"
+                gender={GENDER[genderIndex]}
+            />
+        </div>
+    );
+
+    const UploadedImageContainer = (
+        <div className={`image-container ${!isPhotoUploaded ? 'hidden' : ''}`}>
+            <img
+                ref={photoRef}
+                src="#"
+                style={{
+                    ...IMAGE_STYLE,
+                    opacity: isLoading ? 1 : 0
+                }}
+                id="uploaded-photo"
+                alt='user-profile'
+            />
+            <ScaledUploadedPhoto
+                ref={scaledPhotoRef}
+                src="#"
+                style={{
+                    ...IMAGE_STYLE,
+                    width: scalingRatio * IMAGE_STYLE.width
+                }}
+            />
+        </div>
+    );
+
+    const PhotoContainer = (
+        < div
+            ref={avatarRef}
+            style={{ width: 400 }}
+            className={`photo-container ${isLoading || isHeadTiltTooLarge ? 'loading' : ''}`}
+        >
+            {UploadedImageContainer}
+            <canvas
+                ref={canvasRef}
+                style={{ ...IMAGE_STYLE, width: 'auto' }}
+                className={`${isLoading || isHeadTiltTooLarge ? 'hidden' : ''}`}
+            />
             {
-                Object.keys(AVATAR_ACCESSORIES).map(accessory => {
-                    const item = AVATAR_ACCESSORIES[accessory];
-                    const handleClick = (e) => {
-                        const value = e.target.innerText === '+' ? 1 : -1;
-                        const newIndex = item.assets.changeIndex(value, GENDER, item.index);
-                        item.setIndex(newIndex);
-                    };
+                Object.keys({ ...APPEARANCE_OPTIONS, ...AVATAR_ACCESSORIES }).map(key => {
+                    if (key === 'gender') {
+                        return null;
+                    }
+                    const item = { ...APPEARANCE_OPTIONS, ...AVATAR_ACCESSORIES }[key];
+                    const isBehindBody = key === 'accessory' && accessoryIndex < 2;
+                    const isInFrontOfHair = key === 'accessory' && accessoryIndex === 2;
+                    const style = item.assets.getStyles(
+                        faceWidth,
+                        topOfHead,
+                        isLoading,
+                        { scalingRatio, headTiltAngle, chin, leftEyebrow, isBehindBody, isInFrontOfHair }
+                    );
                     return (
-                        <OptionsButton 
-                            key={accessory} 
-                            index={item.index} 
-                            handleClick={handleClick}
+                        <AvatarAccessory
+                            key={key}
+                            title={`${key} accessory-option`}
+                            src={item.assets.getItem(item.index, GENDER[genderIndex])}
+                            ref={item.ref}
+                            style={style}
                         />
                     );
                 })
             }
-            < div
-                ref={avatarRef}
-                style={{ width: 400 }}
-                className={`photo-container ${isLoading || isHeadTiltTooLarge ? 'loading' : ''}`}
-            >
-                <div className={`image-container ${!isPhotoUploaded ? 'hidden' : ''}`}>
-                    <img
-                        ref={photoRef}
-                        src="#"
-                        style={{
-                            ...IMAGE_STYLE,
-                            opacity: isLoading ? 1 : 0
-                        }}
-                        id="uploaded-photo"
-                        alt='user-profile'
-                    />
-                    <ScaledUploadedPhoto
-                        ref={scaledPhotoRef}
-                        src="#"
-                        style={{
-                            ...IMAGE_STYLE,
-                            width: scalingRatio * IMAGE_STYLE.width
-                        }}
-                    />
-                </div>
-                <canvas
-                    ref={canvasRef}
-                    style={{...IMAGE_STYLE, width: 'auto'}}
-                    className={`${isLoading || isHeadTiltTooLarge ? 'hidden' : ''}`}
-                />
-                {
-                    Object.keys(AVATAR_ACCESSORIES).map(accessory => {
-                        const item = AVATAR_ACCESSORIES[accessory];
-                        const isBehindBody = accessory === 'accessory' && accessoryIndex < 2;
-                        const isInFrontOfHair = accessory === 'accessory' && accessoryIndex === 2;
-                        const style = item.assets.getStyles(
-                            faceWidth, 
-                            topOfHead,
-                            isLoading, 
-                            { scalingRatio, headTiltAngle, chin, leftEyebrow, isBehindBody, isInFrontOfHair }
-                        );
-                        return (
-                            <AvatarAccessory 
-                                key={accessory}
-                                title={`${accessory} accessory-option`}
-                                src={item.assets.getItem(item.index, GENDER)}
-                                ref={item.ref}
-                                style={style}
-                            />
-                        );
-                    })
-                }
-            </div>
-        </>
+        </div>
     );
 
     return (
-        <div className="facial-landmarks-container">
-            <div className="facemesh-container">
-                {isHeadTiltTooLarge ? <Warning /> : body}
+        <div className="avatar-generator-container">
+            {UploadButton}
+            <div className="avatar-generator">
+                {SelectPanel}
+                {isHeadTiltTooLarge ? <Warning /> : PhotoContainer}
             </div>
         </div>
     );

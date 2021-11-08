@@ -24,8 +24,8 @@ const ApplicationConstants = {
         width: 400
     },
     FACEMESH_SCALE: 1,
-    DECREASE_INDEX: '-',
-    INCREASE_INDEX: '+'
+    DECREASE_INDEX: '<',
+    INCREASE_INDEX: '>'
 };
 
 export default ApplicationConstants;

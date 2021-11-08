@@ -1,3 +1,5 @@
+import Utils from '../utils';
+
 import F1 from '../assets/accessories_female/Cape1-01.png';
 import F2 from '../assets/accessories_female/Cape2-01.png';
 import F3 from '../assets/accessories_female/FemaleHelm-01.png';
@@ -14,10 +16,14 @@ import M6 from '../assets/accessories_male/SwordMaleSizeHip-01.png';
 import * as Bodies from './bodies';
 import * as Masks from './masks';
 
+const UTILS = new Utils();
+
 const ACCESSORIES = {
     female: [F1, F2, F3, F4, F5],
-    male: [M1, M2, M3, M4, M5, M6]
+    male: [M1, M2, M3, M4, M5, M6],
+    genderNeutral: []
 };
+ACCESSORIES.genderNeutral = UTILS.generateGenderNeutralAccessoriesArray(ACCESSORIES);
 
 export const getItem = (index, gender) => {
     return ACCESSORIES[gender][index];

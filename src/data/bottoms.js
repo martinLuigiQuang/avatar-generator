@@ -1,3 +1,5 @@
+import Utils from '../utils';
+
 import F1 from '../assets/bottoms_female/FemaleBotBlue-01.png';
 import F2 from '../assets/bottoms_female/FemaleBotGreen-01.png';
 import F3 from '../assets/bottoms_female/FemaleBotMagenta-01.png';
@@ -14,10 +16,14 @@ import M6 from '../assets/bottoms_male/MaleBotYellow-01.png';
 
 import * as Bodies from './bodies';
 
+const UTILS = new Utils();
+
 const BOTTOMS = {
     female: [F1, F2, F3, F4, F5, F6],
-    male: [M1, M2, M3, M4, M5, M6]
+    male: [M1, M2, M3, M4, M5, M6],
+    genderNeutral: []
 };
+BOTTOMS.genderNeutral = UTILS.generateGenderNeutralAccessoriesArray(BOTTOMS);
 
 export const getItem = (index, gender) => {
     return BOTTOMS[gender][index];

@@ -16,8 +16,10 @@ import M5 from '../assets/headware_male/MaskRed-01-01.png';
 
 const MASKS = {
     female: [F1, F2, F3, F4, F5, F6, F7],
-    male: [M1, M2, M3, M4, M5]
+    male: [M1, M2, M3, M4, M5],
+    genderNeutral: []
 };
+MASKS.genderNeutral = [...MASKS.female, ...MASKS.male];
 
 const getRatio = (width) => {
     return width / ApplicationConstants.ASSETS_IMAGE_FOREHEAD_WIDTH;
@@ -43,7 +45,7 @@ export const getStyles = (
         top: options.leftEyebrow[1] - ratio * ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_LEFT_EYEBROW,
         zIndex: isLoading ? ApplicationConstants.Z_INDEX_HIDDEN : displayZIndex,
         transform: `rotateZ(${options.headTiltAngle}deg)`,
-        transformOrigin: '50% 80px',
+        transformOrigin: '50% 50px',
         display: isLoading ? 'none' : 'block'
     };
 };

@@ -124,6 +124,22 @@ class Utils {
             }
         }
     };
+
+    generateGenderNeutralAccessoriesArray = (assets) => {
+        const genderNeutralAccessoriesArray = [];
+        assets.female.forEach((item, index) => {
+            genderNeutralAccessoriesArray.push(item);
+            if (assets.male[index]) {
+                genderNeutralAccessoriesArray.push(assets.male[index]);
+            }
+        });
+        if (assets.female.length < assets.male.length) {
+            assets.male.slice(assets.female.length, assets.male.length).forEach(item => {
+                genderNeutralAccessoriesArray.push(item);
+            });
+        }
+        return genderNeutralAccessoriesArray;
+    };
     
     detectVideo = async (webcamRef, canvasRef, setFaceGeometry, net) => {
         if (

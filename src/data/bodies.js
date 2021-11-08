@@ -1,4 +1,5 @@
 import ApplicationConstants from './constants';
+import Utils from '../utils';
 
 import F1 from '../assets/body_female/FemaleBody1-01.png';
 import F2 from '../assets/body_female/FemaleBody2-01.png';
@@ -8,10 +9,15 @@ import M1 from '../assets/body_male/MaleBody1-01.png';
 import M2 from '../assets/body_male/MaleBody2-01.png';
 import M3 from '../assets/body_male/MaleBody3-01.png';
 
+const UTILS = new Utils();
+
 const BODIES = {
     female: [F1, F2, F3],
-    male: [M1, M2, M3]
+    male: [M1, M2, M3],
+    genderNeutral: []
 };
+BODIES.genderNeutral = UTILS.generateGenderNeutralAccessoriesArray(BODIES);
+
 
 const getRatio = (faceWidth) => {
     return faceWidth / ApplicationConstants.ASSETS_IMAGE_FOREHEAD_WIDTH;

@@ -17,6 +17,13 @@ const HAIRS = {
     female: [F1, F2, F3, F4, F5, F6, F7],
     male: [M1, M2, M3, M4]
 };
+HAIRS.genderNeutral = [...HAIRS.female, ...HAIRS.male];
+
+const HAIR_NAMES = {
+    female: [],
+    male: []
+};
+HAIR_NAMES.genderNeutral = [...HAIR_NAMES.female, ...HAIR_NAMES.male];
 
 const getRatio = (faceWidth) => {
     return faceWidth / ApplicationConstants.ASSETS_IMAGE_FOREHEAD_WIDTH;

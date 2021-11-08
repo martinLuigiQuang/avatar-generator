@@ -1,0 +1,41 @@
+header {
+  margin: 0 auto;
+  width: 1280px;
+  display: flex;
+  flex-direction: column;
+  background-image: url('../assets/Pg1_Select\ Language.jpg');
+  background-position: center;
+  background-size: cover;
+  color: #fff;
+  justify-content: center;
+  padding: 15px 0;
+  border-bottom: 4px solid white;
+    .company-name {
+        display: flex;
+        justify-content: space-between;
+        margin: 0 35px;
+        align-items: center;
+        h1 {
+            z-index: 99;
+            margin: 0;
+            padding: 0;
+        }
+        img {
+            width: 175px;
+            align-self: center;
+            z-index: 99;
+        }
+    }
+    .comic-bubble {
+        img {
+            min-width: 500px;
+            width: 40%;
+        }
+    }
+
+    @media screen and (max-width: 600px) {
+      .company-name h1 {
+        font-size: var(--big-font-size);
+      }
+    }
+}
