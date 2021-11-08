@@ -1,0 +1,20 @@
+.speech-bubble {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+        width: 100%;
+        position: absolute;
+    }
+    h2,
+    p {
+        z-index: 1;
+        width: 50%;
+        margin: 0;
+        padding: 0;
+    }
+    p {
+      font-size: 22px;
+    }
+}
