@@ -23,7 +23,7 @@ const FOOTWARES = {
     male: [M1, M2, M3, M4, M5, M6]
 };
 FOOTWARES.genderNeutral = FOOTWARES.male;
-
+UTILS.insertNullAsset(FOOTWARES);
 
 export const getItem = (index, gender) => {
     return FOOTWARES[gender][index];

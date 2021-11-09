@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as tf from '@tensorflow/tfjs';
 import * as Facemesh from '@tensorflow-models/facemesh';
 import Utils from '../utils';
-import AvatarButtons from './AvatarButtons';
+import { AvatarOptions, ScaledUploadedPhoto, AvatarAccessoryDisplay, Warning } from './FacialLandmarksHelper';
 import Button from '@material-ui/core/Button';
 import * as Hairs from '../data/hairs';
 import * as Masks from '../data/masks';
@@ -11,83 +11,16 @@ import * as Tops from '../data/tops';
 import * as Bottoms from '../data/bottoms';
 import * as Footwares from '../data/footwares';
 import * as Gloves from '../data/gloves';
-import * as Accessories from '../data/accessories';
+import * as Capes from '../data/capes';
+import * as Helms from '../data/helms';
+import * as Swords from '../data/swords';
+import * as Shields from '../data/shields';
 import ApplicationConstants from '../data/constants';
 import './FacialLandmarks.scss';
 
 const UTILS = new Utils();
 const IMAGE_STYLE = ApplicationConstants.IMAGE_STYLE;
-const GENDER = ['genderNeutral', 'female', 'male'];
-
-export const OptionsButton = (props) => {
-    const { index, handleClick, name } = props;
-    return (
-        <div className="option-button-container">
-            <p>{name}</p>
-            <AvatarButtons value={index} handleClick={handleClick} />
-        </div>
-    );
-};
-
-export const AvatarOptions = (props) => {
-    const { options, title, gender } = props;
-    return (
-        <div className={`avatar-options-container`} id={title}>
-            <h2>{title.split('-').join(' ')}</h2>
-            {
-                Object.keys(options).map(key => {
-                    const item = options[key];
-                    const handleClick = (e) => {
-                        const change = e.target.innerText === ApplicationConstants.INCREASE_INDEX ? 1 : -1;
-                        let newIndex;
-                        if (key === 'gender') {
-                            switch (item.index + change) {
-                                case -1: 
-                                    newIndex = 2;
-                                    break;
-                                case 3:
-                                    newIndex = 0
-                                    break;
-                                default:
-                                    newIndex = item.index + change; 
-                            }
-                        } else {
-                            newIndex = item.assets.changeIndex(change, gender, item.index);
-                        }
-                        item.setIndex(newIndex);
-                    };
-                    return (
-                        <OptionsButton
-                            key={key}
-                            name={key}
-                            index={key === 'gender' ? GENDER[item.index] : item.index}
-                            handleClick={handleClick}
-                        />
-                    );
-                })
-            }
-        </div>
-    );
-};
-
-export const AvatarAccessory = React.forwardRef((props, ref) => {
-    const { title, src, style } = props;
-    return <img ref={ref} src={src} id={title} alt={title} className={title} style={style} />;
-});
-
-export const ScaledUploadedPhoto = React.forwardRef((props, ref) => {
-    const { src, style } = props;
-    const title = "scaled-uploaded-photo";
-    return <img ref={ref} src={src} id={title} alt={title} style={style} />;
-});
-
-export const Warning = () => {
-    return (
-        <div className="warning-container">
-            <h2>Your face is tilted. Please upload a different photo.</h2>
-        </div>
-    );
-};
+const GENDER = ApplicationConstants.GENDER;
 
 const FacialLandmarks = (props) => {
     const [ scalingRatio, setScalingRatio ] = React.useState(1);
@@ -109,7 +42,10 @@ const FacialLandmarks = (props) => {
     const [ bottomIndex, setBottomIndex ] = React.useState(0);
     const [ footwareIndex, setFootwareIndex ] = React.useState(0);
     const [ gloveIndex, setGloveIndex ] = React.useState(0);
-    const [ accessoryIndex, setAccessoryIndex ] = React.useState(0);
+    const [ helmIndex, setHelmIndex ] = React.useState(0);
+    const [ capeIndex, setCapeIndex ] = React.useState(0);
+    const [ swordIndex, setSwordIndex ] = React.useState(0);
+    const [ shieldIndex, setShieldIndex ] = React.useState(0);
 
     const avatarRef = React.useRef(null);
     const photoRef = React.useRef(null);
@@ -123,7 +59,10 @@ const FacialLandmarks = (props) => {
     const bottomRef = React.createRef(null);
     const footwareRef = React.createRef(null);
     const gloveRef = React.createRef(null);
-    const accessoryRef = React.createRef(null);
+    const helmRef = React.createRef(null);
+    const capeRef = React.createRef(null);
+    const swordRef = React.createRef(null);
+    const shieldRef = React.createRef(null);
 
     React.useEffect(
         () => {
@@ -134,19 +73,22 @@ const FacialLandmarks = (props) => {
         [isFirstPass, isPhotoUploaded]
     );
 
-    const AVATAR_ACCESSORIES = {
-        'mask / headware': { assets: Masks, index: maskIndex, setIndex: setMaskIndex, ref: maskRef },
-        'top': { assets: Tops, index: topIndex, setIndex: setTopIndex, ref: topRef },
-        'bottom': { assets: Bottoms, index: bottomIndex, setIndex: setBottomIndex, ref: bottomRef },
-        'glove': { assets: Gloves, index: gloveIndex, setIndex: setGloveIndex, ref: gloveRef },
-        'accessory': { assets: Accessories, index: accessoryIndex, setIndex: setAccessoryIndex, ref: accessoryRef },
-        'footware': { assets: Footwares, index: footwareIndex, setIndex: setFootwareIndex, ref: footwareRef},
-    };
-
     const APPEARANCE_OPTIONS = {
         'gender': { index: genderIndex, setIndex: setGenderIndex },
         'hair': { assets: Hairs, index: hairIndex, setIndex: setHairIndex, ref: hairRef },
         'body': { assets: Bodies, index: bodyIndex, setIndex: setBodyIndex, ref: bodyRef },
+    };
+
+    const AVATAR_ACCESSORIES = {
+        'mask / headware': { assets: Masks, index: maskIndex, setIndex: setMaskIndex, ref: maskRef },
+        'helm': { assets: Helms, index: helmIndex, setIndex: setHelmIndex, ref: helmRef },
+        'top': { assets: Tops, index: topIndex, setIndex: setTopIndex, ref: topRef },
+        'cape': { assets: Capes, index: capeIndex, setIndex: setCapeIndex, ref: capeRef },
+        'bottom': { assets: Bottoms, index: bottomIndex, setIndex: setBottomIndex, ref: bottomRef },
+        'footware': { assets: Footwares, index: footwareIndex, setIndex: setFootwareIndex, ref: footwareRef},
+        'glove': { assets: Gloves, index: gloveIndex, setIndex: setGloveIndex, ref: gloveRef },
+        'shield': { assets: Shields, index: shieldIndex, setIndex: setShieldIndex, ref: shieldRef },
+        'sword': { assets: Swords, index: swordIndex, setIndex: setSwordIndex, ref: swordRef },
     };
 
     const runFacemesh = async () => {
@@ -279,31 +221,11 @@ const FacialLandmarks = (props) => {
                 style={{ ...IMAGE_STYLE, width: 'auto' }}
                 className={`${isLoading || isHeadTiltTooLarge ? 'hidden' : ''}`}
             />
-            {
-                Object.keys({ ...APPEARANCE_OPTIONS, ...AVATAR_ACCESSORIES }).map(key => {
-                    if (key === 'gender') {
-                        return null;
-                    }
-                    const item = { ...APPEARANCE_OPTIONS, ...AVATAR_ACCESSORIES }[key];
-                    const isBehindBody = key === 'accessory' && accessoryIndex < 2;
-                    const isInFrontOfHair = key === 'accessory' && accessoryIndex === 2;
-                    const style = item.assets.getStyles(
-                        faceWidth,
-                        topOfHead,
-                        isLoading,
-                        { scalingRatio, headTiltAngle, chin, leftEyebrow, isBehindBody, isInFrontOfHair }
-                    );
-                    return (
-                        <AvatarAccessory
-                            key={key}
-                            title={`${key} accessory-option`}
-                            src={item.assets.getItem(item.index, GENDER[genderIndex])}
-                            ref={item.ref}
-                            style={style}
-                        />
-                    );
-                })
-            }
+            <AvatarAccessoryDisplay 
+                optionsArray={[APPEARANCE_OPTIONS, AVATAR_ACCESSORIES]}
+                gender={GENDER[genderIndex]}
+                parentStates={{faceWidth, topOfHead, isLoading, headTiltAngle, scalingRatio, chin, leftEyebrow}}
+            />
         </div>
     );
 

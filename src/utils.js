@@ -1,4 +1,4 @@
-import Background from './assets/Pg4.jpg';
+import ApplicationConstants from "./data/constants";
 
 class Utils {
     PERIMETER = [
@@ -139,6 +139,13 @@ class Utils {
             });
         }
         return genderNeutralAccessoriesArray;
+    };
+
+    insertNullAsset = (assets) => {
+        const nullAsset = ApplicationConstants.NULL_ASSETS_CODE;
+        Object.keys(assets).forEach(key => {
+            assets[key].unshift(nullAsset);
+        });
     };
     
     detectVideo = async (webcamRef, canvasRef, setFaceGeometry, net) => {

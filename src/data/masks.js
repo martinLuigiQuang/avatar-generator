@@ -1,4 +1,5 @@
 import ApplicationConstants from './constants';
+import Utils from '../utils';
 
 import F1 from '../assets/headware_female/Headband1-01.png';
 import F2 from '../assets/headware_female/Headband2-01.png';
@@ -8,18 +9,28 @@ import F5 from '../assets/headware_female/MaskMagenta-01.png';
 import F6 from '../assets/headware_female/MaskOrange-01.png';
 import F7 from '../assets/headware_female/MaskRed-01-01.png';
 
-import M1 from '../assets/headware_male/MaskBlue-01.png';
-import M2 from '../assets/headware_male/MaskGreen-01.png';
-import M3 from '../assets/headware_male/MaskMagenta-01.png';
-import M4 from '../assets/headware_male/MaskOrange-01.png';
-import M5 from '../assets/headware_male/MaskRed-01-01.png';
+import M1 from '../assets/headware_female/Headband1-01.png';
+import M2 from '../assets/headware_female/Headband2-01.png';
+import M3 from '../assets/headware_male/MaskBlue-01.png';
+import M4 from '../assets/headware_male/MaskGreen-01.png';
+import M5 from '../assets/headware_male/MaskMagenta-01.png';
+import M6 from '../assets/headware_male/MaskOrange-01.png';
+import M7 from '../assets/headware_male/MaskRed-01-01.png';
+
+const UTILS = new Utils();
 
 const MASKS = {
     female: [F1, F2, F3, F4, F5, F6, F7],
-    male: [M1, M2, M3, M4, M5],
-    genderNeutral: []
+    male: [M1, M2, M3, M4, M5, M6, M7]
 };
-MASKS.genderNeutral = [...MASKS.female, ...MASKS.male];
+MASKS.genderNeutral = [
+    ...MASKS.female.slice(0, 2), 
+    ...UTILS.generateGenderNeutralAccessoriesArray({
+        female: MASKS.female.slice(2, MASKS.female.length),
+        male: MASKS.male.slice(2, MASKS.male.length)
+    })
+];
+UTILS.insertNullAsset(MASKS)
 
 const getRatio = (width) => {
     return width / ApplicationConstants.ASSETS_IMAGE_FOREHEAD_WIDTH;
