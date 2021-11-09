@@ -8,15 +8,6 @@ import InvincibleEnglish from '../assets/Invincible_english.png';
 import InvincibleSpanish from '../assets/Invincible_spanish.png';
 import InvinciblePortuguese from '../assets/Invincible_portuguese.png';
 
-// const IMAGE = {
-//   english: InvincibleEnglish,
-//   spanish: InvincibleSpanish,
-//   portuguese: InvinciblePortuguese
-// };
-
-// const getImage = (language) => {
-//   return IMAGE[language];
-// };
 
 function SuperheroName(props) {
   const { firstName, lastName, superheroName, language, saveNames } = props;
@@ -24,6 +15,7 @@ function SuperheroName(props) {
   const [currentFirstName, setCurrentFirstName] = React.useState(firstName);
   const [currentLastName, setCurrentLastName] = React.useState(lastName);
   const [currentSuperheroName, setCurrentSuperheroName] = React.useState(superheroName);
+  const isNextButtonDisabled = !currentFirstName || !currentLastName || !currentSuperheroName;
 
   const handleClick = () => {
     saveNames(currentFirstName, currentLastName, currentSuperheroName)
@@ -31,15 +23,11 @@ function SuperheroName(props) {
 
   return (
     <div className="superhero-name-container">
-      <div className="name-burst">
-        {/* <img className="invincible-logo" src={getImage(language)} alt="invincible" id="invincible" /> */}
-        <SpeechBubble
-          imgSrc={Bubble}
-          text={firstName} 
-          text2={lastName}
-          text3="AKA"
-          text4={superheroName}
-        />
+      <div>
+        <img className="name-burst" src={Bubble} alt="" />
+      </div>
+      <div className="instructions">
+        <h2>Please enter your name and superhero name</h2>
       </div>
       <label htmlFor="firstName">
         <input 
@@ -57,21 +45,27 @@ function SuperheroName(props) {
           value={currentLastName}
           onChange={(e) => { setCurrentLastName(e.target.value) }}
           placeholder={locale[language]['LAST NAME']}
+         
         />
       </label>
+      <div className="aka">
+        <p>AKA</p>
+      </div>
       <label htmlFor="superheroName">
         <input
           type="text"
           id="superheroName"
           value={currentSuperheroName}
           onChange={(e) => { setCurrentSuperheroName(e.target.value) }}
-          placeholder={locale[language]['SUPERHERO NAME']}
+          // placeholder={locale[language]['SUPERHERO NAME']}
+          placeholder='SUPERHERO NAME'
         />
       </label>
       
-      <div className="navigation-bar">
+      <div className="next-button">
         <Link 
-          to="/avatar" 
+          className={`${isNextButtonDisabled ? "next-disabled" : ""}`}
+          to={`${isNextButtonDisabled ? "/enterName" : "/avatar" }`}
           onClick={handleClick}>{`${locale[language]['NEXT']} >`}
         </Link>
       </div> 
