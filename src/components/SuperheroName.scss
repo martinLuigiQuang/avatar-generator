@@ -1,0 +1,32 @@
+.superhero-name-container {
+  background: url('../assets/Pg4.jpg');
+  background-size: cover;
+  background-position: top;
+  width: 1280px;
+  height: 1100px;
+  margin: 0 auto;
+
+  // .invincible-logo {
+  //   width: 30%;
+  //   object-fit: contain;
+  //   position: absolute;
+  //   top: 40px;
+  //   left: 40px;
+  // }
+
+  .speech-bubble {
+    position: absolute;
+    top: 500px;
+    width: 1000px;
+    z-index: 1;
+  }
+
+  input#firstName,
+  input#lastName,
+  input#superheroName {
+    z-index: 99;
+    position: relative;
+    top: 300px;
+  }
+
+}
