@@ -2,11 +2,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import locale from '../data/locales.json';
 import './SuperheroName.scss';
-import SpeechBubble from './SpeechBubble';
 import Bubble from '../assets/speech_bubble_4.png';
-import InvincibleEnglish from '../assets/Invincible_english.png';
-import InvincibleSpanish from '../assets/Invincible_spanish.png';
-import InvinciblePortuguese from '../assets/Invincible_portuguese.png';
 
 
 function SuperheroName(props) {
