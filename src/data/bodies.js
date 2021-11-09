@@ -1,20 +1,19 @@
 import ApplicationConstants from './constants';
 import Utils from '../utils';
 
-import F1 from '../assets/body_female/FemaleBody1-01.png';
-import F2 from '../assets/body_female/FemaleBody2-01.png';
-import F3 from '../assets/body_female/FemaleBody3-01.png';
+import F1 from '../assets/body_female/FemaleBody01-01.png';
+import F2 from '../assets/body_female/FemaleBody02-01.png';
+import F3 from '../assets/body_female/FemaleBody03-01.png';
 
-import M1 from '../assets/body_male/MaleBody1-01.png';
-import M2 from '../assets/body_male/MaleBody2-01.png';
-import M3 from '../assets/body_male/MaleBody3-01.png';
+import M1 from '../assets/body_male/MaleBody01-01.png';
+import M2 from '../assets/body_male/MaleBody02-01.png';
+import M3 from '../assets/body_male/MaleBody03-01.png';
 
 const UTILS = new Utils();
 
 const BODIES = {
     female: [F1, F2, F3],
-    male: [M1, M2, M3],
-    genderNeutral: []
+    male: [M1, M2, M3]
 };
 BODIES.genderNeutral = UTILS.generateGenderNeutralAccessoriesArray(BODIES);
 

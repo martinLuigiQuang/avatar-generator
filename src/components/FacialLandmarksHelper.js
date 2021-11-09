@@ -70,7 +70,11 @@ export const AvatarOptions = (props) => {
 
 export const AvatarAccessory = React.forwardRef((props, ref) => {
     const { title, src, style } = props;
-    return <img ref={ref} src={src} id={title} alt={title} className={title} style={style} />;
+    return (
+        src !== ApplicationConstants.NULL_ASSETS_CODE ? 
+            <img ref={ref} src={src} id={title} alt={title} className={title} style={style} /> :
+            null 
+    );
 });
 
 export const ScaledUploadedPhoto = React.forwardRef((props, ref) => {
@@ -89,7 +93,7 @@ export const Warning = () => {
 
 export const AvatarAccessoryDisplay = (props) => {
     const { optionsArray, gender, parentStates } = props;
-    const { faceWidth, topOfHead, isLoading, scalingRatio, headTiltAngle, chin, leftEyebrow, accessoryIndex } = parentStates;
+    const { faceWidth, topOfHead, isLoading, scalingRatio, headTiltAngle, chin, leftEyebrow } = parentStates;
     const options = optionsArray.reduce(
         (outputObj, item) => {
             Object.keys(item).forEach(key => outputObj[key] = item[key]);
@@ -105,8 +109,8 @@ export const AvatarAccessoryDisplay = (props) => {
                         return null;
                     }
                     const item = options[key];
-                    const isBehindBody = key === 'accessory' && accessoryIndex < 2;
-                    const isInFrontOfHair = key === 'accessory' && accessoryIndex === 2;
+                    const isBehindBody = key === 'cape'
+                    const isInFrontOfHair = key === 'helm'
                     const style = item.assets.getStyles(
                         faceWidth,
                         topOfHead,

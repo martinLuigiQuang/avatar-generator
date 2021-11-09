@@ -20,10 +20,10 @@ const UTILS = new Utils();
 
 const TOPS = {
     female: [F1, F2, F3, F4, F5, F6],
-    male: [M1, M2, M3, M4, M5, M6],
-    genderNeutral: []
+    male: [M1, M2, M3, M4, M5, M6]
 };
 TOPS.genderNeutral = UTILS.generateGenderNeutralAccessoriesArray(TOPS);
+UTILS.insertNullAsset(TOPS);
 
 export const getItem = (index, gender) => {
     return TOPS[gender][index];

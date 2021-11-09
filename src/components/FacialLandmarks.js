@@ -11,7 +11,10 @@ import * as Tops from '../data/tops';
 import * as Bottoms from '../data/bottoms';
 import * as Footwares from '../data/footwares';
 import * as Gloves from '../data/gloves';
-import * as Accessories from '../data/accessories';
+import * as Capes from '../data/capes';
+import * as Helms from '../data/helms';
+import * as Swords from '../data/swords';
+import * as Shields from '../data/shields';
 import ApplicationConstants from '../data/constants';
 import './FacialLandmarks.scss';
 
@@ -39,7 +42,10 @@ const FacialLandmarks = (props) => {
     const [ bottomIndex, setBottomIndex ] = React.useState(0);
     const [ footwareIndex, setFootwareIndex ] = React.useState(0);
     const [ gloveIndex, setGloveIndex ] = React.useState(0);
-    const [ accessoryIndex, setAccessoryIndex ] = React.useState(0);
+    const [ helmIndex, setHelmIndex ] = React.useState(0);
+    const [ capeIndex, setCapeIndex ] = React.useState(0);
+    const [ swordIndex, setSwordIndex ] = React.useState(0);
+    const [ shieldIndex, setShieldIndex ] = React.useState(0);
 
     const avatarRef = React.useRef(null);
     const photoRef = React.useRef(null);
@@ -53,7 +59,10 @@ const FacialLandmarks = (props) => {
     const bottomRef = React.createRef(null);
     const footwareRef = React.createRef(null);
     const gloveRef = React.createRef(null);
-    const accessoryRef = React.createRef(null);
+    const helmRef = React.createRef(null);
+    const capeRef = React.createRef(null);
+    const swordRef = React.createRef(null);
+    const shieldRef = React.createRef(null);
 
     React.useEffect(
         () => {
@@ -72,11 +81,14 @@ const FacialLandmarks = (props) => {
 
     const AVATAR_ACCESSORIES = {
         'mask / headware': { assets: Masks, index: maskIndex, setIndex: setMaskIndex, ref: maskRef },
+        'helm': { assets: Helms, index: helmIndex, setIndex: setHelmIndex, ref: helmRef },
         'top': { assets: Tops, index: topIndex, setIndex: setTopIndex, ref: topRef },
+        'cape': { assets: Capes, index: capeIndex, setIndex: setCapeIndex, ref: capeRef },
         'bottom': { assets: Bottoms, index: bottomIndex, setIndex: setBottomIndex, ref: bottomRef },
-        'glove': { assets: Gloves, index: gloveIndex, setIndex: setGloveIndex, ref: gloveRef },
-        'accessory': { assets: Accessories, index: accessoryIndex, setIndex: setAccessoryIndex, ref: accessoryRef },
         'footware': { assets: Footwares, index: footwareIndex, setIndex: setFootwareIndex, ref: footwareRef},
+        'glove': { assets: Gloves, index: gloveIndex, setIndex: setGloveIndex, ref: gloveRef },
+        'shield': { assets: Shields, index: shieldIndex, setIndex: setShieldIndex, ref: shieldRef },
+        'sword': { assets: Swords, index: swordIndex, setIndex: setSwordIndex, ref: swordRef },
     };
 
     const runFacemesh = async () => {
@@ -212,7 +224,7 @@ const FacialLandmarks = (props) => {
             <AvatarAccessoryDisplay 
                 optionsArray={[APPEARANCE_OPTIONS, AVATAR_ACCESSORIES]}
                 gender={GENDER[genderIndex]}
-                parentStates={{faceWidth, topOfHead, isLoading, headTiltAngle, scalingRatio, chin, leftEyebrow, accessoryIndex}}
+                parentStates={{faceWidth, topOfHead, isLoading, headTiltAngle, scalingRatio, chin, leftEyebrow}}
             />
         </div>
     );

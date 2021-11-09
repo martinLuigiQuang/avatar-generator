@@ -1,4 +1,5 @@
 import ApplicationConstants from './constants';
+import Utils from '../utils';
 
 import F1 from '../assets/headware_female/HairFemShortBlack-01.png';
 import F2 from '../assets/headware_female/HairFemShortBlonde-01.png';
@@ -13,13 +14,14 @@ import M2 from '../assets/headware_male/HairMaleShortBlonde-01.png';
 import M3 from '../assets/headware_male/HairMaleShortBrown-01.png';
 import M4 from '../assets/headware_male/MaskRed-01.png';
 
-const nullAsset = ApplicationConstants.NULL_ASSETS_CODE;
+const UTILS = new Utils();
 
 const HAIRS = {
-    female: [nullAsset, F1, F2, F3, F4, F5, F6, F7],
-    male: [nullAsset, M1, M2, M3, M4]
+    female: [F1, F2, F3, F4, F5, F6, F7],
+    male: [M1, M2, M3, M4]
 };
-HAIRS.genderNeutral = [...HAIRS.female, ...HAIRS.male.slice(1, HAIRS.male.length)];
+HAIRS.genderNeutral = [...HAIRS.female.slice(0, HAIRS.female.length - 1), ...HAIRS.male];
+UTILS.insertNullAsset(HAIRS);
 
 const HAIR_NAMES = {
     female: [],

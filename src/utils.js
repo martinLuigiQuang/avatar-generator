@@ -1,3 +1,5 @@
+import ApplicationConstants from "./data/constants";
+
 class Utils {
     PERIMETER = [
         103,
@@ -127,7 +129,7 @@ class Utils {
         const genderNeutralAccessoriesArray = [];
         assets.female.forEach((item, index) => {
             genderNeutralAccessoriesArray.push(item);
-            if (index > 0 && assets.male[index]) {
+            if (assets.male[index]) {
                 genderNeutralAccessoriesArray.push(assets.male[index]);
             }
         });
@@ -137,6 +139,13 @@ class Utils {
             });
         }
         return genderNeutralAccessoriesArray;
+    };
+
+    insertNullAsset = (assets) => {
+        const nullAsset = ApplicationConstants.NULL_ASSETS_CODE;
+        Object.keys(assets).forEach(key => {
+            assets[key].unshift(nullAsset);
+        });
     };
     
     detectVideo = async (webcamRef, canvasRef, setFaceGeometry, net) => {
