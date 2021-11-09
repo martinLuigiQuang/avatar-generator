@@ -36,7 +36,7 @@ const LanguageSelector = (props) => {
           />
         </label>
         <div className="navigation-bar">
-          <Link to="/avatar">{`${locale[language]['NEXT']} >`}</Link>
+          <Link to="/enterName">{`${locale[language]['NEXT']} >`}</Link>
         </div>
       </form>
     </div>
