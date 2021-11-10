@@ -51,13 +51,15 @@ export const getStyles = (
     options
 ) => {
     const ratio = getRatio(faceWidth);
+    const canvasLeftPosition = - options.chin[0] + 0.5 * options.scalingRatio * ApplicationConstants.IMAGE_STYLE.width;
+    const canvasTopPosition = - topOfHead[1] + ApplicationConstants.AVATAR_TOP_POSITION;
     const imageLeftMargin = 0.5 * (1 - options.scalingRatio) * ApplicationConstants.IMAGE_STYLE.width;
     const scaledImageWidth = ratio * ApplicationConstants.ASSETS_IMAGE_WIDTH;
     const displayZIndex = options.isInFrontOfHair ? ApplicationConstants.Z_INDEX_HELM : ApplicationConstants.Z_INDEX_MASK;
     return {
         width: `${scaledImageWidth}px`,
-        left: topOfHead[0] + imageLeftMargin - 0.5 * scaledImageWidth,
-        top: options.leftEyebrow[1] - topOfHead[1] + ApplicationConstants.AVATAR_TOP_POSITION - ratio * ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_LEFT_EYEBROW,
+        left: topOfHead[0] + canvasLeftPosition + imageLeftMargin - 0.5 * scaledImageWidth,
+        top: options.leftEyebrow[1] + canvasTopPosition - ratio * ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_LEFT_EYEBROW,
         zIndex: isLoading ? ApplicationConstants.Z_INDEX_HIDDEN : displayZIndex,
         transform: `rotateZ(${options.headTiltAngle}deg)`,
         transformOrigin: '50% 50px',

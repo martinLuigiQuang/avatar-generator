@@ -253,8 +253,9 @@ const FacialLandmarks = (props) => {
                     ...IMAGE_STYLE, 
                     width: 'auto',
                     marginLeft: UTILS.getPhotoMargin(scalingRatio),
-                    marginRight: UTILS.getPhotoMargin(scalingRatio), 
-                    top: -topOfHead[1] + ApplicationConstants.AVATAR_TOP_POSITION 
+                    marginRight: UTILS.getPhotoMargin(scalingRatio),
+                    left: - chin[0] + 0.5 * scalingRatio * IMAGE_STYLE.width, 
+                    top: - topOfHead[1] + ApplicationConstants.AVATAR_TOP_POSITION 
                 }}
                 className={`${isLoading || isHeadTiltTooLarge ? 'hidden' : ''}`}
             />

@@ -48,12 +48,13 @@ export const getStyles = (
     options
 ) => {
     const ratio = getRatio(faceWidth);
+    const canvasLeftPosition = - options.chin[0] + 0.5 * options.scalingRatio * ApplicationConstants.IMAGE_STYLE.width;
     const imageLeftMargin = 0.5 * (1 - options.scalingRatio) * ApplicationConstants.IMAGE_STYLE.width;
     const scaledImageWidth = ratio * ApplicationConstants.ASSETS_IMAGE_WIDTH;
     const rotationAxisYCoord = ratio * ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_TOP_OF_HEAD;
     return {
         width: `${scaledImageWidth}px`,
-        left: topOfHead[0] + imageLeftMargin - 0.5 * scaledImageWidth,
+        left: topOfHead[0] + canvasLeftPosition + imageLeftMargin - 0.5 * scaledImageWidth,
         top: ApplicationConstants.AVATAR_TOP_POSITION - ratio * ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_TOP_OF_HEAD,
         zIndex: isLoading ? ApplicationConstants.Z_INDEX_HIDDEN : ApplicationConstants.Z_INDEX_HAIR,
         transform: `rotateZ(${options.headTiltAngle}deg)`,
