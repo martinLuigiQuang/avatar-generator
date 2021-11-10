@@ -1,4 +1,5 @@
 const ApplicationConstants = {
+    AVATAR_BODY_POSITION_ADJUSTMENT: [0, 7],
     AVATAR_TOP_POSITION: 40,
     AVATAR_FACE_WIDTH: 80,
     NULL_ASSETS_CODE: '#',

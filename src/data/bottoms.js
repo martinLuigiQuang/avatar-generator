@@ -1,4 +1,3 @@
-import ApplicationConstants from './constants';
 import Utils from '../utils';
 
 import F1 from '../assets/bottoms_female/FemaleBotBlue-01.png';
