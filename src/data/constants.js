@@ -1,5 +1,6 @@
 const ApplicationConstants = {
-    AVATAR_FACE_WIDTH: 100,
+    AVATAR_TOP_POSITION: 40,
+    AVATAR_FACE_WIDTH: 80,
     NULL_ASSETS_CODE: '#',
     ASSETS_IMAGE_FOREHEAD_WIDTH: 330,
     ASSETS_IMAGE_WIDTH: 2550,
@@ -27,7 +28,11 @@ const ApplicationConstants = {
     FACEMESH_SCALE: 1,
     DECREASE_INDEX: '<',
     INCREASE_INDEX: '>',
-    GENDER: ['genderNeutral', 'female', 'male']
+    GENDER: {
+        genderNeutral: 'gender neutral', 
+        female: 'female', 
+        male: 'male'
+    }
 };
 
 export default ApplicationConstants;

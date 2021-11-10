@@ -44,9 +44,9 @@ function SuperheroName(props) {
          
         />
       </label>
-      <div className="aka">
+      {/* <div className="aka">
         <p>AKA</p>
-      </div>
+      </div> */}
       <label htmlFor="superheroName">
         <input
           type="text"

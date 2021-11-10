@@ -21,6 +21,10 @@ export const getItem = (index, gender) => {
     return CAPES[gender][index];
 };
 
+export const getNumOfAssets = (gender) => {
+    return CAPES[gender].length;
+};
+
 export const getStyles = (
     faceWidth,
     topOfHead,

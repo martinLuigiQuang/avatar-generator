@@ -20,13 +20,18 @@ export const getItem = (index, gender) => {
     return SWORDS[gender][index];
 };
 
+export const getNumOfAssets = (gender) => {
+    return SWORDS[gender].length;
+};
+
 export const getStyles = (
     faceWidth,
     topOfHead,
     isLoading,
     options
 ) => {
-    return Bodies.getStyles(faceWidth, topOfHead, isLoading, options);
+    const isTop = true;
+    return Bodies.getStyles(faceWidth, topOfHead, isLoading, {...options, isTop});
 };
 
 export const changeIndex = (value, gender, index) => {

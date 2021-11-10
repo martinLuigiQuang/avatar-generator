@@ -1,16 +1,21 @@
 import * as React from 'react';
 import Button from '@material-ui/core/Button';
 import ApplicationConstants from '../data/constants';
+import Utils from '../utils';
+
+const UTILS = new Utils();
 
 export const AvatarButtons = (props) => {
-    const { value, handleClick } = props;
+    const { value, handleClick, isDisabled } = props;
     return (
         <div className="buttons-container">
-            <Button onClick={handleClick}>
+            <Button onClick={handleClick} disabled={isDisabled}>
                 {ApplicationConstants.DECREASE_INDEX}
             </Button>
-            <h3>{`${value}`.split(/(?=[A-Z]|[0-9])/).join(' ').toUpperCase()}</h3>
-            <Button onClick={handleClick}>
+            <h3 className={`${isDisabled ? 'disabled' : ''}`}>
+                {value.toUpperCase()}
+            </h3>
+            <Button onClick={handleClick} disabled={isDisabled}>
                 {ApplicationConstants.INCREASE_INDEX}
             </Button>
         </div>
@@ -18,23 +23,31 @@ export const AvatarButtons = (props) => {
 };
 
 export const OptionsButton = (props) => {
-    const { index, handleClick, name } = props;
+    const { index, handleClick, name, isDisabled } = props;
+    const value = name === 'mask / headwear' ? `mask ${index}` : 
+                  name === 'gender' ? index : `${name} ${index}`;
     return (
         <div className="option-button-container">
             <p>{name}</p>
-            <AvatarButtons value={index} handleClick={handleClick} />
+            <AvatarButtons 
+                value={value} 
+                handleClick={handleClick} 
+                isDisabled={isDisabled}
+            />
         </div>
     );
 };
 
 export const AvatarOptions = (props) => {
-    const { options, title, gender } = props;
+    const { options, title, gender, isDisabled, bodyIndex } = props;
+    const bodyGender = UTILS.isOddNumber(bodyIndex) ? ApplicationConstants.GENDER.male : ApplicationConstants.GENDER.female;
     return (
         <div className={`avatar-options-container`} id={title}>
             <h2>{title.split('-').join(' ')}</h2>
             {
                 Object.keys(options).map(key => {
                     const item = options[key];
+                    const sourceGender = ApplicationConstants.GENDER[gender] === ApplicationConstants.GENDER.genderNeutral && key !== 'hair' && key !== 'body' ? bodyGender : gender;
                     const handleClick = (e) => {
                         const change = e.target.innerText === ApplicationConstants.INCREASE_INDEX ? 1 : -1;
                         let newIndex;
@@ -50,7 +63,7 @@ export const AvatarOptions = (props) => {
                                     newIndex = item.index + change; 
                             }
                         } else {
-                            newIndex = item.assets.changeIndex(change, gender, item.index);
+                            newIndex = item.assets.changeIndex(change, sourceGender, item.index);
                         }
                         item.setIndex(newIndex);
                     };
@@ -58,8 +71,9 @@ export const AvatarOptions = (props) => {
                         <OptionsButton
                             key={key}
                             name={key}
-                            index={key === 'gender' ? gender : item.index}
+                            index={key === 'gender' ? ApplicationConstants.GENDER[gender] : item.index}
                             handleClick={handleClick}
+                            isDisabled={isDisabled}
                         />
                     );
                 })
@@ -93,7 +107,9 @@ export const Warning = () => {
 
 export const AvatarAccessoryDisplay = (props) => {
     const { optionsArray, gender, parentStates } = props;
-    const { faceWidth, topOfHead, isLoading, scalingRatio, headTiltAngle, chin, leftEyebrow } = parentStates;
+    const { faceWidth, topOfHead, isLoading, scalingRatio, headTiltAngle, chin, leftEyebrow, bodyIndex } = parentStates;
+    const bodyGender = UTILS.isOddNumber(bodyIndex) ? ApplicationConstants.GENDER.male : ApplicationConstants.GENDER.female;
+    const genderValue = ApplicationConstants.GENDER[gender];
     const options = optionsArray.reduce(
         (outputObj, item) => {
             Object.keys(item).forEach(key => outputObj[key] = item[key]);
@@ -110,7 +126,11 @@ export const AvatarAccessoryDisplay = (props) => {
                     }
                     const item = options[key];
                     const isBehindBody = key === 'cape'
-                    const isInFrontOfHair = key === 'helm'
+                    const isInFrontOfHair = key === 'mask / headwear' && item.index >= item.assets.getNumOfAssets(gender) - 2;
+                    if (key === 'mask / headwear') {
+                        console.log(genderValue === ApplicationConstants.GENDER.genderNeutral, item.index, isInFrontOfHair, item.assets.getNumOfAssets(gender))
+                    }
+                    const sourceGender = genderValue === ApplicationConstants.GENDER.genderNeutral && key !== 'hair' && key !== 'body' ? bodyGender : gender;
                     const style = item.assets.getStyles(
                         faceWidth,
                         topOfHead,
@@ -121,7 +141,7 @@ export const AvatarAccessoryDisplay = (props) => {
                         <AvatarAccessory
                             key={key}
                             title={`${key} accessory-option`}
-                            src={item.assets.getItem(item.index, gender)}
+                            src={item.assets.getItem(item.index, sourceGender)}
                             ref={item.ref}
                             style={style}
                         />

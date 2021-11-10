@@ -12,7 +12,6 @@ import * as Bottoms from '../data/bottoms';
 import * as Footwares from '../data/footwares';
 import * as Gloves from '../data/gloves';
 import * as Capes from '../data/capes';
-import * as Helms from '../data/helms';
 import * as Swords from '../data/swords';
 import * as Shields from '../data/shields';
 import ApplicationConstants from '../data/constants';
@@ -20,7 +19,7 @@ import './FacialLandmarks.scss';
 
 const UTILS = new Utils();
 const IMAGE_STYLE = ApplicationConstants.IMAGE_STYLE;
-const GENDER = ApplicationConstants.GENDER;
+const GENDER = Object.keys(ApplicationConstants.GENDER);
 
 const FacialLandmarks = (props) => {
     const [ scalingRatio, setScalingRatio ] = React.useState(1);
@@ -33,6 +32,8 @@ const FacialLandmarks = (props) => {
     const [ isHeadTiltTooLarge, setIsHeadTiltTooLarge ] = React.useState(false);
     const [ isPhotoUploaded, setIsPhotoUploaded ] = React.useState(false);
     const [ isFirstPass, setIsFirstPass ] = React.useState(true);
+    const [ windowInnerWidth, setWindowInnerWidth ] = React.useState(1200);
+    const [ isSelectionPanelOpen, setIsSelectionPanelOpen ] = React.useState(true);
 
     const [ genderIndex, setGenderIndex ] = React.useState(0)
     const [ hairIndex, setHairIndex ] = React.useState(0);
@@ -42,7 +43,6 @@ const FacialLandmarks = (props) => {
     const [ bottomIndex, setBottomIndex ] = React.useState(0);
     const [ footwareIndex, setFootwareIndex ] = React.useState(0);
     const [ gloveIndex, setGloveIndex ] = React.useState(0);
-    const [ helmIndex, setHelmIndex ] = React.useState(0);
     const [ capeIndex, setCapeIndex ] = React.useState(0);
     const [ swordIndex, setSwordIndex ] = React.useState(0);
     const [ shieldIndex, setShieldIndex ] = React.useState(0);
@@ -59,7 +59,6 @@ const FacialLandmarks = (props) => {
     const bottomRef = React.createRef(null);
     const footwareRef = React.createRef(null);
     const gloveRef = React.createRef(null);
-    const helmRef = React.createRef(null);
     const capeRef = React.createRef(null);
     const swordRef = React.createRef(null);
     const shieldRef = React.createRef(null);
@@ -73,6 +72,14 @@ const FacialLandmarks = (props) => {
         [isFirstPass, isPhotoUploaded]
     );
 
+    React.useEffect(
+        () => {
+            resizeWindow();
+            window.addEventListener('resize', resizeWindow);
+        },
+        []
+    );
+
     const APPEARANCE_OPTIONS = {
         'gender': { index: genderIndex, setIndex: setGenderIndex },
         'hair': { assets: Hairs, index: hairIndex, setIndex: setHairIndex, ref: hairRef },
@@ -80,15 +87,19 @@ const FacialLandmarks = (props) => {
     };
 
     const AVATAR_ACCESSORIES = {
-        'mask / headware': { assets: Masks, index: maskIndex, setIndex: setMaskIndex, ref: maskRef },
-        'helm': { assets: Helms, index: helmIndex, setIndex: setHelmIndex, ref: helmRef },
+        'mask / headwear': { assets: Masks, index: maskIndex, setIndex: setMaskIndex, ref: maskRef },
         'top': { assets: Tops, index: topIndex, setIndex: setTopIndex, ref: topRef },
         'cape': { assets: Capes, index: capeIndex, setIndex: setCapeIndex, ref: capeRef },
         'bottom': { assets: Bottoms, index: bottomIndex, setIndex: setBottomIndex, ref: bottomRef },
-        'footware': { assets: Footwares, index: footwareIndex, setIndex: setFootwareIndex, ref: footwareRef},
+        'footwear': { assets: Footwares, index: footwareIndex, setIndex: setFootwareIndex, ref: footwareRef},
         'glove': { assets: Gloves, index: gloveIndex, setIndex: setGloveIndex, ref: gloveRef },
         'shield': { assets: Shields, index: shieldIndex, setIndex: setShieldIndex, ref: shieldRef },
         'sword': { assets: Swords, index: swordIndex, setIndex: setSwordIndex, ref: swordRef },
+    };
+
+    const resizeWindow = () => {
+        setWindowInnerWidth(window.innerWidth);
+        setIsSelectionPanelOpen(window.innerWidth > 1100)
     };
 
     const runFacemesh = async () => {
@@ -167,21 +178,32 @@ const FacialLandmarks = (props) => {
                 type="file"
                 onChange={handleImageUpload}
             />
-            {isLoading && isPhotoUploaded ? 'Scanning face...' : 'Photo Upload'}
+            {isLoading && isPhotoUploaded ? 'Scanning face...' : 'Upload/Take your photo'}
         </Button>
     );
 
     const SelectPanel = (
-        <div className="avatar-options-selection-panel">
+        <div className={`avatar-options-selection-panel ${windowInnerWidth <= 1100 && !isSelectionPanelOpen ? 'collapsed' : ''}`}>
+            {
+                windowInnerWidth <= 1100 && isSelectionPanelOpen ?
+                    <Button className="close-selection-panel-button" onClick={() => setIsSelectionPanelOpen(false)}>
+                        close
+                    </Button> :
+                    null
+            }
             <AvatarOptions
                 options={APPEARANCE_OPTIONS}
                 title="appearance-options"
                 gender={GENDER[genderIndex]}
+                isDisabled={!isPhotoUploaded || isLoading}
+                bodyIndex={bodyIndex}
             />
             <AvatarOptions
                 options={AVATAR_ACCESSORIES}
                 title="avatar-accessories"
                 gender={GENDER[genderIndex]}
+                isDisabled={!isPhotoUploaded || isLoading}
+                bodyIndex={bodyIndex}
             />
         </div>
     );
@@ -209,6 +231,15 @@ const FacialLandmarks = (props) => {
         </div>
     );
 
+    const OpenSelectionPanelButton = (
+        <Button
+            className="open-selection-panel-button"
+            onClick={() => setIsSelectionPanelOpen(true)}
+        >
+            {'>'} Avatar Options
+        </Button>
+    );
+
     const PhotoContainer = (
         < div
             ref={avatarRef}
@@ -218,25 +249,34 @@ const FacialLandmarks = (props) => {
             {UploadedImageContainer}
             <canvas
                 ref={canvasRef}
-                style={{ ...IMAGE_STYLE, width: 'auto' }}
+                style={{ 
+                    ...IMAGE_STYLE, 
+                    width: 'auto',
+                    marginLeft: UTILS.getPhotoMargin(scalingRatio),
+                    marginRight: UTILS.getPhotoMargin(scalingRatio), 
+                    top: -topOfHead[1] + ApplicationConstants.AVATAR_TOP_POSITION 
+                }}
                 className={`${isLoading || isHeadTiltTooLarge ? 'hidden' : ''}`}
             />
             <AvatarAccessoryDisplay 
                 optionsArray={[APPEARANCE_OPTIONS, AVATAR_ACCESSORIES]}
                 gender={GENDER[genderIndex]}
-                parentStates={{faceWidth, topOfHead, isLoading, headTiltAngle, scalingRatio, chin, leftEyebrow}}
+                parentStates={{faceWidth, topOfHead, isLoading, headTiltAngle, scalingRatio, chin, leftEyebrow, bodyIndex}}
             />
         </div>
     );
 
     return (
-        <div className="avatar-generator-container">
-            {UploadButton}
-            <div className="avatar-generator">
-                {SelectPanel}
-                {isHeadTiltTooLarge ? <Warning /> : PhotoContainer}
+        <>
+            <div className="avatar-generator-container">
+                {UploadButton}
+                <div className="avatar-generator">
+                    {isSelectionPanelOpen ? SelectPanel : OpenSelectionPanelButton}
+                    {isHeadTiltTooLarge ? <Warning /> : PhotoContainer}
+                </div>
             </div>
-        </div>
+            <Button onClick={UTILS.print} className="print-button">Print</Button>
+        </>
     );
 };
 

@@ -19,6 +19,10 @@ export const getItem = (index, gender) => {
     return HELMS[gender][index];
 };
 
+export const getNumOfAssets = (gender) => {
+    return HELMS[gender].length;
+};
+
 export const getStyles = (
     faceWidth,
     topOfHead,

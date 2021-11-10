@@ -147,6 +147,22 @@ class Utils {
             assets[key].unshift(nullAsset);
         });
     };
+
+    getPhotoMargin = (scalingRatio) => {
+        return 0.5 * Math.abs(1 - scalingRatio) * ApplicationConstants.IMAGE_STYLE.width;
+    };
+
+    print = () => {
+        window.print();
+    };
+
+    isOddNumber = (number) => {
+        return number % 2 === 1;
+    };
+
+    isEvenNumber = (number) => {
+        return number % 2 === 0;
+    }
     
     detectVideo = async (webcamRef, canvasRef, setFaceGeometry, net) => {
         if (

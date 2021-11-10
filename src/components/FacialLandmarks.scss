@@ -2,13 +2,86 @@
     background: url('../assets/Pg4.jpg');
     background-size: cover;
     background-position: top;
-    width: 1280px;
-    height: 1100px;
+    // width: 1280px;
+    height: 890px;
     margin: 0 auto;
     input[type="file"] {
         display: none;
     }
-    .MuiButton-root.upload-button {
+    .avatar-generator {
+        display: flex;
+        position: relative;
+        .avatar-options-selection-panel {
+            background-color: rgba(240, 248, 255, 0.639);
+            margin: 0 0 20px 20px;
+            padding-top: 25px;
+            padding-bottom: 15px;
+            border-radius: 5px;
+            position: absolute;
+            z-index: 110;
+            &.collapsed {
+                .avatar-options-container {
+                    display: none;
+                }
+            }
+            .avatar-options-container {
+                h2 {
+                    text-transform: uppercase;
+                }
+                .option-button-container {
+                    display: flex;
+                    width: 320px;
+                    justify-content: space-around;
+                    align-items: center;
+                    margin: 0 auto;
+                    p {
+                        width: 100px;
+                        text-align: right;
+                    }
+                    .buttons-container {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        height: 25px;
+                        .MuiButton-root {
+                            font-family: 'Komika';
+                            font-size: var(--medium-font-size);
+                            min-width: 0;
+                            span.MuiButton-label {
+                                width: 30px;
+                            }
+                        }
+                        h3 {
+                            width: 120px;
+                            margin: 0 5px;
+                            &.disabled {
+                                color: gray;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .photo-container {
+            position: relative;
+            margin: 0 auto;
+            margin-bottom: 50px;
+            #scaled-uploaded-photo {
+                opacity: 0;
+            }
+            .accessory-option {
+                position: absolute;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: 'center';
+            }
+        }
+    }
+}
+
+.MuiButton-root{
+    &.upload-button,
+    &.print-button {
         width: 100%;
         background-color: black;
         font-family: 'Komika';
@@ -21,55 +94,65 @@
             background-color: gainsboro;
         }
     }
-    .avatar-generator {
-        display: flex;
-        .avatar-options-selection-panel {
-            background-color: rgba(240, 248, 255, 0.639);
-            margin: 0 0 20px 20px;
-            border-radius: 5px;
-            .avatar-options-container {
-                h2 {
-                    text-transform: uppercase;
-                }
-                .option-button-container {
-                    display: flex;
-                    width: 400px;
-                    justify-content: space-around;
-                    align-items: center;
-                    margin: 0 auto;
-                    p {
-                        width: 150px;
-                        text-align: right;
-                    }
-                    .buttons-container {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        height: 25px;
-                        .MuiButton-root {
-                            font-family: 'Komika';
-                            font-size: var(--medium-font-size);
-                        }
-                        h3 {
-                            width: 150px;
-                            margin: 0 5px;
-                        }
-                    }
-                }
-            }
+    &.print-button {
+        border-top: 4px solid white;
+    }
+    &.open-selection-panel-button {
+        font-family: 'Komika';
+        font-size: var(--big-font-size);
+        color: red;
+        position: absolute;
+        z-index: 110;
+        background-color: black;
+        color: white;
+        overflow-x: hidden;
+        p {
+            margin: 0;
         }
-        .photo-container {
-            position: relative;
+        // &:hover {
+        //     animation: extend 1s linear;
+        //     p {
+        //         display: inline;
+        //         margin: 0;
+        //     }
+        // }
+    }
+    &.close-selection-panel-button {
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        background-color: black;
+        color: white;
+    }
+}
+
+@media print {
+    body {
+        -webkit-print-color-adjust: exact !important;
+    }
+    button.MuiButton-root {
+        display: none;
+    }
+    .avatar-generator-container {
+        width: 100%;
+        height: 24.7cm;
+        padding-top: 20px;
+        .avatar-generator {
             margin: 0 auto;
-            #scaled-uploaded-photo {
-                opacity: 0;
-            }
-            .accessory-option {
-                position: absolute;
-                margin-left: auto;
-                margin-right: auto;
-                text-align: 'center';
+            .avatar-options-selection-panel {
+                display: none;
             }
         }
     }
+}
+
+@media screen and (max-width: 1100px) {
+    .avatar-generator-container{
+        height: 890px;
+    }
+}
+
+@keyframes extend {
+    0% { width: 0px; }
+    100% { width: auto }
 }

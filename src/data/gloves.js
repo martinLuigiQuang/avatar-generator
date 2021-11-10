@@ -31,6 +31,10 @@ export const getItem = (index, gender) => {
     return GLOVES[gender][index];
 };
 
+export const getNumOfAssets = (gender) => {
+    return GLOVES[gender].length;
+};
+
 export const getStyles = (
     faceWidth,
     topOfHead,

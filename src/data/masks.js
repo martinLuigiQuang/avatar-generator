@@ -8,6 +8,8 @@ import F4 from '../assets/headware_female/MaskGreen-01.png';
 import F5 from '../assets/headware_female/MaskMagenta-01.png';
 import F6 from '../assets/headware_female/MaskOrange-01.png';
 import F7 from '../assets/headware_female/MaskRed-01-01.png';
+import F8 from '../assets/accessories_female/FemaleHelm-01.png';
+import F9 from '../assets/accessories_male/MaleHelm-01.png';
 
 import M1 from '../assets/headware_female/Headband1-01.png';
 import M2 from '../assets/headware_female/Headband2-01.png';
@@ -15,22 +17,18 @@ import M3 from '../assets/headware_male/MaskBlue-01.png';
 import M4 from '../assets/headware_male/MaskGreen-01.png';
 import M5 from '../assets/headware_male/MaskMagenta-01.png';
 import M6 from '../assets/headware_male/MaskOrange-01.png';
-import M7 from '../assets/headware_male/MaskRed-01-01.png';
+import M7 from '../assets/headware_male/MaskRed-01-01.png'; 
+import M8 from '../assets/accessories_female/FemaleHelm-01.png';
+import M9 from '../assets/accessories_male/MaleHelm-01.png';
 
 const UTILS = new Utils();
 
 const MASKS = {
-    female: [F1, F2, F3, F4, F5, F6, F7],
-    male: [M1, M2, M3, M4, M5, M6, M7]
+    female: [F1, F2, F3, F4, F5, F6, F7, F8, F9],
+    male: [M1, M2, M3, M4, M5, M6, M7, M8, M9]
 };
-MASKS.genderNeutral = [
-    ...MASKS.female.slice(0, 2), 
-    ...UTILS.generateGenderNeutralAccessoriesArray({
-        female: MASKS.female.slice(2, MASKS.female.length),
-        male: MASKS.male.slice(2, MASKS.male.length)
-    })
-];
 UTILS.insertNullAsset(MASKS)
+MASKS.genderNeutral = MASKS.female;
 
 const getRatio = (width) => {
     return width / ApplicationConstants.ASSETS_IMAGE_FOREHEAD_WIDTH;
@@ -39,6 +37,10 @@ const getRatio = (width) => {
 export const getItem = (index, gender) => {
     return MASKS[gender][index];
 }; 
+
+export const getNumOfAssets = (gender) => {
+    return MASKS[gender].length;
+};
 
 export const getStyles = (
     faceWidth,
@@ -53,7 +55,7 @@ export const getStyles = (
     return {
         width: `${scaledImageWidth}px`,
         left: topOfHead[0] + imageLeftMargin - 0.5 * scaledImageWidth,
-        top: options.leftEyebrow[1] - ratio * ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_LEFT_EYEBROW,
+        top: options.leftEyebrow[1] - topOfHead[1] + ApplicationConstants.AVATAR_TOP_POSITION - ratio * ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_LEFT_EYEBROW,
         zIndex: isLoading ? ApplicationConstants.Z_INDEX_HIDDEN : displayZIndex,
         transform: `rotateZ(${options.headTiltAngle}deg)`,
         transformOrigin: '50% 50px',

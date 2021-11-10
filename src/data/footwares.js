@@ -22,11 +22,15 @@ const FOOTWARES = {
     female: [F1, F2, F3, F4, F5, F6],
     male: [M1, M2, M3, M4, M5, M6]
 };
-FOOTWARES.genderNeutral = FOOTWARES.male;
 UTILS.insertNullAsset(FOOTWARES);
+FOOTWARES.genderNeutral = FOOTWARES.male;
 
 export const getItem = (index, gender) => {
     return FOOTWARES[gender][index];
+};
+
+export const getNumOfAssets = (gender) => {
+    return FOOTWARES[gender].length;
 };
 
 export const getStyles = (

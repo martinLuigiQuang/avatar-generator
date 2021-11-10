@@ -37,6 +37,10 @@ export const getItem = (index, gender) => {
     return HAIRS[gender][index];
 }; 
 
+export const getNumOfAssets = (gender) => {
+    return HAIRS[gender].length;
+};
+
 export const getStyles = (  
     faceWidth,
     topOfHead,
@@ -50,7 +54,7 @@ export const getStyles = (
     return {
         width: `${scaledImageWidth}px`,
         left: topOfHead[0] + imageLeftMargin - 0.5 * scaledImageWidth,
-        top: topOfHead[1] - ratio * ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_TOP_OF_HEAD,
+        top: ApplicationConstants.AVATAR_TOP_POSITION - ratio * ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_TOP_OF_HEAD,
         zIndex: isLoading ? ApplicationConstants.Z_INDEX_HIDDEN : ApplicationConstants.Z_INDEX_HAIR,
         transform: `rotateZ(${options.headTiltAngle}deg)`,
         transformOrigin: `50% ${rotationAxisYCoord}px`,

@@ -1,3 +1,4 @@
+import ApplicationConstants from './constants';
 import Utils from '../utils';
 
 import F1 from '../assets/bottoms_female/FemaleBotBlue-01.png';
@@ -27,6 +28,10 @@ UTILS.insertNullAsset(BOTTOMS);
 
 export const getItem = (index, gender) => {
     return BOTTOMS[gender][index];
+};
+
+export const getNumOfAssets = (gender) => {
+    return BOTTOMS[gender].length;
 };
 
 export const getStyles = (

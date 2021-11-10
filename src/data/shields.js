@@ -19,6 +19,10 @@ export const getItem = (index, gender) => {
     return SHIELDS[gender][index];
 };
 
+export const getNumOfAssets = (gender) => {
+    return SHIELDS[gender].length;
+};
+
 export const getStyles = (
     faceWidth,
     topOfHead,
