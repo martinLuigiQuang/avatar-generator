@@ -41,8 +41,7 @@ export const OptionsButton = (props) => {
 };
 
 export const AvatarOptions = (props) => {
-    const { options, title, gender, isDisabled, bodyIndex } = props;
-    const bodyGender = UTILS.isOddNumber(bodyIndex) ? ApplicationConstants.GENDER.male : ApplicationConstants.GENDER.female;
+    const { options, title, gender, isDisabled, bodyGender } = props;
     return (
         <div className={`avatar-options-container`} id={title}>
             <h2>{title.split('-').join(' ')}</h2>
@@ -119,8 +118,7 @@ export const Instruction = (props) => {
 
 export const AvatarAccessoryDisplay = (props) => {
     const { optionsArray, gender, parentStates } = props;
-    const { faceWidth, topOfHead, isLoading, scalingRatio, headTiltAngle, chin, leftEyebrow, bodyIndex } = parentStates;
-    const bodyGender = UTILS.isOddNumber(bodyIndex) ? ApplicationConstants.GENDER.male : ApplicationConstants.GENDER.female;
+    const { faceWidth, topOfHead, isLoading, scalingRatio, headTiltAngle, chin, leftEyebrow, bodyGender } = parentStates;
     const genderValue = ApplicationConstants.GENDER[gender];
     const options = optionsArray.reduce(
         (outputObj, item) => {
@@ -158,5 +156,30 @@ export const AvatarAccessoryDisplay = (props) => {
                 })
             }
         </>
+    );
+};
+
+export const SetCostumesOptions = (props) => {
+    const { color, handleClick } = props;
+    return (
+        <Button 
+            className="set-costume-container"
+            style={{backgroundColor: color !== 'wildcard' ? color : 'white'}}
+            onClick={handleClick}
+        >
+            {color}
+        </Button>
+    );
+};
+
+export const PanelButton = (props) => {
+    const { className, handleClick, text } = props;
+    return (
+        <Button
+            className={className}
+            onClick={handleClick}
+        >
+            {text}
+        </Button>
     );
 };

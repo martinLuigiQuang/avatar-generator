@@ -89,7 +89,6 @@ class Utils {
     };
     
     crop = async (predictions, ctx, width, height) => {
-        console.log(predictions)
         if (predictions.length === 1) {
             const keypoints = predictions.map((prediction) => {
                 this.getPoints(prediction.scaledMesh, width, height).forEach(half => {
@@ -163,7 +162,19 @@ class Utils {
 
     isEvenNumber = (number) => {
         return number % 2 === 0;
-    }
+    };
+
+    checkIndex = (index) => {
+        return index <= 6 || index >= 1;
+    };
+
+    getCostumeIndex = (index) => {
+        const randomIndex = Math.floor(Math.random() * 6 + 1);
+        if (this.checkIndex(randomIndex)) {
+            return index === 99 ? randomIndex : index;
+        }
+        this.getCostumeIndex(index);
+    };
     
     detectVideo = async (webcamRef, canvasRef, setFaceGeometry, net) => {
         if (

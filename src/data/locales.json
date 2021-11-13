@@ -23,7 +23,10 @@
             "Whether it's a mask, a cape, or tights, every superhero needs their own super look. It's time to create yours!", 
             "Start by uploading or taking a photo of yourself. Using the menu on the left side of the screen select your superhero appearance and accessories to build your avatar. Or you can choose from a series of pre-selected accessory combinations from the menu on the right.", 
             "Download your avatar and share with us via the link in the email for a chance to win Abbott Excellence Awards"
-        ]
+        ],
+        "CLOSE": "CLOSE",
+        "AVATAR OPTIONS": "AVATAR OPTIONS",
+        "SET OUTFITS": "SET OUTFITS"
     },
     "spanish":{
         "CALA SUPERHERO AVATAR GENERATOR":"GENERADOR DE NOMBRES CALA DE SUPER HÉROE",
@@ -49,7 +52,10 @@
             "Whether it's a mask, a cape, or tights, every superhero needs their own super look. It's time to create yours!",
             "Start by uploading or taking a photo of yourself. Using the menu on the left side of the screen select your superhero appearance and accessories to build your avatar. Or you can choose from a series of pre-selected accessory combinations from the menu on the right.",
             "Download your avatar and share with us via the link in the email for a chance to win Abbott Excellence Awards"
-        ]    
+        ],
+        "CLOSE": "CLOSE SP",
+        "AVATAR OPTIONS": "AVATAR OPTIONS PO",
+        "SET OUTFITS": "SET OUTFITS PO"    
     },
     "portuguese":{
         "CALA SUPERHERO AVATAR GENERATOR":"GERADOR DA CALA DE NOME DE SUPER-HERÓI",
@@ -75,6 +81,9 @@
             "Whether it's a mask, a cape, or tights, every superhero needs their own super look. It's time to create yours!",
             "Start by uploading or taking a photo of yourself. Using the menu on the left side of the screen select your superhero appearance and accessories to build your avatar. Or you can choose from a series of pre-selected accessory combinations from the menu on the right.",
             "Download your avatar and share with us via the link in the email for a chance to win Abbott Excellence Awards"
-        ]    
+        ],
+        "CLOSE": "CLOSE PO",
+        "AVATAR OPTIONS": "AVATAR OPTIONS PO",
+        "SET OUTFITS": "SET OUTFITS PO"
     }
 }

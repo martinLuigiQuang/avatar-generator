@@ -17,9 +17,11 @@ import ApplicationConstants from '../data/constants';
 import { 
     AvatarOptions, 
     ScaledUploadedPhoto, 
-    AvatarAccessoryDisplay, 
+    AvatarAccessoryDisplay,
+    SetCostumesOptions, 
     Warning, 
-    Instruction 
+    Instruction,
+    PanelButton
 } from './FacialLandmarksHelper';
 import Locales from '../data/locales.json';
 import './FacialLandmarks.scss';
@@ -31,6 +33,7 @@ const GENDER = Object.keys(ApplicationConstants.GENDER);
 const FacialLandmarks = (props) => {
     const { language } = props;
 
+    const [ bodyGender, setBodyGender ] = React.useState('female');
     const [ scalingRatio, setScalingRatio ] = React.useState(1);
     const [ isLoading, setIsLoading ] = React.useState(true);
     const [ faceWidth, setFaceWidth ] = React.useState(0);
@@ -41,8 +44,9 @@ const FacialLandmarks = (props) => {
     const [ isPhotoUploaded, setIsPhotoUploaded ] = React.useState(false);
     const [ isFirstPass, setIsFirstPass ] = React.useState(true);
     const [ windowInnerWidth, setWindowInnerWidth ] = React.useState(1200);
-    const [ isSelectionPanelOpen, setIsSelectionPanelOpen ] = React.useState(true);
     const [ faceDetectionErrorCode, setFaceDetectionErrorCode ] = React.useState(null);
+    const [ isSelectionPanelOpen, setIsSelectionPanelOpen ] = React.useState(true);
+    const [ isSetCostumesPanelOpen, setIsSetCostumesPanelOpen ] = React.useState(true);
 
     const [ genderIndex, setGenderIndex ] = React.useState(0)
     const [ hairIndex, setHairIndex ] = React.useState(0);
@@ -74,6 +78,14 @@ const FacialLandmarks = (props) => {
 
     React.useEffect(
         () => {
+            resizeWindow();
+            window.addEventListener('resize', resizeWindow);
+        },
+        []
+    );
+
+    React.useEffect(
+        () => {
             if (isPhotoUploaded) {
                 runFacemesh();
             };
@@ -83,10 +95,13 @@ const FacialLandmarks = (props) => {
 
     React.useEffect(
         () => {
-            resizeWindow();
-            window.addEventListener('resize', resizeWindow);
+            if (GENDER[genderIndex] === 'genderNeutral') {
+                console.log('here')
+                const gender = UTILS.isOddNumber(bodyIndex) ? ApplicationConstants.GENDER.male : ApplicationConstants.GENDER.female;
+                setBodyGender(gender);
+            }
         },
-        []
+        [genderIndex, bodyIndex]
     );
 
     const APPEARANCE_OPTIONS = {
@@ -104,6 +119,17 @@ const FacialLandmarks = (props) => {
         'gloves': { assets: Gloves, index: gloveIndex, setIndex: setGloveIndex, ref: gloveRef },
         'shield': { assets: Shields, index: shieldIndex, setIndex: setShieldIndex, ref: shieldRef },
         'tools': { assets: Swords, index: swordIndex, setIndex: setSwordIndex, ref: swordRef },
+    };
+
+    const SET_COSTUMES = {
+        'blue': 1,
+        'green': 2,
+        'magenta': 3,
+        'purple': 3,
+        'orange': 4,
+        'red': 5,
+        'yellow': 6,
+        'wildcard': 99
     };
 
     const resizeWindow = () => {
@@ -131,7 +157,6 @@ const FacialLandmarks = (props) => {
             ctx.drawImage(photo, 0, 0, scalingRatio * IMAGE_STYLE.width, photo.height);
             const faceInformation = await UTILS.crop(face, ctx, scalingRatio * IMAGE_STYLE.width, photo.height);
             if (faceInformation && !faceInformation.status && !Number.isNaN(scalingRatio)) {
-                console.log(scalingRatio);
                 const imageData = ctx.getImageData(0, 0, scalingRatio * IMAGE_STYLE.width, photo.height);
                 UTILS.turnPixelTransparent(imageData);
                 ctx.putImageData(imageData, 0, 0);
@@ -190,6 +215,14 @@ const FacialLandmarks = (props) => {
         fileUploadRef.current.click()
     };
 
+    const handleSetCostumesIndex = (index) => {
+        setMaskIndex(UTILS.getCostumeIndex(index) + 2);
+        setTopIndex(UTILS.getCostumeIndex(index));
+        setGloveIndex(UTILS.getCostumeIndex(index));
+        setBottomIndex(UTILS.getCostumeIndex(index));
+        setFootwareIndex(UTILS.getCostumeIndex(index));
+    };
+
     const UploadButton = (
         <Button
             className="upload-button"
@@ -207,28 +240,34 @@ const FacialLandmarks = (props) => {
 
     const SelectPanel = (
         <div className={`avatar-options-selection-panel ${windowInnerWidth <= 1100 && !isSelectionPanelOpen ? 'collapsed' : ''}`}>
-            {
-                windowInnerWidth <= 1100 && isSelectionPanelOpen || true ?
-                    <Button className="close-selection-panel-button" onClick={() => setIsSelectionPanelOpen(false)}>
-                        close
-                    </Button> :
-                    null
-            }
+            <PanelButton 
+                className="close-selection-panel-button"
+                text={Locales[language]["CLOSE"]}
+                handleClick={() => setIsSelectionPanelOpen(false)}
+            />
             <AvatarOptions
                 options={APPEARANCE_OPTIONS}
                 title="appearance-options"
                 gender={GENDER[genderIndex]}
                 isDisabled={!isPhotoUploaded || isLoading}
-                bodyIndex={bodyIndex}
+                bodyGender={bodyGender}
             />
             <AvatarOptions
                 options={AVATAR_ACCESSORIES}
                 title="avatar-accessories"
                 gender={GENDER[genderIndex]}
                 isDisabled={!isPhotoUploaded || isLoading}
-                bodyIndex={bodyIndex}
+                bodyGender={bodyGender}
             />
         </div>
+    );
+
+    const OpenSelectionPanelButton = (
+        <PanelButton 
+            className="open-selection-panel-button"
+            text={`> ${Locales[language]["AVATAR OPTIONS"]}`}
+            handleClick={() => setIsSelectionPanelOpen(true)}
+        />
     );
 
     const UploadedImageContainer = (
@@ -254,15 +293,6 @@ const FacialLandmarks = (props) => {
         </div>
     );
 
-    const OpenSelectionPanelButton = (
-        <Button
-            className="open-selection-panel-button"
-            onClick={() => setIsSelectionPanelOpen(true)}
-        >
-            {'>'} Avatar Options
-        </Button>
-    );
-
     const PhotoContainer = (
         < div
             ref={avatarRef}
@@ -285,9 +315,45 @@ const FacialLandmarks = (props) => {
             <AvatarAccessoryDisplay 
                 optionsArray={[APPEARANCE_OPTIONS, AVATAR_ACCESSORIES]}
                 gender={GENDER[genderIndex]}
-                parentStates={{faceWidth, topOfHead, isLoading, headTiltAngle, scalingRatio, chin, leftEyebrow, bodyIndex}}
+                parentStates={{faceWidth, topOfHead, isLoading, headTiltAngle, scalingRatio, chin, leftEyebrow, bodyGender}}
             />
         </div>
+    );
+
+    const SetCostumes = (
+        <div className={`set-costumes-options-panel ${windowInnerWidth <= 1100 || !isSetCostumesPanelOpen ? 'collapsed' : ''}`}>
+            <PanelButton 
+                className="close-set-costumes-panel-button"
+                text={Locales[language]['CLOSE']}
+                handleClick={() => setIsSetCostumesPanelOpen(false)}
+            />
+            {
+                Object.keys(SET_COSTUMES)
+                .filter(costumeColor => {
+                    if (bodyGender === ApplicationConstants.GENDER.male) {
+                        return costumeColor !== 'magenta';
+                    }
+                    return costumeColor !== 'purple';
+                })
+                .map(costumeColor => {
+                    const index = SET_COSTUMES[costumeColor];
+                    return (
+                        <SetCostumesOptions 
+                            color={costumeColor}
+                            handleClick={() => handleSetCostumesIndex(index)}
+                        />
+                    );
+                })
+            }
+        </div>
+    );
+
+    const OpenSetCostumesPanelButton = (
+        <PanelButton
+            className="open-set-costumes-panel-button"
+            text={`${Locales[language]['SET OUTFITS']} <`}
+            handleClick={() => setIsSetCostumesPanelOpen(true)}
+        />
     );
 
     return (
@@ -299,6 +365,7 @@ const FacialLandmarks = (props) => {
                     {PhotoContainer}
                     {isPhotoUploaded && faceDetectionErrorCode ? <Warning errorCode={faceDetectionErrorCode}/> : null}
                     {!isPhotoUploaded ? <Instruction messages={Locales[language].INSTRUCTION}/> : null}
+                    {isSetCostumesPanelOpen ? SetCostumes : OpenSetCostumesPanelButton}
                 </div>
             </div>
             <Button onClick={UTILS.print} className="print-button">Print</Button>
