@@ -20,7 +20,7 @@ const HAIRS = {
     female: [F1, F2, F3, F4, F5, F6],
     male: [M1, M2, M3]
 };
-HAIRS.genderNeutral = [...HAIRS.female.slice(0, HAIRS.female.length - 1), ...HAIRS.male];
+HAIRS.genderNeutral = [...HAIRS.female.slice(0, HAIRS.female.length), ...HAIRS.male];
 UTILS.insertNullAsset(HAIRS);
 
 const HAIR_NAMES = {

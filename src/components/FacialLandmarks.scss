@@ -76,6 +76,14 @@
                 text-align: 'center';
             }
         }
+        .warning-container,
+        .instruction-container {
+            margin: 0 370px;
+            h2 {
+                text-align: left;
+                color: wheat;
+            }
+        }
     }
 }
 
@@ -89,7 +97,10 @@
         color: white;
         border-bottom: 4px solid white;
         margin-bottom: 20px;
-        &:hover {
+        position: relative;
+        z-index: 110;
+        &:hover,
+        &:disabled {
             color: black;
             background-color: gainsboro;
         }

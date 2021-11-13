@@ -2,7 +2,6 @@ import * as React from 'react';
 import * as tf from '@tensorflow/tfjs';
 import * as Facemesh from '@tensorflow-models/facemesh';
 import Utils from '../utils';
-import { AvatarOptions, ScaledUploadedPhoto, AvatarAccessoryDisplay, Warning } from './FacialLandmarksHelper';
 import Button from '@material-ui/core/Button';
 import * as Hairs from '../data/hairs';
 import * as Masks from '../data/masks';
@@ -12,9 +11,17 @@ import * as Bottoms from '../data/bottoms';
 import * as Footwares from '../data/footwares';
 import * as Gloves from '../data/gloves';
 import * as Capes from '../data/capes';
-import * as Swords from '../data/swords';
+import * as Swords from '../data/tools';
 import * as Shields from '../data/shields';
 import ApplicationConstants from '../data/constants';
+import { 
+    AvatarOptions, 
+    ScaledUploadedPhoto, 
+    AvatarAccessoryDisplay, 
+    Warning, 
+    Instruction 
+} from './FacialLandmarksHelper';
+import Locales from '../data/locales.json';
 import './FacialLandmarks.scss';
 
 const UTILS = new Utils();
@@ -22,6 +29,8 @@ const IMAGE_STYLE = ApplicationConstants.IMAGE_STYLE;
 const GENDER = Object.keys(ApplicationConstants.GENDER);
 
 const FacialLandmarks = (props) => {
+    const { language } = props;
+
     const [ scalingRatio, setScalingRatio ] = React.useState(1);
     const [ isLoading, setIsLoading ] = React.useState(true);
     const [ faceWidth, setFaceWidth ] = React.useState(0);
@@ -29,11 +38,11 @@ const FacialLandmarks = (props) => {
     const [ topOfHead, setTopOfHead ] = React.useState([0, 0]);
     const [ chin, setChin ] = React.useState([0, 0]);
     const [ leftEyebrow, setLeftEyebrow ] = React.useState([0, 0]);
-    const [ isHeadTiltTooLarge, setIsHeadTiltTooLarge ] = React.useState(false);
     const [ isPhotoUploaded, setIsPhotoUploaded ] = React.useState(false);
     const [ isFirstPass, setIsFirstPass ] = React.useState(true);
     const [ windowInnerWidth, setWindowInnerWidth ] = React.useState(1200);
     const [ isSelectionPanelOpen, setIsSelectionPanelOpen ] = React.useState(true);
+    const [ faceDetectionErrorCode, setFaceDetectionErrorCode ] = React.useState(null);
 
     const [ genderIndex, setGenderIndex ] = React.useState(0)
     const [ hairIndex, setHairIndex ] = React.useState(0);
@@ -92,9 +101,9 @@ const FacialLandmarks = (props) => {
         'cape': { assets: Capes, index: capeIndex, setIndex: setCapeIndex, ref: capeRef },
         'bottom': { assets: Bottoms, index: bottomIndex, setIndex: setBottomIndex, ref: bottomRef },
         'footwear': { assets: Footwares, index: footwareIndex, setIndex: setFootwareIndex, ref: footwareRef},
-        'glove': { assets: Gloves, index: gloveIndex, setIndex: setGloveIndex, ref: gloveRef },
+        'gloves': { assets: Gloves, index: gloveIndex, setIndex: setGloveIndex, ref: gloveRef },
         'shield': { assets: Shields, index: shieldIndex, setIndex: setShieldIndex, ref: shieldRef },
-        'sword': { assets: Swords, index: swordIndex, setIndex: setSwordIndex, ref: swordRef },
+        'tools': { assets: Swords, index: swordIndex, setIndex: setSwordIndex, ref: swordRef },
     };
 
     const resizeWindow = () => {
@@ -121,11 +130,15 @@ const FacialLandmarks = (props) => {
             const ctx = await canvas.getContext('2d');
             ctx.drawImage(photo, 0, 0, scalingRatio * IMAGE_STYLE.width, photo.height);
             const faceInformation = await UTILS.crop(face, ctx, scalingRatio * IMAGE_STYLE.width, photo.height);
-            const imageData = ctx.getImageData(0, 0, scalingRatio * IMAGE_STYLE.width, photo.height);
-            UTILS.turnPixelTransparent(imageData);
-            ctx.putImageData(imageData, 0, 0);
-            if (faceInformation) {
+            if (faceInformation && !faceInformation.status && !Number.isNaN(scalingRatio)) {
+                console.log(scalingRatio);
+                const imageData = ctx.getImageData(0, 0, scalingRatio * IMAGE_STYLE.width, photo.height);
+                UTILS.turnPixelTransparent(imageData);
+                ctx.putImageData(imageData, 0, 0);
                 setFaceGeometry(faceInformation);
+            } else {
+                setFaceDetectionErrorCode('noFaceDetected');
+                setIsLoading(false);
             }
         }
     };
@@ -133,14 +146,15 @@ const FacialLandmarks = (props) => {
     const setFaceGeometry = (faceInformation) => {
         const { headTiltAngle, topOfHead, chin, leftEyebrow } = faceInformation;
         const isHeadTiltAcceptable = UTILS.checkHeadTiltAngle(headTiltAngle);
-        setIsHeadTiltTooLarge(!isHeadTiltAcceptable);
+        setIsLoading(false);
         if (isHeadTiltAcceptable) {
-            setIsLoading(false);
             setFaceWidth(ApplicationConstants.AVATAR_FACE_WIDTH);
             setTopOfHead(topOfHead);
             setLeftEyebrow(leftEyebrow);
             setChin(chin);
             setHeadTiltAngle(headTiltAngle);
+        } else {
+            setFaceDetectionErrorCode('headTiltTooLarge');
         }
     };
 
@@ -168,10 +182,19 @@ const FacialLandmarks = (props) => {
         }
     };
 
+    const handleUploadButtonClick = () => {
+        if (faceDetectionErrorCode) {
+            setFaceDetectionErrorCode(null);
+            setIsPhotoUploaded(false);
+        }
+        fileUploadRef.current.click()
+    };
+
     const UploadButton = (
         <Button
             className="upload-button"
-            onClick={() => fileUploadRef.current.click()}
+            onClick={handleUploadButtonClick}
+            disabled={isLoading && isPhotoUploaded}
         >
             <input
                 ref={fileUploadRef}
@@ -185,7 +208,7 @@ const FacialLandmarks = (props) => {
     const SelectPanel = (
         <div className={`avatar-options-selection-panel ${windowInnerWidth <= 1100 && !isSelectionPanelOpen ? 'collapsed' : ''}`}>
             {
-                windowInnerWidth <= 1100 && isSelectionPanelOpen ?
+                windowInnerWidth <= 1100 && isSelectionPanelOpen || true ?
                     <Button className="close-selection-panel-button" onClick={() => setIsSelectionPanelOpen(false)}>
                         close
                     </Button> :
@@ -244,7 +267,7 @@ const FacialLandmarks = (props) => {
         < div
             ref={avatarRef}
             style={{ width: 400 }}
-            className={`photo-container ${isLoading || isHeadTiltTooLarge ? 'loading' : ''}`}
+            className={`photo-container ${isLoading ? 'loading' : ''} ${faceDetectionErrorCode || !isPhotoUploaded ? 'hidden' : ''}`}
         >
             {UploadedImageContainer}
             <canvas
@@ -257,7 +280,7 @@ const FacialLandmarks = (props) => {
                     left: - chin[0] + 0.5 * scalingRatio * IMAGE_STYLE.width, 
                     top: - topOfHead[1] + ApplicationConstants.AVATAR_TOP_POSITION 
                 }}
-                className={`${isLoading || isHeadTiltTooLarge ? 'hidden' : ''}`}
+                className={`${isLoading ? 'hidden' : ''}`}
             />
             <AvatarAccessoryDisplay 
                 optionsArray={[APPEARANCE_OPTIONS, AVATAR_ACCESSORIES]}
@@ -273,7 +296,9 @@ const FacialLandmarks = (props) => {
                 {UploadButton}
                 <div className="avatar-generator">
                     {isSelectionPanelOpen ? SelectPanel : OpenSelectionPanelButton}
-                    {isHeadTiltTooLarge ? <Warning /> : PhotoContainer}
+                    {PhotoContainer}
+                    {isPhotoUploaded && faceDetectionErrorCode ? <Warning errorCode={faceDetectionErrorCode}/> : null}
+                    {!isPhotoUploaded ? <Instruction messages={Locales[language].INSTRUCTION}/> : null}
                 </div>
             </div>
             <Button onClick={UTILS.print} className="print-button">Print</Button>

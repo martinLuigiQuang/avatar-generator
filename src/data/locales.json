@@ -18,7 +18,12 @@
         "YOUR SUPERHERO NAME IS":"YOUR SUPERHERO NAME IS",
         "DOWNLOAD":"DOWNLOAD",
         "RETURN TO HOMEPAGE":"RETURN TO HOMEPAGE",
-        "PLEASE ENTER YOUR FIRST AND LAST NAME TO CONTINUE":"PLEASE ENTER YOUR FIRST AND LAST NAME TO CONTINUE"
+        "PLEASE ENTER YOUR FIRST AND LAST NAME TO CONTINUE":"PLEASE ENTER YOUR FIRST AND LAST NAME TO CONTINUE",
+        "INSTRUCTION": [
+            "Whether it's a mask, a cape, or tights, every superhero needs their own super look. It's time to create yours!", 
+            "Start by uploading or taking a photo of yourself. Using the menu on the left side of the screen select your superhero appearance and accessories to build your avatar. Or you can choose from a series of pre-selected accessory combinations from the menu on the right.", 
+            "Download your avatar and share with us via the link in the email for a chance to win Abbott Excellence Awards"
+        ]
     },
     "spanish":{
         "CALA SUPERHERO AVATAR GENERATOR":"GENERADOR DE NOMBRES CALA DE SUPER HÉROE",
@@ -39,7 +44,12 @@
         "YOUR SUPERHERO NAME IS":"TU NOMBRE DE SUPER HÉROE ES",
         "DOWNLOAD":"DESCARGAR",
         "RETURN TO HOMEPAGE":"VOLVER A LA PÁGINA PRINCIPAL",
-        "PLEASE ENTER YOUR FIRST AND LAST NAME TO CONTINUE":"POR FAVOR INGRESE SU NOMBRE Y APELLIDO PARA CONTINUAR"
+        "PLEASE ENTER YOUR FIRST AND LAST NAME TO CONTINUE":"POR FAVOR INGRESE SU NOMBRE Y APELLIDO PARA CONTINUAR",
+        "INSTRUCTION": [
+            "Whether it's a mask, a cape, or tights, every superhero needs their own super look. It's time to create yours!",
+            "Start by uploading or taking a photo of yourself. Using the menu on the left side of the screen select your superhero appearance and accessories to build your avatar. Or you can choose from a series of pre-selected accessory combinations from the menu on the right.",
+            "Download your avatar and share with us via the link in the email for a chance to win Abbott Excellence Awards"
+        ]    
     },
     "portuguese":{
         "CALA SUPERHERO AVATAR GENERATOR":"GERADOR DA CALA DE NOME DE SUPER-HERÓI",
@@ -60,6 +70,11 @@
         "YOUR SUPERHERO NAME IS":"SEU NOME DE SUPER-HERÓI É",
         "DOWNLOAD":"BAIXAR",
         "RETURN TO HOMEPAGE":"VOLTAR PARA PÁGINA INICIAL",
-        "PLEASE ENTER YOUR FIRST AND LAST NAME TO CONTINUE":"POR FAVOR, DIGITE SEU NOME E SOBRENOME PARA CONTINUAR"
+        "PLEASE ENTER YOUR FIRST AND LAST NAME TO CONTINUE":"POR FAVOR, DIGITE SEU NOME E SOBRENOME PARA CONTINUAR",
+        "INSTRUCTION": [
+            "Whether it's a mask, a cape, or tights, every superhero needs their own super look. It's time to create yours!",
+            "Start by uploading or taking a photo of yourself. Using the menu on the left side of the screen select your superhero appearance and accessories to build your avatar. Or you can choose from a series of pre-selected accessory combinations from the menu on the right.",
+            "Download your avatar and share with us via the link in the email for a chance to win Abbott Excellence Awards"
+        ]    
     }
 }

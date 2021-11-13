@@ -9,19 +9,19 @@ import * as Bodies from './bodies';
 
 const UTILS = new Utils();
 
-const SWORDS = {
+const OPTIONS = {
     female: [F1],
     male: [M1, M2]
 };
-UTILS.insertNullAsset(SWORDS);
-SWORDS.genderNeutral = SWORDS.male;
+UTILS.insertNullAsset(OPTIONS);
+OPTIONS.genderNeutral = OPTIONS.male;
 
 export const getItem = (index, gender) => {
-    return SWORDS[gender][index];
+    return OPTIONS[gender][index];
 };
 
 export const getNumOfAssets = (gender) => {
-    return SWORDS[gender].length;
+    return OPTIONS[gender].length;
 };
 
 export const getStyles = (
@@ -36,7 +36,7 @@ export const getStyles = (
 
 export const changeIndex = (value, gender, index) => {
     const change = parseInt(value);
-    const arrayLength = SWORDS[gender].length;
+    const arrayLength = OPTIONS[gender].length;
     if (index + change < 0) {
         return arrayLength - 1;
     } else if (index + change >= arrayLength) {

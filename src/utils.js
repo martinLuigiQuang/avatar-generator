@@ -89,6 +89,7 @@ class Utils {
     };
     
     crop = async (predictions, ctx, width, height) => {
+        console.log(predictions)
         if (predictions.length === 1) {
             const keypoints = predictions.map((prediction) => {
                 this.getPoints(prediction.scaledMesh, width, height).forEach(half => {
