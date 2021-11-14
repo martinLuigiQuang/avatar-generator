@@ -6,7 +6,7 @@ import M1 from '../assets/accessories_male/Shield-01.png';
 
 import * as Bodies from './bodies';
 
-const UTILS = new Utils;
+const UTILS = new Utils();
 
 const SHIELDS = {
     female: [F1],

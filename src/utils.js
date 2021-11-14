@@ -164,16 +164,21 @@ class Utils {
         return number % 2 === 0;
     };
 
-    checkIndex = (index) => {
-        return index <= 6 || index >= 1;
+    checkIndex = (index, numberOfAssets, currentIndex, lowerLimit) => {
+        return index !== currentIndex && index < numberOfAssets && index >= lowerLimit;
     };
 
-    getCostumeIndex = (index) => {
-        const randomIndex = Math.floor(Math.random() * 6 + 1);
-        if (this.checkIndex(randomIndex)) {
-            return index === 99 ? randomIndex : index;
+    getRandomCostumeIndex = (numberOfAssets, currentIndex, isNullAssetIncluded) => {
+        const lowerLimit = isNullAssetIncluded ? 0 : 1;
+        const randomIndex = Math.floor(Math.random() * (numberOfAssets - lowerLimit) + lowerLimit);
+        if (!this.checkIndex(randomIndex, numberOfAssets, currentIndex, lowerLimit)) {
+            this.getRandomCostumeIndex(numberOfAssets, currentIndex, isNullAssetIncluded);   
         }
-        this.getCostumeIndex(index);
+        return randomIndex;
+    };
+
+    getCostumeIndex = (numberOfAssets, currentIndex, isNullAssetIncluded, index) => {
+        return index === undefined ? this.getRandomCostumeIndex(numberOfAssets, currentIndex, isNullAssetIncluded) : index;
     };
     
     detectVideo = async (webcamRef, canvasRef, setFaceGeometry, net) => {

@@ -26,7 +26,12 @@
         ],
         "CLOSE": "CLOSE",
         "AVATAR OPTIONS": "AVATAR OPTIONS",
-        "SET OUTFITS": "SET OUTFITS"
+        "SET OUTFITS": "SET OUTFITS",
+        "TOGGLE APPEARANCE": "TOGGLE APPEARANCE",
+        "TOGGLE OUTFITS": "TOGGLE OUTFIT",
+        "TOGGLE ACCESSORIES": "TOGGLE ACCESSORIES",
+        "RANDOM SECTION": "FEELING LUCKY?",
+        "RANDOM": "RANDOM"
     },
     "spanish":{
         "CALA SUPERHERO AVATAR GENERATOR":"GENERADOR DE NOMBRES CALA DE SUPER HÉROE",
@@ -54,8 +59,13 @@
             "Download your avatar and share with us via the link in the email for a chance to win Abbott Excellence Awards"
         ],
         "CLOSE": "CLOSE SP",
-        "AVATAR OPTIONS": "AVATAR OPTIONS PO",
-        "SET OUTFITS": "SET OUTFITS PO"    
+        "AVATAR OPTIONS": "AVATAR OPTIONS SP",
+        "SET OUTFITS": "SET OUTFITS SP",
+        "TOGGLE APPEARANCE": "TOGGLE APPEARANCE SP",
+        "TOGGLE OUTFITS": "TOGGLE OUTFIT SP",
+        "TOGGLE ACCESSORIES": "TOGGLE ACCESSORIES SP",
+        "RANDOM SECTION": "FEELING LUCKY? SP",
+        "RANDOM": "RANDOM SP"    
     },
     "portuguese":{
         "CALA SUPERHERO AVATAR GENERATOR":"GERADOR DA CALA DE NOME DE SUPER-HERÓI",
@@ -84,6 +94,11 @@
         ],
         "CLOSE": "CLOSE PO",
         "AVATAR OPTIONS": "AVATAR OPTIONS PO",
-        "SET OUTFITS": "SET OUTFITS PO"
+        "SET OUTFITS": "SET OUTFITS PO",
+        "TOGGLE APPEARANCE": "TOGGLE APPEARANCE PO",
+        "TOGGLE OUTFITS": "TOGGLE OUTFIT PO",
+        "TOGGLE ACCESSORIES": "TOGGLE ACCESSORIES PO",
+        "RANDOM SECTION": "FEELING LUCKY? PO",
+        "RANDOM": "RANDOM PO"
     }
 }

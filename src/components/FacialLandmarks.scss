@@ -2,8 +2,7 @@
     background: url('../assets/Pg4.jpg');
     background-size: cover;
     background-position: top;
-    // width: 1280px;
-    height: 890px;
+    height: 1000px;
     margin: 0 auto;
     input[type="file"] {
         display: none;
@@ -19,11 +18,6 @@
             border-radius: 5px;
             position: absolute;
             z-index: 110;
-            &.collapsed {
-                .avatar-options-container {
-                    display: none;
-                }
-            }
             .avatar-options-container {
                 h2 {
                     text-transform: uppercase;
@@ -62,6 +56,26 @@
                 }
             }
         }
+        .set-costumes-options-panel {
+            background-color: rgba(240, 248, 255, 0.639);
+            margin: 0 20px 20px 0;
+            padding: 30px 0;
+            width: 300px;
+            border-radius: 5px;
+            position: absolute;
+            right: 0;
+            z-index: 110;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            .set-costume-button-container {
+                margin: 5px 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 150px;
+            }
+        }
         .photo-container {
             position: relative;
             margin: 0 auto;
@@ -78,7 +92,8 @@
         }
         .warning-container,
         .instruction-container {
-            margin: 0 370px;
+            margin-left: 370px;
+            margin-right: 350px;
             h2 {
                 text-align: left;
                 color: wheat;
@@ -108,10 +123,10 @@
     &.print-button {
         border-top: 4px solid white;
     }
-    &.open-selection-panel-button {
+    &.open-selection-panel-button,
+    &.open-set-costumes-panel-button {
         font-family: 'Komika';
         font-size: var(--big-font-size);
-        color: red;
         position: absolute;
         z-index: 110;
         background-color: black;
@@ -120,20 +135,33 @@
         p {
             margin: 0;
         }
-        // &:hover {
-        //     animation: extend 1s linear;
-        //     p {
-        //         display: inline;
-        //         margin: 0;
-        //     }
-        // }
     }
-    &.close-selection-panel-button {
+    &.open-set-costumes-panel-button {
+        right: 0;
+    }
+    &.close-selection-panel-button,
+    &.close-set-costumes-panel-button {
         position: absolute;
         left: 2px;
         top: 2px;
         background-color: black;
         color: white;
+    }
+    &.close-set-costumes-panel-button {
+        left: auto;
+        right: 2px;
+    }
+    &.set-costume-button {
+        width: 40px;
+        min-width: 0;
+        height: 40px;
+    }
+    &.random-generator-button {
+        font-family: 'Komika';
+        font-size: var(--medium-font-size);
+        width: 250px;
+        background: linear-gradient(135deg, white, #e66465, aqua, whitesmoke);
+        margin: 2px 0;
     }
 }
 
@@ -150,7 +178,8 @@
         padding-top: 20px;
         .avatar-generator {
             margin: 0 auto;
-            .avatar-options-selection-panel {
+            .avatar-options-selection-panel,
+            .set-costumes-options-panel {
                 display: none;
             }
         }
@@ -158,12 +187,11 @@
 }
 
 @media screen and (max-width: 1100px) {
-    .avatar-generator-container{
-        height: 890px;
+    .avatar-generator-container {
+        .avatar-generator {
+            .instruction-container {
+                margin: 100px 50px auto;
+            }
+        }
     }
-}
-
-@keyframes extend {
-    0% { width: 0px; }
-    100% { width: auto }
 }

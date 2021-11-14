@@ -1,11 +1,11 @@
 const ApplicationConstants = {
     AVATAR_BODY_POSITION_ADJUSTMENT: [0, 7],
     AVATAR_TOP_POSITION: 40,
-    AVATAR_FACE_WIDTH: 80,
+    AVATAR_FACE_WIDTH: 90,
     NULL_ASSETS_CODE: '#',
     ASSETS_IMAGE_FOREHEAD_WIDTH: 330,
     ASSETS_IMAGE_WIDTH: 2550,
-    ASSETS_IMAGE_DISTANCE_TO_TOP_OF_HEAD: 200,
+    ASSETS_IMAGE_DISTANCE_TO_TOP_OF_HEAD: 185,
     ASSETS_IMAGE_DISTANCE_TO_CHIN: 580,
     ASSETS_IMAGE_DISTANCE_TO_LEFT_EYEBROW: 340,
     Z_INDEX_HELM: 101,
@@ -30,9 +30,9 @@ const ApplicationConstants = {
     DECREASE_INDEX: '<',
     INCREASE_INDEX: '>',
     GENDER: {
-        genderNeutral: 'gender neutral', 
         female: 'female', 
-        male: 'male'
+        male: 'male',
+        genderNeutral: 'gender neutral', 
     }
 };
 
