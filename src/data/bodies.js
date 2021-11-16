@@ -1,13 +1,13 @@
 import ApplicationConstants from './constants';
 import Utils from '../utils';
 
-import F1 from '../assets/body_female/FemaleBody01-01.png';
-import F2 from '../assets/body_female/FemaleBody02-01.png';
-import F3 from '../assets/body_female/FemaleBody03-01.png';
+import F3 from '../assets/body_female/FemaleBody01-01.png';
+import F1 from '../assets/body_female/FemaleBody02-01.png';
+import F2 from '../assets/body_female/FemaleBody03-01.png';
 
-import M1 from '../assets/body_male/MaleBody01-01.png';
-import M2 from '../assets/body_male/MaleBody02-01.png';
-import M3 from '../assets/body_male/MaleBody03-01.png';
+import M3 from '../assets/body_male/MaleBody01-01.png';
+import M1 from '../assets/body_male/MaleBody02-01.png';
+import M2 from '../assets/body_male/MaleBody03-01.png';
 
 const UTILS = new Utils();
 

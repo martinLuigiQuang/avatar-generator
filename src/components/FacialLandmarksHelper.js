@@ -2,9 +2,6 @@ import * as React from 'react';
 import Button from '@material-ui/core/Button';
 import ApplicationConstants from '../data/constants';
 import { ERROR_MESSAGES } from '../data/errorMessages';
-import Utils from '../utils';
-
-const UTILS = new Utils();
 
 export const AvatarButtons = (props) => {
     const { value, handleClick, isDisabled } = props;
@@ -25,7 +22,8 @@ export const AvatarButtons = (props) => {
 
 export const OptionsButton = (props) => {
     const { index, handleClick, name, isDisabled } = props;
-    const value = name === 'mask / headwear' ? `mask ${index}` : 
+    const value = name === 'body' ? `body ${index + 1}` : 
+                  name === 'mask / headwear' ? `mask ${index}` : 
                   name === 'tools' ? `tool ${index}` :
                   name === 'gender' ? index : `${name} ${index}`;
     return (
@@ -41,11 +39,10 @@ export const OptionsButton = (props) => {
 };
 
 export const AvatarOptions = (props) => {
-    const { options, title, gender, isDisabled, bodyIndex } = props;
-    const bodyGender = UTILS.isOddNumber(bodyIndex) ? ApplicationConstants.GENDER.male : ApplicationConstants.GENDER.female;
+    const { options, title, gender, isDisabled, bodyGender } = props;
     return (
         <div className={`avatar-options-container`} id={title}>
-            <h2>{title.split('-').join(' ')}</h2>
+            <h2>{title.split('_')[1]}</h2>
             {
                 Object.keys(options).map(key => {
                     const item = options[key];
@@ -88,8 +85,8 @@ export const AvatarAccessory = React.forwardRef((props, ref) => {
     const { title, src, style } = props;
     return (
         src !== ApplicationConstants.NULL_ASSETS_CODE ? 
-            <img ref={ref} src={src} id={title} alt={title} className={title} style={style} /> :
-            null 
+        <img ref={ref} src={src} id={title} alt={title} className={title} style={style} /> :
+        null 
     );
 });
 
@@ -112,15 +109,14 @@ export const Instruction = (props) => {
     const { messages } = props;
     return (
         <div className="instruction-container">
-            {messages.map(line => <h2>{line}</h2>)}
+            {messages.map((line, index) => <h2 key={index}>{line}</h2>)}
         </div>
     );
 };
 
 export const AvatarAccessoryDisplay = (props) => {
     const { optionsArray, gender, parentStates } = props;
-    const { faceWidth, topOfHead, isLoading, scalingRatio, headTiltAngle, chin, leftEyebrow, bodyIndex } = parentStates;
-    const bodyGender = UTILS.isOddNumber(bodyIndex) ? ApplicationConstants.GENDER.male : ApplicationConstants.GENDER.female;
+    const { faceWidth, topOfHead, isLoading, scalingRatio, headTiltAngle, chin, leftEyebrow, bodyGender } = parentStates;
     const genderValue = ApplicationConstants.GENDER[gender];
     const options = optionsArray.reduce(
         (outputObj, item) => {
@@ -158,5 +154,36 @@ export const AvatarAccessoryDisplay = (props) => {
                 })
             }
         </>
+    );
+};
+
+export const SetCostumesOptions = (props) => {
+    const { color, disabled, handleClick } = props;
+    const background = `linear-gradient(135deg, whitesmoke, ${disabled ? 'gray' : color === 'blank' ? 'gray' : color})`;
+    const wildCardBackground = `linear-gradient(135deg, whitesmoke, ${disabled ? 'gray' : '#e66465, lightblue, whitesmoke'})`;
+    return (
+        <div className="set-costume-button-container">
+            <label>{color}</label>
+            <Button 
+                className="set-costume-button"
+                style={{
+                    background: color !== 'wildcard' ? background : wildCardBackground
+                }}
+                disabled={disabled}
+                onClick={handleClick}
+            />
+        </div>
+    );
+};
+
+export const PanelButton = (props) => {
+    const { className, handleClick, text } = props;
+    return (
+        <Button
+            className={className}
+            onClick={handleClick}
+        >
+            {text}
+        </Button>
     );
 };

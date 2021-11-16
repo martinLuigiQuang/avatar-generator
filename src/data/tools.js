@@ -1,17 +1,28 @@
 import Utils from '../utils';
 
 import F1 from '../assets/accessories_female/Sword-01.png';
+import F2 from '../assets/accessories_male/SwordMaleSizeHip-01.png';
+import F3 from '../assets/accessories_male/GoldenWhip-01.png';
+import F4 from '../assets/accessories_male/Hammer-01.png';
+import F5 from '../assets/accessories_male/StaffBlue-01.png';
+import F6 from '../assets/accessories_male/StaffGold-01-01.png';
+import F7 from '../assets/accessories_male/Whip-01.png';
 
 import M1 from '../assets/accessories_male/Sword-01.png';
 import M2 from '../assets/accessories_male/SwordMaleSizeHip-01.png';
+import M3 from '../assets/accessories_male/GoldenWhip-01.png';
+import M4 from '../assets/accessories_male/Hammer-01.png';
+import M5 from '../assets/accessories_male/StaffBlue-01.png';
+import M6 from '../assets/accessories_male/StaffGold-01-01.png';
+import M7 from '../assets/accessories_male/Whip-01.png';
 
 import * as Bodies from './bodies';
 
 const UTILS = new Utils();
 
 const OPTIONS = {
-    female: [F1],
-    male: [M1, M2]
+    female: [F1, F2, F3, F4, F5, F6, F7],
+    male: [M1, M2, M3, M4, M5, M6, M7]
 };
 UTILS.insertNullAsset(OPTIONS);
 OPTIONS.genderNeutral = OPTIONS.male;
