@@ -330,7 +330,8 @@ const FacialLandmarks = (props) => {
             <h2>{Locales[language]['RANDOM SECTION']}</h2>
             {
                 Object.keys(OPTIONS).map(key => {
-                    const text = Locales[language]['RANDOM'].concat(' ').concat(key.split('_')[1]);
+                    const optionName = key.split('_')[1];
+                    const text = Locales[language]['RANDOM'].concat(' ').concat(optionName === 'appearance' ? 'hair' : optionName);
                     return (
                         <Button
                             key={key}
