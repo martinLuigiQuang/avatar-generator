@@ -483,7 +483,7 @@ const FacialLandmarks = (props) => {
             className={`cancel-button ${isInPreviewMode ? 'displayed' : 'hidden'}`}
             onClick={() => setIsInPreviewMode(false)}
         >
-            {Locales[language]['CANCEL']} {downloadImage?getDownloadImageSize(downloadImage):0}
+            {Locales[language]['CANCEL']}
         </Button>
     );
 
