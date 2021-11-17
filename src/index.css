@@ -32,11 +32,23 @@ code {
 }
 
 .loading {
-    opacity: 0.4;
+    opacity: 0.4 !important;
 }
 
 .hidden {
-    display: none;
+    display: none !important;
+}
+
+.preview {
+    display: none !important;
+}
+
+.previewImage {
+    margin-top: 97px !important;
+}
+
+.displayed {
+    display: flex !important;
 }
 
 @media screen and (max-height: 1005px) {

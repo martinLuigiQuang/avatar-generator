@@ -24,19 +24,24 @@ function App() {
     [isImageDownloaded]
   );
 
-  const postData = (requestParams) => {
-    axios({
-      url: `https://hcti.io/v1/image?${requestParams}`,
-      method: 'POST'
-    })
-    .then(response => {
-      if (response && !response.error && response.url) {
-        setPngImageUrl(response.url)
-      } else {
-        console.log(response);
+  const postData = async (requestParams) => {
+    console.log(JSON.stringify(requestParams))
+    const payload = { html: requestParams };
+    const headers = {
+      auth: {
+        username: '6cd82c97-fdae-4c6f-a169-f08a3b0d65ad',
+        password: '1db2ceaa-852f-4204-9488-0ac37cb88ca6',
+      },
+      headers: {
+        'Content-Type': 'application/json'
       }
-    })
-    .catch(error => console.log(error));
+    }
+    try {
+      const response = await axios.post('https://hcti.io/v1/image', JSON.stringify(payload), headers);
+      setPngImageUrl(response.data.url);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const deletePngImage = () => {
@@ -57,11 +62,10 @@ function App() {
   }
   
   const handleCreateImage = (imageUrl) => {
-    if (!firstName || !lastName || !superheroName) {
-      return null;
-    }
-    const requestParams = `url=${imageUrl}`;
-    postData(requestParams); 
+    // if (!firstName || !lastName || !superheroName) {
+    //   return null;
+    // }
+    postData(imageUrl); 
   };
 
   const handleDownload = () => {
@@ -90,8 +94,11 @@ function App() {
           }/>
           <Route exact path="/avatar" element={
             <FacialLandmarks 
+              firstName={firstName}
+              lastName={lastName}
+              superheroName={superheroName}
               language={language}
-              downloadImage={pngImageUrl}
+              pngImage={pngImageUrl}
               isImageDownloaded={isImageDownloaded}
               handleCreateImage={handleCreateImage}
               handleDownload={handleDownload}
