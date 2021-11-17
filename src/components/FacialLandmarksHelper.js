@@ -136,6 +136,10 @@ export const AvatarAccessoryDisplay = (props) => {
                     const isBehindBody = key === 'cape'
                     const isInFrontOfHair = key === 'mask / headwear' && item.index >= item.assets.getNumOfAssets(gender) - 2;
                     const sourceGender = genderValue === ApplicationConstants.GENDER.genderNeutral && key !== 'hair' && key !== 'body' ? bodyGender : gender;
+                    const src = item.assets.getItem(item.index, sourceGender);
+                    if (!src) {
+                        item.setIndex(0);
+                    }
                     const style = item.assets.getStyles(
                         faceWidth,
                         topOfHead,
@@ -146,7 +150,7 @@ export const AvatarAccessoryDisplay = (props) => {
                         <AvatarAccessory
                             key={key}
                             title={`${key} accessory-option`}
-                            src={item.assets.getItem(item.index, sourceGender)}
+                            src={src || ApplicationConstants.NULL_ASSETS_CODE}
                             ref={item.ref}
                             style={style}
                         />

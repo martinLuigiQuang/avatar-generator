@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as tf from '@tensorflow/tfjs';
+import * as HtmlToImage from 'html-to-image';
 import * as Facemesh from '@tensorflow-models/facemesh';
 import Utils from '../utils';
 import Button from '@material-ui/core/Button';
@@ -26,13 +27,14 @@ import {
 import Locales from '../data/locales.json';
 import './FacialLandmarks.scss';
 
+const download = require('downloadjs');
 const UTILS = new Utils();
 const IMAGE_STYLE = ApplicationConstants.IMAGE_STYLE;
 const GENDER = Object.keys(ApplicationConstants.GENDER);
 
 const FacialLandmarks = (props) => {
-    const { language } = props;
-    
+    const { language, pngImage, isImageDownloaded, handleCreateImage, handleDownload } = props;
+
     const [ isLoading, setIsLoading ] = React.useState(true);
     const [ isFirstPass, setIsFirstPass ] = React.useState(true);
     const [ isPhotoUploaded, setIsPhotoUploaded ] = React.useState(false);
@@ -40,6 +42,9 @@ const FacialLandmarks = (props) => {
     const [ faceDetectionErrorCode, setFaceDetectionErrorCode ] = React.useState(null);
     const [ isSelectionPanelOpen, setIsSelectionPanelOpen ] = React.useState(true);
     const [ isSetCostumesPanelOpen, setIsSetCostumesPanelOpen ] = React.useState(true);
+    const [ isInPreviewMode, setIsInPreviewMode ] = React.useState(false);
+    const [ downloadImage, setDownloadImage ] = React.useState(null);
+    const [ isDownloadButtonClicked, setIsDownloadButtonClicked ] = React.useState(false);
     
     const [ scalingRatio, setScalingRatio ] = React.useState(1);
     const [ faceWidth, setFaceWidth ] = React.useState(0);
@@ -76,6 +81,21 @@ const FacialLandmarks = (props) => {
     const capeRef = React.createRef(null);
     const swordRef = React.createRef(null);
     const shieldRef = React.createRef(null);
+
+    React.useEffect(
+        () => {
+            if (downloadImage && isDownloadButtonClicked) {
+                const link = document.createElement('a');
+                link.href = downloadImage;
+                link.setAttribute('download', 'avatar.jpeg');
+                document.body.appendChild(link);
+                setDownloadImage(null);
+                setIsDownloadButtonClicked(false);
+                link.click();
+            }
+        },
+        [downloadImage, isDownloadButtonClicked]
+    );
 
     React.useEffect(
         () => {
@@ -262,7 +282,7 @@ const FacialLandmarks = (props) => {
 
     const UploadButton = (
         <Button
-            className="upload-button"
+            className={`upload-button ${isInPreviewMode ? 'preview' : ''}`}
             onClick={handleUploadButtonClick}
             disabled={isLoading && isPhotoUploaded}
         >
@@ -276,7 +296,7 @@ const FacialLandmarks = (props) => {
     );
 
     const SelectPanel = (
-        <div className={`avatar-options-selection-panel ${!isSelectionPanelOpen ? 'collapsed' : ''}`}>
+        <div className={`avatar-options-selection-panel ${!isSelectionPanelOpen ? 'collapsed' : ''} ${isInPreviewMode ? 'preview' : ''}`}>
             <PanelButton 
                 className="close-selection-panel-button"
                 text={Locales[language]["CLOSE"]}
@@ -300,7 +320,7 @@ const FacialLandmarks = (props) => {
     );
 
     const SetCostumes = (
-        <div className={`set-costumes-options-panel ${!isSetCostumesPanelOpen ? 'collapsed' : ''}`}>
+        <div className={`set-costumes-options-panel ${!isSetCostumesPanelOpen ? 'collapsed' : ''} ${isInPreviewMode ? 'preview' : ''}`}>
             <PanelButton
                 className="close-set-costumes-panel-button"
                 text={Locales[language]['CLOSE']}
@@ -349,7 +369,7 @@ const FacialLandmarks = (props) => {
 
     const OpenSelectionPanelButton = (
         <PanelButton 
-            className="open-selection-panel-button"
+            className={`open-selection-panel-button ${isInPreviewMode ? 'preview' : ''}`}
             text={`> ${Locales[language]["AVATAR OPTIONS"]}`}
             handleClick={() => handleOpenPanel(setIsSelectionPanelOpen, isSetCostumesPanelOpen, setIsSetCostumesPanelOpen)}
         />
@@ -357,7 +377,7 @@ const FacialLandmarks = (props) => {
 
     const OpenSetCostumesPanelButton = (
         <PanelButton
-            className="open-set-costumes-panel-button"
+            className={`open-set-costumes-panel-button ${isInPreviewMode ? 'preview' : ''}`}
             text={`${Locales[language]['SET OUTFITS']} <`}
             handleClick={() => handleOpenPanel(setIsSetCostumesPanelOpen, isSelectionPanelOpen, setIsSelectionPanelOpen)}
         />
@@ -390,7 +410,7 @@ const FacialLandmarks = (props) => {
         < div
             ref={avatarRef}
             style={{ width: 400 }}
-            className={`photo-container ${isLoading ? 'loading' : ''} ${faceDetectionErrorCode || !isPhotoUploaded ? 'hidden' : ''}`}
+            className={`photo-container ${isLoading ? 'loading' : ''} ${faceDetectionErrorCode || !isPhotoUploaded ? 'hidden' : ''} ${isInPreviewMode ? 'previewImage' : ''}`}
         >
             {UploadedImageContainer}
             <canvas
@@ -415,17 +435,61 @@ const FacialLandmarks = (props) => {
 
     const PrintButton = (
         <Button
-            className="print-button"
-            disabled={!isPhotoUploaded || isLoading || faceDetectionErrorCode}
-            onClick={UTILS.print}
+            className={`print-button ${isInPreviewMode ? 'hidden' : ''}`}
+            disabled={!isPhotoUploaded || isLoading || faceDetectionErrorCode || isInPreviewMode}
+            onClick={() => setIsInPreviewMode(true)}
         >
-            Print
+            {Locales[language]['PREVIEW']}
+        </Button>
+    );
+
+    const getDownloadImageSize = (dataUrl) => {
+        return atob(dataUrl.split('base64,')[1]).length / 1000;
+    };
+
+    const handleDownloadButtonClick = () => {
+        getJpegImage(1);
+        setIsDownloadButtonClicked(true);
+    };
+
+    const getJpegImage = (numOfTrials) => {
+        if (!isDownloadButtonClicked) {
+            HtmlToImage.toJpeg(document.getElementById('avatar')).then(dataUrl => {
+                const fileSize = getDownloadImageSize(dataUrl);
+                if (fileSize < 1200 && numOfTrials < 7) {
+                    setTimeout (
+                        () => getJpegImage(numOfTrials + 1),
+                        500
+                    )
+                } else {
+                    setDownloadImage(dataUrl);
+                }
+            });
+        };
+    };
+
+    const DownloadButton = (
+        <Button
+            className={`download-button ${isInPreviewMode ? 'displayed' : 'hidden'}`}
+            disabled={isDownloadButtonClicked}
+            onClick={handleDownloadButtonClick}
+        >
+            {isDownloadButtonClicked ? 'downloading...' : Locales[language]['DOWNLOAD']}
+        </Button>
+    );
+
+    const CancelButton = (
+        <Button
+            className={`cancel-button ${isInPreviewMode ? 'displayed' : 'hidden'}`}
+            onClick={() => setIsInPreviewMode(false)}
+        >
+            {Locales[language]['CANCEL']} {downloadImage?getDownloadImageSize(downloadImage):0}
         </Button>
     );
 
     return (
         <>
-            <div className="avatar-generator-container">
+            <div className="avatar-generator-container" id="avatar">
                 {UploadButton}
                 <div className="avatar-generator">
                     {isSelectionPanelOpen ? SelectPanel : OpenSelectionPanelButton}
@@ -434,6 +498,10 @@ const FacialLandmarks = (props) => {
                     {!isPhotoUploaded ? <Instruction messages={Locales[language].INSTRUCTION}/> : null}
                     {isSetCostumesPanelOpen ? SetCostumes : OpenSetCostumesPanelButton}
                 </div>
+            </div>
+            <div className="popup-button-container">
+                {CancelButton}
+                {DownloadButton}
             </div>
             {PrintButton}
         </>
