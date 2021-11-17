@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import locale from '../data/locales.json';
+import Locales from '../data/locales.json';
 import './SuperheroName.scss';
 import Bubble from '../assets/speech_bubble_4.png';
 
@@ -23,7 +23,7 @@ function SuperheroName(props) {
         <img className="name-burst" src={Bubble} alt="" />
       </div>
       <div className="instructions">
-        <h2>Please enter your name and superhero name</h2>
+        <h2>{Locales[language]["PLEASE ENTER YOUR NAME AND SUPERHERO IDENTITY PREVIOUSLY CREATED"]}</h2>
       </div>
       <label htmlFor="firstName">
         <input 
@@ -31,7 +31,7 @@ function SuperheroName(props) {
           id="firstName"
           value={currentFirstName}
           onChange={(e) => {setCurrentFirstName(e.target.value)}}
-          placeholder={locale[language]['FIRST NAME']} 
+          placeholder={Locales[language]['FIRST NAME']} 
         />
       </label>
       <label htmlFor="lastName">
@@ -40,7 +40,7 @@ function SuperheroName(props) {
           id="lastName"
           value={currentLastName}
           onChange={(e) => { setCurrentLastName(e.target.value) }}
-          placeholder={locale[language]['LAST NAME']}
+          placeholder={Locales[language]['LAST NAME']}
          
         />
       </label>
@@ -53,8 +53,7 @@ function SuperheroName(props) {
           id="superheroName"
           value={currentSuperheroName}
           onChange={(e) => { setCurrentSuperheroName(e.target.value) }}
-          // placeholder={locale[language]['SUPERHERO NAME']}
-          placeholder='SUPERHERO NAME'
+          placeholder={Locales[language]['SUPERHERO NAME']}
         />
       </label>
       
@@ -62,7 +61,7 @@ function SuperheroName(props) {
         <Link 
           className={`${isNextButtonDisabled ? "next-disabled" : ""}`}
           to={`${isNextButtonDisabled ? "/enterName" : "/avatar" }`}
-          onClick={handleClick}>{`${locale[language]['NEXT']} >`}
+          onClick={handleClick}>{`${Locales[language]['NEXT']} >`}
         </Link>
       </div> 
     </div>

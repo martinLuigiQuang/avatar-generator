@@ -2,6 +2,7 @@ import * as React from 'react';
 import Button from '@material-ui/core/Button';
 import ApplicationConstants from '../data/constants';
 import { ERROR_MESSAGES } from '../data/errorMessages';
+import Locales from '../data/locales.json';
 
 export const AvatarButtons = (props) => {
     const { value, handleClick, isDisabled } = props;
@@ -21,14 +22,14 @@ export const AvatarButtons = (props) => {
 };
 
 export const OptionsButton = (props) => {
-    const { index, handleClick, name, isDisabled } = props;
-    const value = name === 'body' ? `body ${index + 1}` : 
-                  name === 'mask / headwear' ? `mask ${index}` : 
-                  name === 'tools' ? `tool ${index}` :
-                  name === 'gender' ? index : `${name} ${index}`;
+    const { index, handleClick, name, isDisabled, language } = props;
+    const value = name === 'body' ? `${Locales[language]['BODY']} ${index + 1}` : 
+        name === 'mask / headwear' ? `${Locales[language]['MASK']} ${index}` : 
+        name === 'tools' ? `${Locales[language]['TOOL']} ${index}` :
+        name === 'gender' ? `${Locales[language][index.toUpperCase()]}` : `${Locales[language][name.toUpperCase()]} ${index}`;
     return (
         <div className="option-button-container">
-            <p>{name}</p>
+            <p>{Locales[language][name.toUpperCase()]}</p>
             <AvatarButtons 
                 value={value} 
                 handleClick={handleClick} 
@@ -39,10 +40,10 @@ export const OptionsButton = (props) => {
 };
 
 export const AvatarOptions = (props) => {
-    const { options, title, gender, isDisabled, bodyGender } = props;
+    const { options, title, gender, isDisabled, bodyGender, language } = props;
     return (
         <div className={`avatar-options-container`} id={title}>
-            <h2>{title.split('_')[1]}</h2>
+            <h2>{Locales[language][title.split('_')[1].toUpperCase()]}</h2>
             {
                 Object.keys(options).map(key => {
                     const item = options[key];
@@ -73,6 +74,7 @@ export const AvatarOptions = (props) => {
                             index={key === 'gender' ? ApplicationConstants.GENDER[gender] : item.index}
                             handleClick={handleClick}
                             isDisabled={isDisabled}
+                            language={language}
                         />
                     );
                 })
@@ -89,6 +91,15 @@ export const AvatarAccessory = React.forwardRef((props, ref) => {
         null 
     );
 });
+
+const AvatarAccessoryToImage = (props) => {
+    const { title, src, style } = props;
+    return ( 
+        src !== ApplicationConstants.NULL_ASSETS_CODE ?
+        `<img src={${src}} id={${title}} alt={${title}} className={${title}} style={${style}} />}` :
+        ''
+    );
+};
 
 export const ScaledUploadedPhoto = React.forwardRef((props, ref) => {
     const { src, style } = props;

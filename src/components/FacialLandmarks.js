@@ -280,21 +280,6 @@ const FacialLandmarks = (props) => {
         }
     };
 
-    const UploadButton = (
-        <Button
-            className={`upload-button ${isInPreviewMode ? 'preview' : ''}`}
-            onClick={handleUploadButtonClick}
-            disabled={isLoading && isPhotoUploaded}
-        >
-            <input
-                ref={fileUploadRef}
-                type="file"
-                onChange={handleImageUpload}
-            />
-            {isLoading && isPhotoUploaded ? 'Scanning face...' : 'Upload/Take your photo'}
-        </Button>
-    );
-
     const SelectPanel = (
         <div className={`avatar-options-selection-panel ${!isSelectionPanelOpen ? 'collapsed' : ''} ${isInPreviewMode ? 'preview' : ''}`}>
             <PanelButton 
@@ -312,6 +297,7 @@ const FacialLandmarks = (props) => {
                             gender={GENDER[genderIndex]}
                             bodyGender={bodyGender}
                             isDisabled={!isPhotoUploaded || isLoading}
+                            language={language}
                         />
                     );
                 })
@@ -433,16 +419,6 @@ const FacialLandmarks = (props) => {
         </div>
     );
 
-    const PrintButton = (
-        <Button
-            className={`print-button ${isInPreviewMode ? 'hidden' : ''}`}
-            disabled={!isPhotoUploaded || isLoading || faceDetectionErrorCode || isInPreviewMode}
-            onClick={() => setIsInPreviewMode(true)}
-        >
-            {Locales[language]['PREVIEW']}
-        </Button>
-    );
-
     const getDownloadImageSize = (dataUrl) => {
         return atob(dataUrl.split('base64,')[1]).length / 1000;
     };
@@ -454,9 +430,10 @@ const FacialLandmarks = (props) => {
 
     const getJpegImage = (numOfTrials) => {
         if (!isDownloadButtonClicked) {
-            HtmlToImage.toJpeg(document.getElementById('avatar')).then(dataUrl => {
+            HtmlToImage.toJpeg(document.getElementById('avatar'))
+            .then(dataUrl => {
                 const fileSize = getDownloadImageSize(dataUrl);
-                if (fileSize < 1200 && numOfTrials < 7) {
+                if (fileSize < 1200 && numOfTrials < 10) {
                     setTimeout (
                         () => getJpegImage(numOfTrials + 1),
                         500
@@ -464,9 +441,35 @@ const FacialLandmarks = (props) => {
                 } else {
                     setDownloadImage(dataUrl);
                 }
-            });
+            })
+            .catch(error => error);
         };
     };
+
+    const UploadButton = (
+        <Button
+            className={`upload-button ${isInPreviewMode ? 'preview' : ''}`}
+            onClick={handleUploadButtonClick}
+            disabled={isLoading && isPhotoUploaded}
+        >
+            <input
+                ref={fileUploadRef}
+                type="file"
+                onChange={handleImageUpload}
+            />
+            {isLoading && isPhotoUploaded ? Locales[language]['SCANNING'] : Locales[language]['UPLOAD / TAKE YOUR PHOTO']}
+        </Button>
+    );
+
+    const PrintButton = (
+        <Button
+            className={`print-button ${isInPreviewMode ? 'hidden' : ''}`}
+            disabled={!isPhotoUploaded || isLoading || faceDetectionErrorCode || isInPreviewMode}
+            onClick={() => setIsInPreviewMode(true)}
+        >
+            {Locales[language]['PREVIEW']}
+        </Button>
+    );
 
     const DownloadButton = (
         <Button
