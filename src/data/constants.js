@@ -24,7 +24,7 @@ const ApplicationConstants = {
         right: 0,
         textAlign: 'center',
         zIndex: 90,
-        width: 400
+        width: 640
     },
     FACEMESH_SCALE: 1,
     DECREASE_INDEX: '<',

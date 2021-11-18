@@ -180,6 +180,10 @@ class Utils {
     getCostumeIndex = (numberOfAssets, currentIndex, isNullAssetIncluded, index) => {
         return index === undefined ? this.getRandomCostumeIndex(numberOfAssets, currentIndex, isNullAssetIncluded) : index;
     };
+
+    getDownloadImageSize = (dataUrl) => {
+        return atob(dataUrl.split('base64,')[1]).length / 1000;
+    };
     
     detectVideo = async (webcamRef, canvasRef, setFaceGeometry, net) => {
         if (

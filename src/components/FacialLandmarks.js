@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as tf from '@tensorflow/tfjs';
+import Webcam from 'react-webcam';
 import * as HtmlToImage from 'html-to-image';
 import * as Facemesh from '@tensorflow-models/facemesh';
 import Utils from '../utils';
@@ -25,15 +26,17 @@ import {
     PanelButton
 } from './FacialLandmarksHelper';
 import Locales from '../data/locales.json';
+import EventLogoEnglish from '../assets/Invincible_english.png';
+import EventLogoSpanish from '../assets/Invincible_spanish.png';
+import EventLogoPortuguese from '../assets/Invincible_portuguese.png';
 import './FacialLandmarks.scss';
 
-const download = require('downloadjs');
 const UTILS = new Utils();
 const IMAGE_STYLE = ApplicationConstants.IMAGE_STYLE;
 const GENDER = Object.keys(ApplicationConstants.GENDER);
 
 const FacialLandmarks = (props) => {
-    const { language, pngImage, isImageDownloaded, handleCreateImage, handleDownload } = props;
+    const { language, firstName, lastName, superheroName } = props;
 
     const [ isLoading, setIsLoading ] = React.useState(true);
     const [ isFirstPass, setIsFirstPass ] = React.useState(true);
@@ -45,6 +48,7 @@ const FacialLandmarks = (props) => {
     const [ isInPreviewMode, setIsInPreviewMode ] = React.useState(false);
     const [ downloadImage, setDownloadImage ] = React.useState(null);
     const [ isDownloadButtonClicked, setIsDownloadButtonClicked ] = React.useState(false);
+    const [ isWebcamOpen, setIsWebcamOpen ] = React.useState(false);
     
     const [ scalingRatio, setScalingRatio ] = React.useState(1);
     const [ faceWidth, setFaceWidth ] = React.useState(0);
@@ -71,6 +75,7 @@ const FacialLandmarks = (props) => {
     const canvasRef = React.useRef(null);
     const scaledPhotoRef = React.useRef(null);
     const fileUploadRef = React.useRef(null);
+    const webcamRef = React.useRef(null);
     const hairRef = React.createRef(null);
     const maskRef = React.createRef(null);
     const bodyRef = React.createRef(null);
@@ -187,6 +192,16 @@ const FacialLandmarks = (props) => {
         'yellow': 6
     };
 
+    const IMAGE = {
+        english: EventLogoEnglish,
+        spanish: EventLogoSpanish,
+        portuguese: EventLogoPortuguese
+    };
+
+    const getImage = (language) => {
+        return IMAGE[language];
+    };
+
     const resizeWindow = () => {
         setWindowInnerWidth(window.innerWidth);
         if (window.innerWidth <= 1100) {
@@ -214,7 +229,10 @@ const FacialLandmarks = (props) => {
             const ctx = await canvas.getContext('2d');
             ctx.drawImage(photo, 0, 0, scalingRatio * IMAGE_STYLE.width, photo.height);
             const faceInformation = await UTILS.crop(face, ctx, scalingRatio * IMAGE_STYLE.width, photo.height);
-            if (faceInformation && !faceInformation.status && !Number.isNaN(scalingRatio)) {
+            if (faceInformation && !faceInformation.status && !Number.isNaN(scalingRatio) && scalingRatio > 1) {
+                setFaceDetectionErrorCode('faceTooSmall');
+                setIsLoading(false);
+            } else if (faceInformation && !faceInformation.status && !Number.isNaN(scalingRatio)) {
                 const imageData = ctx.getImageData(0, 0, scalingRatio * IMAGE_STYLE.width, photo.height);
                 UTILS.turnPixelTransparent(imageData);
                 ctx.putImageData(imageData, 0, 0);
@@ -251,6 +269,18 @@ const FacialLandmarks = (props) => {
         if (!isFirstPass) {
             setIsFirstPass(true);
         }
+        if (isWebcamOpen) {
+            setIsWebcamOpen(false);
+        }
+    };
+
+    const handlePhotoTaking = () => {
+        checkPhotoUpload();
+        const screenShot = webcamRef.current.getScreenshot();
+        photoRef.current.onload = () => URL.revokeObjectURL(photoRef.current.src);
+        scaledPhotoRef.current.onload = () => URL.revokeObjectURL(scaledPhotoRef.current.src);
+        photoRef.current.src = screenShot;
+        scaledPhotoRef.current.src = screenShot;
     };
 
     const handleImageUpload = (e) => {
@@ -268,9 +298,17 @@ const FacialLandmarks = (props) => {
     const handleUploadButtonClick = () => {
         if (faceDetectionErrorCode) {
             setFaceDetectionErrorCode(null);
-            setIsPhotoUploaded(false);
         }
+        setIsPhotoUploaded(false);
         fileUploadRef.current.click()
+    };
+
+    const handlePhotoTakingButtonClick = () => {
+        if (faceDetectionErrorCode) {
+            setFaceDetectionErrorCode(null);
+        }
+        setIsPhotoUploaded(false);
+        setIsWebcamOpen(true);
     };
 
     const handleOpenPanel = (setThisPanelOpen, isOtherPanelOpen, setOtherPanelOpen) => {
@@ -278,6 +316,29 @@ const FacialLandmarks = (props) => {
         if (windowInnerWidth <= 600 && isOtherPanelOpen) {
             setOtherPanelOpen(false);
         }
+    };
+
+    const handleDownloadButtonClick = () => {
+        getJpegImage(1);
+        setIsDownloadButtonClicked(true);
+    };
+
+    const getJpegImage = (numOfTrials) => {
+        if (!isDownloadButtonClicked) {
+            HtmlToImage.toJpeg(document.getElementById('avatar'))
+                .then(dataUrl => {
+                    const fileSize = UTILS.getDownloadImageSize(dataUrl);
+                    if (fileSize < 1200 && numOfTrials < 10) {
+                        setTimeout(
+                            () => getJpegImage(numOfTrials + 1),
+                            500
+                        )
+                    } else {
+                        setDownloadImage(dataUrl);
+                    }
+                })
+                .catch(error => error);
+        };
     };
 
     const SelectPanel = (
@@ -370,7 +431,7 @@ const FacialLandmarks = (props) => {
     );
 
     const UploadedImageContainer = (
-        <div className={`image-container ${!isPhotoUploaded ? 'hidden' : ''}`}>
+        <div className="image-container">
             <img
                 ref={photoRef}
                 src="#"
@@ -395,7 +456,7 @@ const FacialLandmarks = (props) => {
     const PhotoContainer = (
         < div
             ref={avatarRef}
-            style={{ width: 400 }}
+            style={{ width: IMAGE_STYLE.width }}
             className={`photo-container ${isLoading ? 'loading' : ''} ${faceDetectionErrorCode || !isPhotoUploaded ? 'hidden' : ''} ${isInPreviewMode ? 'previewImage' : ''}`}
         >
             {UploadedImageContainer}
@@ -419,32 +480,46 @@ const FacialLandmarks = (props) => {
         </div>
     );
 
-    const getDownloadImageSize = (dataUrl) => {
-        return atob(dataUrl.split('base64,')[1]).length / 1000;
-    };
+    const WebcamContainer = (
+        <div className={`webcam-container ${isInPreviewMode ? 'hidden' : ''}`}>
+            <Webcam
+                ref={webcamRef}
+                mirrored={true}
+                screenshotFormat="image/jpeg"
+                style={{
+                    width: IMAGE_STYLE.width,
+                    height: 0.75 * IMAGE_STYLE.width,
+                }}
+            />
+            <div 
+                className={`popup-button-container ${isInPreviewMode ? 'hidden' : ''}`}
+                style={{width: 640}}
+            >
+                <Button
+                    className={`cancel-button ${isInPreviewMode ? 'hidden' : ''}`}
+                    onClick={() => setIsWebcamOpen(false)}
+                >
+                    {Locales[language]["CANCEL"]}
+                </Button>
+                <Button
+                    className={`capture-button ${isInPreviewMode ? 'hidden' : ''}`}
+                    onClick={handlePhotoTaking}
+                >
+                    {Locales[language]['TAKE PHOTO']}
+                </Button>
+            </div>
+        </div>
+    );
 
-    const handleDownloadButtonClick = () => {
-        getJpegImage(1);
-        setIsDownloadButtonClicked(true);
-    };
-
-    const getJpegImage = (numOfTrials) => {
-        if (!isDownloadButtonClicked) {
-            HtmlToImage.toJpeg(document.getElementById('avatar'))
-            .then(dataUrl => {
-                const fileSize = getDownloadImageSize(dataUrl);
-                if (fileSize < 1200 && numOfTrials < 10) {
-                    setTimeout (
-                        () => getJpegImage(numOfTrials + 1),
-                        500
-                    )
-                } else {
-                    setDownloadImage(dataUrl);
-                }
-            })
-            .catch(error => error);
-        };
-    };
+    const TakePhotoButton = (
+        <Button
+            className={`take-photo-button ${isInPreviewMode ? 'hidden' : ''}`}
+            onClick={handlePhotoTakingButtonClick}
+            disabled={isLoading && isPhotoUploaded}
+        >
+            {Locales[language]['TAKE YOUR PHOTO']}
+        </Button>
+    );
 
     const UploadButton = (
         <Button
@@ -457,11 +532,11 @@ const FacialLandmarks = (props) => {
                 type="file"
                 onChange={handleImageUpload}
             />
-            {isLoading && isPhotoUploaded ? Locales[language]['SCANNING'] : Locales[language]['UPLOAD / TAKE YOUR PHOTO']}
+            {Locales[language]['UPLOAD YOUR PHOTO']}
         </Button>
     );
 
-    const PrintButton = (
+    const PreviewButton = (
         <Button
             className={`print-button ${isInPreviewMode ? 'hidden' : ''}`}
             disabled={!isPhotoUploaded || isLoading || faceDetectionErrorCode || isInPreviewMode}
@@ -490,23 +565,48 @@ const FacialLandmarks = (props) => {
         </Button>
     );
 
+    const DisplayButton = (
+        <Button
+            className="display-button"
+            disabled={isLoading && isPhotoUploaded}
+        >
+            {Locales[language]['SCANNING']}
+        </Button>
+    );
+
     return (
         <>
-            <div className="avatar-generator-container" id="avatar">
-                {UploadButton}
+            <div className="popup-button-container">
+                {
+                    isLoading && isPhotoUploaded ?
+                    DisplayButton :
+                    (
+                        <>
+                            {UploadButton} 
+                            {TakePhotoButton}
+                        </>
+                    )
+                }
+            </div>
+            <div className={`avatar-generator-container ${isInPreviewMode ? 'preview-screen' : ''}`} id="avatar">
+                <img src={getImage(language)} alt="invincible" id="invincible" className={`${isInPreviewMode ? '' : 'hidden'}`}/>
                 <div className="avatar-generator">
                     {isSelectionPanelOpen ? SelectPanel : OpenSelectionPanelButton}
                     {PhotoContainer}
+                    {isWebcamOpen ? WebcamContainer : null}
                     {isPhotoUploaded && faceDetectionErrorCode ? <Warning errorCode={faceDetectionErrorCode}/> : null}
-                    {!isPhotoUploaded ? <Instruction messages={Locales[language].INSTRUCTION}/> : null}
+                    {!isPhotoUploaded && !isWebcamOpen ? <Instruction messages={Locales[language].INSTRUCTION}/> : null}
                     {isSetCostumesPanelOpen ? SetCostumes : OpenSetCostumesPanelButton}
                 </div>
+                <h2 className={`first-name ${isInPreviewMode ? '' : 'hidden'}`}>{firstName}</h2>
+                <h2 className={`last-name ${isInPreviewMode ? '' : 'hidden'}`}>{lastName}</h2>
+                <h1 className={`superhero-name ${isInPreviewMode ? '' : 'hidden'}`}>{superheroName}</h1>
             </div>
             <div className="popup-button-container">
                 {CancelButton}
                 {DownloadButton}
             </div>
-            {PrintButton}
+            {PreviewButton}
         </>
     );
 };
