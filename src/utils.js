@@ -185,8 +185,8 @@ class Utils {
         return atob(dataUrl.split('base64,')[1]).length / 1000;
     };
 
-    isSafariBrowser = () => {
-        return navigator.userAgent.toLowerCase().includes('safari');
+    isChromeBrowser = () => {
+        return navigator.userAgent.toLowerCase().includes('chrome');
     };
     
     detectVideo = async (webcamRef, canvasRef, setFaceGeometry, net) => {

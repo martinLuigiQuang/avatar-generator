@@ -1,15 +1,16 @@
 .avatar-generator-container {
-    background: url('../assets/Pg4.jpg');
+    // background: url('../assets/Pg4.jpg');
+    background-color: #470A68;
     background-size: cover;
     background-position: top;
     position: relative;
-    height: 1000px;
+    height: 900px;
     margin: 0 auto;
     &.preview-screen {
-        height: 1300px;
+        height: 900px;
     }
     img#invincible {
-      width: 30%;
+      width: 25%;
       object-fit: contain;
       position: absolute;
       top: 40px;
@@ -18,11 +19,17 @@
     .names-container {
         margin: 0;
         position: absolute;
-        bottom: 100px;
+        bottom: 50px;
         width: 100%;
         text-align: center;
+        .names, 
+        .aka {
+            color: white;
+            font-family: sans-serif;
+        }
         .superhero-name {
-            font-size: 120px;
+            margin: 0;
+            font-size: var(--huge-font-size);
             color: yellow;
             text-shadow: 5px 5px 0 black, 2px 2px 0 black, -2px 2px 0 black, 2px -2px 0 black, -2px -2px 0 black;
         }

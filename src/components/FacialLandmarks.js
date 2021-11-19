@@ -39,7 +39,7 @@ const GENDER = Object.keys(ApplicationConstants.GENDER);
 const FacialLandmarks = (props) => {
     const { language, firstName, lastName, superheroName, handleCreateImage, pngImage } = props;
 
-    const [ isSafariBrowser, ] = React.useState(UTILS.isSafariBrowser());
+    const [ isChromeBrowser, ] = React.useState(UTILS.isChromeBrowser());
     const [ isLoading, setIsLoading ] = React.useState(true);
     const [ isFirstPass, setIsFirstPass ] = React.useState(true);
     const [ isPhotoUploaded, setIsPhotoUploaded ] = React.useState(false);
@@ -332,7 +332,7 @@ const FacialLandmarks = (props) => {
     };
 
     const handleDownloadButtonClick = () => {
-        isSafariBrowser ? getDownloadImageForSafari() : getJpegImage(1);
+        isChromeBrowser ? getJpegImage(1) : getDownloadImageForSafari();
         // getDownloadImageForSafari();
         setIsDownloadButtonClicked(true);
     };
@@ -541,9 +541,9 @@ const FacialLandmarks = (props) => {
 
     const TakePhotoButton = (
         <Button
-            className={`take-photo-button ${isInPreviewMode ? 'hidden' : ''}`}
+            className="take-photo-button"
             onClick={handlePhotoTakingButtonClick}
-            disabled={isLoading && isPhotoUploaded}
+            disabled={isLoading && isPhotoUploaded || isInPreviewMode}
         >
             {Locales[language]['TAKE YOUR PHOTO']}
         </Button>
@@ -551,9 +551,9 @@ const FacialLandmarks = (props) => {
 
     const UploadButton = (
         <Button
-            className={`upload-button ${isInPreviewMode ? 'preview' : ''}`}
+            className="upload-button"
             onClick={handleUploadButtonClick}
-            disabled={isLoading && isPhotoUploaded}
+            disabled={isLoading && isPhotoUploaded || isInPreviewMode}
         >
             <input
                 ref={fileUploadRef}
@@ -627,9 +627,9 @@ const FacialLandmarks = (props) => {
                     {isSetCostumesPanelOpen ? SetCostumes : OpenSetCostumesPanelButton}
                 </div>
                 <div className="names-container">
-                    <h2 className={`names ${isInPreviewMode ? '' : 'hidden'}`}>{firstName} {lastName}</h2>
-                    <h2 className={`aka ${isInPreviewMode ? '' : 'hidden'}`}>aka</h2>
-                    <h1 className={`superhero-name ${isInPreviewMode ? '' : 'hidden'}`}>{superheroName}</h1>
+                    <h2 className="names">{firstName} {lastName}</h2>
+                    <h2 className="aka">AKA</h2>
+                    <h1 className="superhero-name">{superheroName}</h1>
                 </div>
             </div>
             <div className="popup-button-container">
