@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as tf from '@tensorflow/tfjs';
+import cloneDeep from 'lodash/cloneDeep';
 import Webcam from 'react-webcam';
 import * as HtmlToImage from 'html-to-image';
 import * as Facemesh from '@tensorflow-models/facemesh';
@@ -36,8 +37,9 @@ const IMAGE_STYLE = ApplicationConstants.IMAGE_STYLE;
 const GENDER = Object.keys(ApplicationConstants.GENDER);
 
 const FacialLandmarks = (props) => {
-    const { language, firstName, lastName, superheroName } = props;
+    const { language, firstName, lastName, superheroName, handleCreateImage, pngImage } = props;
 
+    const [ isSafariBrowser, ] = React.useState(UTILS.isSafariBrowser());
     const [ isLoading, setIsLoading ] = React.useState(true);
     const [ isFirstPass, setIsFirstPass ] = React.useState(true);
     const [ isPhotoUploaded, setIsPhotoUploaded ] = React.useState(false);
@@ -90,16 +92,27 @@ const FacialLandmarks = (props) => {
     React.useEffect(
         () => {
             if (downloadImage && isDownloadButtonClicked) {
-                const link = document.createElement('a');
-                link.href = downloadImage;
-                link.setAttribute('download', 'avatar.jpeg');
-                document.body.appendChild(link);
+                const downloadLink = document.createElement('a');
+                downloadLink.href = downloadImage;
+                downloadLink.setAttribute('download', 'avatar.jpeg');
+                document.body.appendChild(downloadLink);
                 setDownloadImage(null);
                 setIsDownloadButtonClicked(false);
-                link.click();
+                downloadLink.click();
             }
         },
         [downloadImage, isDownloadButtonClicked]
+    );
+
+    React.useEffect(
+        () => {
+            if (pngImage) {
+                const link = document.createElement('a');
+                link.href = pngImage;
+                link.click();
+            }
+        },
+        [pngImage]
     );
 
     React.useEffect(
@@ -319,26 +332,41 @@ const FacialLandmarks = (props) => {
     };
 
     const handleDownloadButtonClick = () => {
-        getJpegImage(1);
+        isSafariBrowser ? getDownloadImageForSafari() : getJpegImage(1);
+        // getDownloadImageForSafari();
         setIsDownloadButtonClicked(true);
     };
 
     const getJpegImage = (numOfTrials) => {
         if (!isDownloadButtonClicked) {
-            HtmlToImage.toJpeg(document.getElementById('avatar'))
-                .then(dataUrl => {
-                    const fileSize = UTILS.getDownloadImageSize(dataUrl);
-                    if (fileSize < 1200 && numOfTrials < 10) {
-                        setTimeout(
-                            () => getJpegImage(numOfTrials + 1),
-                            500
-                        )
-                    } else {
-                        setDownloadImage(dataUrl);
-                    }
-                })
-                .catch(error => error);
+            HtmlToImage.toJpeg(document.getElementById('avatar'), { quality: 0.9 })
+            .then(dataUrl => {
+                const fileSize = UTILS.getDownloadImageSize(dataUrl);
+                if (fileSize < 2500 && numOfTrials < 5) {
+                    setTimeout(
+                        () => getJpegImage(numOfTrials + 1),
+                        500
+                    )
+                } else {
+                    setDownloadImage(dataUrl);
+                }
+            })
+            .catch(error => error);
         };
+    };
+
+    const getDownloadImageForSafari = () => {
+        if (!isDownloadButtonClicked) {
+            const displayCanvas = document.createElement('canvas');
+            const bodyElement = document.getElementById('body');
+            console.log(bodyElement)
+            displayCanvas.width = 695;
+            displayCanvas.height = 900;
+            const displayCtx = displayCanvas.getContext('2d');
+            // displayCtx.drawImage(canvasRef.current, 0, 0);
+            displayCtx.drawImage(bodyElement, 0, 0, bodyElement.width, bodyElement.height, 0, 0, 695, 900);
+            document.body.appendChild(displayCanvas);
+        }
     };
 
     const SelectPanel = (
@@ -598,9 +626,11 @@ const FacialLandmarks = (props) => {
                     {!isPhotoUploaded && !isWebcamOpen ? <Instruction messages={Locales[language].INSTRUCTION}/> : null}
                     {isSetCostumesPanelOpen ? SetCostumes : OpenSetCostumesPanelButton}
                 </div>
-                <h2 className={`first-name ${isInPreviewMode ? '' : 'hidden'}`}>{firstName}</h2>
-                <h2 className={`last-name ${isInPreviewMode ? '' : 'hidden'}`}>{lastName}</h2>
-                <h1 className={`superhero-name ${isInPreviewMode ? '' : 'hidden'}`}>{superheroName}</h1>
+                <div className="names-container">
+                    <h2 className={`names ${isInPreviewMode ? '' : 'hidden'}`}>{firstName} {lastName}</h2>
+                    <h2 className={`aka ${isInPreviewMode ? '' : 'hidden'}`}>aka</h2>
+                    <h1 className={`superhero-name ${isInPreviewMode ? '' : 'hidden'}`}>{superheroName}</h1>
+                </div>
             </div>
             <div className="popup-button-container">
                 {CancelButton}

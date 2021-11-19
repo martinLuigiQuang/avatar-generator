@@ -87,19 +87,17 @@ export const AvatarAccessory = React.forwardRef((props, ref) => {
     const { title, src, style } = props;
     return (
         src !== ApplicationConstants.NULL_ASSETS_CODE ? 
-        <img ref={ref} src={src} id={title} alt={title} className={title} style={style} /> :
+        <img 
+            ref={ref} 
+            src={src} 
+            id={title.split(' ')[0]} 
+            alt={title.split(' ')[0]} 
+            className={title} 
+            style={style} 
+        /> :
         null 
     );
 });
-
-const AvatarAccessoryToImage = (props) => {
-    const { title, src, style } = props;
-    return ( 
-        src !== ApplicationConstants.NULL_ASSETS_CODE ?
-        `<img src={${src}} id={${title}} alt={${title}} className={${title}} style={${style}} />}` :
-        ''
-    );
-};
 
 export const ScaledUploadedPhoto = React.forwardRef((props, ref) => {
     const { src, style } = props;
@@ -120,7 +118,7 @@ export const Instruction = (props) => {
     const { messages } = props;
     return (
         <div className="instruction-container">
-            {messages.map((line, index) => <h2 key={index}>{line}</h2>)}
+            {messages.map((line, index) => <li key={index}>{line}</li>)}
         </div>
     );
 };

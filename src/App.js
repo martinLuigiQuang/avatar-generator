@@ -36,12 +36,12 @@ function App() {
         'Content-Type': 'application/json'
       }
     }
-    // try {
-    //   const response = await axios.post('https://hcti.io/v1/image', JSON.stringify(payload), headers);
-    //   setPngImageUrl(response.data.url);
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {
+      const response = await axios.post('https://hcti.io/v1/image', JSON.stringify(payload), headers);
+      setPngImageUrl(response.data.url);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const deletePngImage = () => {

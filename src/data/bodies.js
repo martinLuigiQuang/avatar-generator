@@ -21,10 +21,6 @@ const getRatio = (faceWidth) => {
     return faceWidth / ApplicationConstants.ASSETS_IMAGE_FOREHEAD_WIDTH;
 };
 
-const getAverage = (a, b) => {
-    return (a + b) / 2;
-};
-
 export const getItem = (index, gender) => {
     return BODIES[gender][index];
 }; 

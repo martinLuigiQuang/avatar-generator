@@ -184,6 +184,10 @@ class Utils {
     getDownloadImageSize = (dataUrl) => {
         return atob(dataUrl.split('base64,')[1]).length / 1000;
     };
+
+    isSafariBrowser = () => {
+        return navigator.userAgent.toLowerCase().includes('safari');
+    };
     
     detectVideo = async (webcamRef, canvasRef, setFaceGeometry, net) => {
         if (

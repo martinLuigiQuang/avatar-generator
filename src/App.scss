@@ -1,6 +1,10 @@
 .App {
   text-align: center;
   width: 100vw;
-  // max-width: 1280px;
+  max-width: 1280px;
   min-width: 400px;
+  #download-image {
+    width: 1000px;
+    object-fit: contain;
+  }
 }

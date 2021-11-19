@@ -15,29 +15,17 @@
       top: 40px;
       left: 40px;
     }
-    .first-name,
-    .last-name {
-        font-size: var(--huge-font-size);
-        color: white;
-        position: absolute;
-        top: 250px;
-        text-align: center;
-    }
-    .first-name {
-        left: 200px;
-    }
-    .last-name {
-        right: 200px;
-    }
-    .superhero-name {
-        font-size: 120px;
+    .names-container {
         margin: 0;
         position: absolute;
         bottom: 100px;
         width: 100%;
         text-align: center;
-        color: yellow;
-        text-shadow: 5px 5px 0 black, 2px 2px 0 black, -2px 2px 0 black, 2px -2px 0 black, -2px -2px 0 black;
+        .superhero-name {
+            font-size: 120px;
+            color: yellow;
+            text-shadow: 5px 5px 0 black, 2px 2px 0 black, -2px 2px 0 black, 2px -2px 0 black, -2px -2px 0 black;
+        }
     }
     .webcam-container {
         width: 100%;
@@ -133,17 +121,22 @@
                 margin-left: auto;
                 margin-right: auto;
                 text-align: 'center';
+                transform-box: fill-box;
             }
         }
         .warning-container,
         .instruction-container {
             margin-left: 370px;
-            margin-right: 350px;
-            h2 {
+            margin-right: 360px;
+            h2, li {
                 text-align: left;
                 color: wheat;
                 font-weight: lighter;
                 font-size: var(--very-big-font-size);
+            }
+            li {
+                margin: 20px 0;
+                font-size: var(--big-font-size);
             }
         }
     }
