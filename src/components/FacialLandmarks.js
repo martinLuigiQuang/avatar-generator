@@ -340,10 +340,11 @@ const FacialLandmarks = (props) => {
 
     const getJpegImage = (numOfTrials) => {
         if (!isDownloadButtonClicked) {
+            const maxNumOfTrials = isChromeBrowser ? 8 : 15;
             HtmlToImage.toJpeg(document.getElementById('avatar'), { quality: 0.9 })
             .then(dataUrl => {
                 const fileSize = UTILS.getDownloadImageSize(dataUrl);
-                if (fileSize < 2500 && numOfTrials < 15) {
+                if (fileSize < 100 && numOfTrials < maxNumOfTrials) {
                     setTimeout(
                         () => getJpegImage(numOfTrials + 1),
                         500
