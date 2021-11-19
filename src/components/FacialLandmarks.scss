@@ -1,15 +1,16 @@
 .avatar-generator-container {
-    background: url('../assets/Pg4.jpg');
+    // background: url('../assets/Pg4.jpg');
+    background: linear-gradient(135deg, #470A68 50%, #AA0065);
     background-size: cover;
     background-position: top;
     position: relative;
-    height: 1000px;
+    height: 900px;
     margin: 0 auto;
     &.preview-screen {
-        height: 1300px;
+        height: 900px;
     }
     img#invincible {
-      width: 30%;
+      width: 25%;
       object-fit: contain;
       position: absolute;
       top: 40px;
@@ -18,11 +19,17 @@
     .names-container {
         margin: 0;
         position: absolute;
-        bottom: 100px;
+        bottom: 50px;
         width: 100%;
         text-align: center;
+        .names, 
+        .aka {
+            color: white;
+            font-family: sans-serif;
+        }
         .superhero-name {
-            font-size: 120px;
+            margin: 0;
+            font-size: var(--huge-font-size);
             color: yellow;
             text-shadow: 5px 5px 0 black, 2px 2px 0 black, -2px 2px 0 black, 2px -2px 0 black, -2px -2px 0 black;
         }
@@ -42,6 +49,8 @@
     .avatar-generator {
         display: flex;
         position: relative;
+        height: 900px;
+        overflow-y: hidden;
         .avatar-options-selection-panel {
             background-color: rgba(240, 248, 255, 0.639);
             margin: 20px;
@@ -229,7 +238,7 @@ input[type="file"] {
         font-family: 'Komika';
         font-size: var(--medium-font-size);
         width: 250px;
-        background: linear-gradient(135deg, white, #e66465, aqua, whitesmoke);
+        background: linear-gradient(135deg, white, #AA0065, whitesmoke);
         margin: 2px 0;
     }
     &.download-button,
