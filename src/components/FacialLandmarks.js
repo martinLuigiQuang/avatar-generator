@@ -423,7 +423,7 @@ const FacialLandmarks = (props) => {
                     );
                 })
             }
-            <h2>{Locales[language]['RANDOM SECTION']}</h2>
+            {/* <h2>{Locales[language]['RANDOM SECTION']}</h2> */}
             {
                 Object.keys(OPTIONS).map(key => {
                     const optionName = key.split('_')[1];
