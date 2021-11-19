@@ -1,6 +1,6 @@
 .avatar-generator-container {
     // background: url('../assets/Pg4.jpg');
-    background-color: #470A68;
+    background: linear-gradient(135deg, #470A68 50%, #AA0065);
     background-size: cover;
     background-position: top;
     position: relative;
@@ -49,6 +49,8 @@
     .avatar-generator {
         display: flex;
         position: relative;
+        height: 900px;
+        overflow-y: hidden;
         .avatar-options-selection-panel {
             background-color: rgba(240, 248, 255, 0.639);
             margin: 20px;
@@ -236,7 +238,7 @@ input[type="file"] {
         font-family: 'Komika';
         font-size: var(--medium-font-size);
         width: 250px;
-        background: linear-gradient(135deg, white, #e66465, aqua, whitesmoke);
+        background: linear-gradient(135deg, white, #AA0065, whitesmoke);
         margin: 2px 0;
     }
     &.download-button,

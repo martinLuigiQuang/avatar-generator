@@ -1,12 +1,12 @@
 import ApplicationConstants from './constants';
 import Utils from '../utils';
 
-import F1 from '../assets/headware_female/HairFemShortBlack-01.png';
-import F2 from '../assets/headware_female/HairFemShortBlonde-01.png';
-import F3 from '../assets/headware_female/HairFemShortBrown-01.png';
-import F4 from '../assets/headware_female/HairLongBlack-01.png';
-import F5 from '../assets/headware_female/HairLongBlonde-01.png';
-import F6 from '../assets/headware_female/HairLongBrown-01.png';
+import F1 from '../assets/headware_female/HairFemShortBlack-01-cropped.png';
+import F2 from '../assets/headware_female/HairFemShortBlonde-01-cropped.png';
+import F3 from '../assets/headware_female/HairFemShortBrown-01-cropped.png';
+import F4 from '../assets/headware_female/HairLongBlack-01-cropped.png';
+import F5 from '../assets/headware_female/HairLongBlonde-01-cropped.png';
+import F6 from '../assets/headware_female/HairLongBrown-01-cropped.png';
 import F7 from '../assets/headware_female/MaskRed-01.png';
 
 import M1 from '../assets/headware_male/HairMaleShortBlack-01.png';

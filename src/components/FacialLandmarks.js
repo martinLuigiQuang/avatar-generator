@@ -332,8 +332,9 @@ const FacialLandmarks = (props) => {
     };
 
     const handleDownloadButtonClick = () => {
-        isChromeBrowser ? getJpegImage(1) : getDownloadImageForSafari();
+        // isChromeBrowser ? getJpegImage(1) : getDownloadImageForSafari();
         // getDownloadImageForSafari();
+        getJpegImage(1);
         setIsDownloadButtonClicked(true);
     };
 
@@ -342,7 +343,7 @@ const FacialLandmarks = (props) => {
             HtmlToImage.toJpeg(document.getElementById('avatar'), { quality: 0.9 })
             .then(dataUrl => {
                 const fileSize = UTILS.getDownloadImageSize(dataUrl);
-                if (fileSize < 2500 && numOfTrials < 5) {
+                if (fileSize < 2500 && numOfTrials < 15) {
                     setTimeout(
                         () => getJpegImage(numOfTrials + 1),
                         500
@@ -626,7 +627,7 @@ const FacialLandmarks = (props) => {
                     {!isPhotoUploaded && !isWebcamOpen ? <Instruction messages={Locales[language].INSTRUCTION}/> : null}
                     {isSetCostumesPanelOpen ? SetCostumes : OpenSetCostumesPanelButton}
                 </div>
-                <div className="names-container">
+                <div className={`names-container ${isLoading || !isPhotoUploaded || faceDetectionErrorCode ? 'hidden' : ''}`}>
                     <h2 className="names">{firstName} {lastName}</h2>
                     <h2 className="aka">AKA</h2>
                     <h1 className="superhero-name">{superheroName}</h1>
