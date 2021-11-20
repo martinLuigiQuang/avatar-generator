@@ -132,6 +132,9 @@
                 text-align: 'center';
                 transform-box: fill-box;
             }
+            .hair, .mask {
+                border: 2px solid red;
+            }
         }
         .warning-container,
         .instruction-container {

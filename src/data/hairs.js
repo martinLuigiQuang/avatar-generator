@@ -54,11 +54,11 @@ export const getStyles = (
     const rotationAxisYCoord = ratio * ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_TOP_OF_HEAD;
     return {
         width: `${scaledImageWidth}px`,
-        left: topOfHead[0] + canvasLeftPosition + imageLeftMargin - 0.5 * scaledImageWidth,
-        top: ApplicationConstants.AVATAR_TOP_POSITION - ratio * ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_TOP_OF_HEAD,
+        left: topOfHead[0] + 1*(canvasLeftPosition + imageLeftMargin - 0.5 * scaledImageWidth)-7,
+        top: ApplicationConstants.AVATAR_TOP_POSITION - ratio * ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_TOP_OF_HEAD - ratio * 450 - 5,
         zIndex: isLoading ? ApplicationConstants.Z_INDEX_HIDDEN : ApplicationConstants.Z_INDEX_HAIR,
         transform: `rotateZ(${options.headTiltAngle}deg)`,
-        transformOrigin: `50% ${rotationAxisYCoord}px`,
+        // transformOrigin: `50% ${rotationAxisYCoord}px`,
         display: isLoading ? 'none' : 'block'
     };
 };
