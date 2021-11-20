@@ -24,7 +24,8 @@ import {
     SetCostumesOptions, 
     Warning, 
     Instruction,
-    PanelButton
+    PanelButton,
+    DownloadProgressBar
 } from './FacialLandmarksHelper';
 import Locales from '../data/locales.json';
 import EventLogoEnglish from '../assets/Invincible_english.png';
@@ -340,11 +341,11 @@ const FacialLandmarks = (props) => {
 
     const getJpegImage = (numOfTrials) => {
         if (!isDownloadButtonClicked) {
-            const maxNumOfTrials = isChromeBrowser ? 8 : 15;
+            const maxNumOfTrials = 16;
             HtmlToImage.toJpeg(document.getElementById('avatar'), { quality: 0.9 })
             .then(dataUrl => {
                 const fileSize = UTILS.getDownloadImageSize(dataUrl);
-                if (fileSize < 100 && numOfTrials < maxNumOfTrials) {
+                if (numOfTrials < maxNumOfTrials) {
                     setTimeout(
                         () => getJpegImage(numOfTrials + 1),
                         500
@@ -424,7 +425,6 @@ const FacialLandmarks = (props) => {
                     );
                 })
             }
-            {/* <h2>{Locales[language]['RANDOM SECTION']}</h2> */}
             {
                 Object.keys(OPTIONS).map(key => {
                     const optionName = key.split('_')[1];
@@ -578,17 +578,17 @@ const FacialLandmarks = (props) => {
 
     const DownloadButton = (
         <Button
-            className={`download-button ${isInPreviewMode ? 'displayed' : 'hidden'}`}
+            className={`download-button ${isInPreviewMode ? 'displayed' : 'hidden'} ${isDownloadButtonClicked ? 'show-progress' : ''}`}
             disabled={isDownloadButtonClicked}
             onClick={handleDownloadButtonClick}
         >
-            {isDownloadButtonClicked ? 'downloading...' : Locales[language]['DOWNLOAD']}
+            {isDownloadButtonClicked ? Locales[language]['DOWNLOADING'] : Locales[language]['DOWNLOAD']}
         </Button>
     );
 
     const CancelButton = (
         <Button
-            className={`cancel-button ${isInPreviewMode ? 'displayed' : 'hidden'}`}
+            className={`cancel-button ${isInPreviewMode && !isDownloadButtonClicked ? 'displayed' : 'hidden'}`}
             onClick={() => setIsInPreviewMode(false)}
         >
             {Locales[language]['CANCEL']}
