@@ -7,12 +7,10 @@ import F3 from '../assets/headware_female/HairFemShortBrown-01-cropped.png';
 import F4 from '../assets/headware_female/HairLongBlack-01-cropped.png';
 import F5 from '../assets/headware_female/HairLongBlonde-01-cropped.png';
 import F6 from '../assets/headware_female/HairLongBrown-01-cropped.png';
-import F7 from '../assets/headware_female/MaskRed-01.png';
 
-import M1 from '../assets/headware_male/HairMaleShortBlack-01.png';
-import M2 from '../assets/headware_male/HairMaleShortBlonde-01.png';
-import M3 from '../assets/headware_male/HairMaleShortBrown-01.png';
-import M4 from '../assets/headware_male/MaskRed-01.png';
+import M1 from '../assets/headware_male/HairMaleShortBlack-01-cropped.png';
+import M2 from '../assets/headware_male/HairMaleShortBlonde-01-cropped.png';
+import M3 from '../assets/headware_male/HairMaleShortBrown-01-cropped.png';
 
 const UTILS = new Utils();
 
@@ -51,14 +49,12 @@ export const getStyles = (
     const canvasLeftPosition = - options.chin[0] + 0.5 * options.scalingRatio * ApplicationConstants.IMAGE_STYLE.width;
     const imageLeftMargin = 0.5 * (1 - options.scalingRatio) * ApplicationConstants.IMAGE_STYLE.width;
     const scaledImageWidth = ratio * ApplicationConstants.ASSETS_IMAGE_WIDTH;
-    const rotationAxisYCoord = ratio * ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_TOP_OF_HEAD;
     return {
         width: `${scaledImageWidth}px`,
-        left: topOfHead[0] + 1*(canvasLeftPosition + imageLeftMargin - 0.5 * scaledImageWidth)-7,
-        top: ApplicationConstants.AVATAR_TOP_POSITION - ratio * ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_TOP_OF_HEAD - ratio * 450 - 5,
+        left: topOfHead[0] + 1*(canvasLeftPosition + imageLeftMargin - 0.5 * scaledImageWidth),
+        top: ApplicationConstants.AVATAR_TOP_POSITION - ratio * (ApplicationConstants.ASSETS_IMAGE_DISTANCE_TO_TOP_OF_HEAD + ApplicationConstants.ASSETS_IMAGE_ADDED_TOP_MARGIN_HAIRS),
         zIndex: isLoading ? ApplicationConstants.Z_INDEX_HIDDEN : ApplicationConstants.Z_INDEX_HAIR,
         transform: `rotateZ(${options.headTiltAngle}deg)`,
-        // transformOrigin: `50% ${rotationAxisYCoord}px`,
         display: isLoading ? 'none' : 'block'
     };
 };

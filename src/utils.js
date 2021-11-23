@@ -109,7 +109,7 @@ class Utils {
     };
     
     checkHeadTiltAngle = (angle) => {
-        return angle < 20 && angle > -20;
+        return angle < 12 && angle > -12;
     };
 
     isPixelWhite = (data, index) => {

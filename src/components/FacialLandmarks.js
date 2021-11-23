@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as tf from '@tensorflow/tfjs';
-import cloneDeep from 'lodash/cloneDeep';
+import { Link } from 'react-router-dom';
 import Webcam from 'react-webcam';
 import * as HtmlToImage from 'html-to-image';
 import * as Facemesh from '@tensorflow-models/facemesh';
@@ -180,7 +180,7 @@ const FacialLandmarks = (props) => {
     };
 
     const handleSetRandomAppearance = () => {
-       setHairIndex(UTILS.getCostumeIndex(Hairs.getNumOfAssets(bodyGender), hairIndex, true));
+       setHairIndex(UTILS.getCostumeIndex(Hairs.getNumOfAssets(GENDER[genderIndex]), hairIndex, true));
     };
 
     const handleSetRandomAccessories = () => {
@@ -313,7 +313,9 @@ const FacialLandmarks = (props) => {
         if (faceDetectionErrorCode) {
             setFaceDetectionErrorCode(null);
         }
-        setIsPhotoUploaded(false);
+        if (isPhotoUploaded) {
+            setIsPhotoUploaded(false);
+        }
         fileUploadRef.current.click()
     };
 
@@ -321,8 +323,12 @@ const FacialLandmarks = (props) => {
         if (faceDetectionErrorCode) {
             setFaceDetectionErrorCode(null);
         }
-        setIsPhotoUploaded(false);
-        setIsWebcamOpen(true);
+        if (isPhotoUploaded) {
+            setIsPhotoUploaded(false);
+        }
+        if (!isWebcamOpen) {
+            setIsWebcamOpen(true);
+        }
     };
 
     const handleOpenPanel = (setThisPanelOpen, isOtherPanelOpen, setOtherPanelOpen) => {
@@ -333,8 +339,8 @@ const FacialLandmarks = (props) => {
     };
 
     const handleDownloadButtonClick = () => {
-        // isChromeBrowser ? getJpegImage(1) : getDownloadImageForSafari();
-        // getDownloadImageForSafari();
+        const avatarElement = document.getElementById('avatar');
+        avatarElement.setAttribute('style', 'width: 1600px');
         getJpegImage(1);
         setIsDownloadButtonClicked(true);
     };
@@ -351,25 +357,12 @@ const FacialLandmarks = (props) => {
                         500
                     )
                 } else {
+                    document.getElementById('avatar').removeAttribute('style');
                     setDownloadImage(dataUrl);
                 }
             })
             .catch(error => error);
         };
-    };
-
-    const getDownloadImageForSafari = () => {
-        if (!isDownloadButtonClicked) {
-            const displayCanvas = document.createElement('canvas');
-            const bodyElement = document.getElementById('body');
-            console.log(bodyElement)
-            displayCanvas.width = 695;
-            displayCanvas.height = 900;
-            const displayCtx = displayCanvas.getContext('2d');
-            // displayCtx.drawImage(canvasRef.current, 0, 0);
-            displayCtx.drawImage(bodyElement, 0, 0, bodyElement.width, bodyElement.height, 0, 0, 695, 900);
-            document.body.appendChild(displayCanvas);
-        }
     };
 
     const SelectPanel = (
@@ -545,7 +538,7 @@ const FacialLandmarks = (props) => {
         <Button
             className="take-photo-button"
             onClick={handlePhotoTakingButtonClick}
-            disabled={isLoading && isPhotoUploaded || isInPreviewMode}
+            disabled={isLoading && isPhotoUploaded || isInPreviewMode || isWebcamOpen}
         >
             {Locales[language]['TAKE YOUR PHOTO']}
         </Button>
@@ -564,6 +557,12 @@ const FacialLandmarks = (props) => {
             />
             {Locales[language]['UPLOAD YOUR PHOTO']}
         </Button>
+    );
+
+    const BackButton = (
+        <div className={`back-button-link ${isInPreviewMode ? 'hidden': 'displayed'}`}>
+            <Link to="/enterName">{`${Locales[language]['BACK']}`}</Link>
+        </div>
     );
 
     const PreviewButton = (
@@ -638,7 +637,10 @@ const FacialLandmarks = (props) => {
                 {CancelButton}
                 {DownloadButton}
             </div>
-            {PreviewButton}
+            <div className="popup-button-container">
+                {BackButton}
+                {PreviewButton}
+            </div>
         </>
     );
 };
