@@ -24,8 +24,7 @@ import {
     SetCostumesOptions, 
     Warning, 
     Instruction,
-    PanelButton,
-    DownloadProgressBar
+    PanelButton
 } from './FacialLandmarksHelper';
 import Locales from '../data/locales.json';
 import EventLogoEnglish from '../assets/Invincible_english.png';
@@ -38,9 +37,8 @@ const IMAGE_STYLE = ApplicationConstants.IMAGE_STYLE;
 const GENDER = Object.keys(ApplicationConstants.GENDER);
 
 const FacialLandmarks = (props) => {
-    const { language, firstName, lastName, superheroName, handleCreateImage, pngImage } = props;
+    const { language, firstName, lastName, superheroName } = props;
 
-    const [ isChromeBrowser, ] = React.useState(UTILS.isChromeBrowser());
     const [ isLoading, setIsLoading ] = React.useState(true);
     const [ isFirstPass, setIsFirstPass ] = React.useState(true);
     const [ isPhotoUploaded, setIsPhotoUploaded ] = React.useState(false);
@@ -103,17 +101,6 @@ const FacialLandmarks = (props) => {
             }
         },
         [downloadImage, isDownloadButtonClicked]
-    );
-
-    React.useEffect(
-        () => {
-            if (pngImage) {
-                const link = document.createElement('a');
-                link.href = pngImage;
-                link.click();
-            }
-        },
-        [pngImage]
     );
 
     React.useEffect(

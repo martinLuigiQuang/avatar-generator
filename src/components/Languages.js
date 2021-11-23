@@ -8,8 +8,6 @@ import './Languages.scss';
 const LanguageSelector = (props) => {
   const { handleLanguageSelector, language } = props;
 
-  // React.useEffect(() => setIsFirstPage(true), []);
-
   return (
     <div className={`${language}`}>
     

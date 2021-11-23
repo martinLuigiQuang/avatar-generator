@@ -200,8 +200,3 @@ export const PanelButton = (props) => {
         </Button>
     );
 };
-
-export const DownloadProgressBar = (props) => {
-    const { langauge } = props;
-    return <div>{Locales[langauge]['DOWNLOADING']}</div>;
-};
