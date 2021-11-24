@@ -421,6 +421,7 @@ const FacialLandmarks = (props) => {
                             color={costumeColor}
                             disabled={isLoading || !isPhotoUploaded}
                             handleClick={() => handleSetCostumesIndex(index)}
+                            language={language}
                         />
                     );
                 })
@@ -428,7 +429,7 @@ const FacialLandmarks = (props) => {
             {
                 Object.keys(OPTIONS).map(key => {
                     const optionName = key.split('_')[1];
-                    const text = Locales[language]['RANDOM'].concat(' ').concat(optionName === 'appearance' ? 'hair' : optionName);
+                    const text = Locales[language][`RANDOM ${optionName.toUpperCase()}`];
                     return (
                         <Button
                             key={key}
