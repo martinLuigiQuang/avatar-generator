@@ -106,10 +106,11 @@ export const ScaledUploadedPhoto = React.forwardRef((props, ref) => {
 });
 
 export const Warning = (props) => {
-    const { errorCode } = props;
+    const { errorCode, language } = props;
     return (
         <div className="warning-container">
-            <h2>{ERROR_MESSAGES[errorCode]} Please upload a different photo.</h2>
+            <h2>{ERROR_MESSAGES[language][errorCode]}</h2>
+            <h2>{Locales[language]['DIFFERENT PHOTO']}</h2>
         </div>
     );
 };
