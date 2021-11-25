@@ -88,7 +88,7 @@
         "INFUSING INVINCIBILITY":"INVINCIBILIDAD INSPIRADORA",
         "YOUR SUPERHERO NAME IS":"TU NOMBRE DE SUPER HÉROE ES",
         "DOWNLOAD":"DESCARGAR",
-        "DOWNLOADING": "DOWNLOADING SP...",
+        "DOWNLOADING": "DESCARGANDO",
         "RETURN TO HOMEPAGE":"VOLVER A LA PÁGINA PRINCIPAL",
         "PLEASE ENTER YOUR FIRST AND LAST NAME TO CONTINUE":"POR FAVOR INGRESE SU NOMBRE Y APELLIDO PARA CONTINUAR",
         "INSTRUCTION": [
@@ -96,7 +96,7 @@
             "Usa el menú de la izquierda para crear tu avatar de super héroe, puede ser al azar o seleccionando entre las combinaciones de atuendos preestablecidos en el menú de la derecha.",
             "Descarga tu avatar y comparta con nosotros a través del enlace en el correo electrónico para tener la oportunidad de ganar premios de excelencia de Abbott."
         ],
-        "CLOSE": "CLOSE SP",
+        "CLOSE": "CERRAR",
         "APPEARANCE": "APARIENCIA",
         "GENDER": "GÉNERO",
         "HAIR": "PELO",
@@ -155,7 +155,7 @@
         "INFUSING INVINCIBILITY":"INSPIRANDO INVENCIBILIDADE",
         "YOUR SUPERHERO NAME IS":"SEU NOME DE SUPER-HERÓI É",
         "DOWNLOAD":"BAIXAR",
-        "DOWNLOADING": "DOWNLOADING...PO",
+        "DOWNLOADING": "BAIXANDO",
         "RETURN TO HOMEPAGE":"VOLTAR PARA PÁGINA INICIAL",
         "PLEASE ENTER YOUR FIRST AND LAST NAME TO CONTINUE":"POR FAVOR, DIGITE SEU NOME E SOBRENOME PARA CONTINUAR",
         "INSTRUCTION": [
@@ -163,7 +163,7 @@
             "Use o menu à esquerda para construir seu avatar de super-herói, o randomizador ou escolha entre uma série de combinação de acessórios pré-selecionadas no menu à direita.",
             "Baixe seu avatar e compartilhe conosco através do link no e-mail para ter a chance de ganhar os Abbott Excellence Awards."
         ],
-        "CLOSE": "CLOSE PO",
+        "CLOSE": "FECHAR",
         "APPEARANCE": "APARÊNCIA",
         "GENDER": "GÊNERO",
         "HAIR": "CABELO",
@@ -172,9 +172,9 @@
         "OUTFITS": "OUTFITS",
         "MASK / HEADWEAR": "MÁSCARA / CHAPÉU",
         "MASK": "MÁSCARA",
-        "TOP": "PARTE SUPERIOR DO VESTUÁRIO",
+        "TOP": "BLUSA",
         "CAPE": "CAPA",
-        "BOTTOM": "PARTE INFERIOR DO VESTUÁRIO",
+        "BOTTOM": "CALÇA",
         "FOOTWEAR": "SAPATO",
         "GLOVES": "LUVA",
         "SHIELD": "ESCUDO",
@@ -199,3 +199,5 @@
         "STEP": "STEP"
     }
 }
+
+
