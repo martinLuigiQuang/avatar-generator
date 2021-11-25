@@ -574,7 +574,7 @@ const FacialLandmarks = (props) => {
         <Button
             className="take-photo-button"
             onClick={handlePhotoTakingButtonClick}
-            disabled={isLoading && isPhotoUploaded || isInPreviewMode || isWebcamOpen}
+            disabled={(isLoading && isPhotoUploaded) || isInPreviewMode || isWebcamOpen}
         >
             {Locales[language]['TAKE YOUR PHOTO']}
         </Button>
@@ -584,7 +584,7 @@ const FacialLandmarks = (props) => {
         <Button
             className="upload-button"
             onClick={handleUploadButtonClick}
-            disabled={isLoading && isPhotoUploaded || isInPreviewMode}
+            disabled={(isLoading && isPhotoUploaded) || isInPreviewMode}
         >
             <input
                 ref={fileUploadRef}
