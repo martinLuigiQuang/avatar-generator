@@ -1,4 +1,7 @@
 import * as React from 'react';
+import firebase from './firebaseConfig/firebaseConfig';
+import { getDatabase, ref, push } from 'firebase/database';
+import axios from 'axios';
 import * as tf from '@tensorflow/tfjs';
 import { Link } from 'react-router-dom';
 import Webcam from 'react-webcam';
@@ -32,9 +35,13 @@ import EventLogoSpanish from '../assets/Invincible_spanish.png';
 import EventLogoPortuguese from '../assets/Invincible_portuguese.png';
 import './FacialLandmarks.scss';
 
+require('dotenv').config();
+
 const UTILS = new Utils();
 const IMAGE_STYLE = ApplicationConstants.IMAGE_STYLE;
 const GENDER = Object.keys(ApplicationConstants.GENDER);
+
+const sheetsUrl = process.env.REACT_APP_SHEETSURL;
 
 const FacialLandmarks = (props) => {
     const { language, firstName, lastName, superheroName } = props;
@@ -87,6 +94,24 @@ const FacialLandmarks = (props) => {
     const capeRef = React.createRef(null);
     const swordRef = React.createRef(null);
     const shieldRef = React.createRef(null);
+
+    const DB_REF = ref(getDatabase(firebase));
+
+    const postData = (requestBody) => {
+    try {
+      push(DB_REF, requestBody);
+    } catch (e) {
+      console.log(e);
+    }
+    axios({
+      url: sheetsUrl,
+      method: 'POST',
+      data: requestBody,
+    }).catch(error => {
+      console.log(error);
+    });
+  };
+
 
     React.useEffect(
         () => {
@@ -332,6 +357,26 @@ const FacialLandmarks = (props) => {
         namesContainer.setAttribute('style', 'display: block');
         getJpegImage(1);
         setIsDownloadButtonClicked(true);
+
+        const requestBody = {
+          language,
+          firstName,
+          lastName,
+          superheroName,
+          genderIndex,
+          hairIndex,	
+          bodyIndex,
+          maskIndex,
+          topIndex,
+          bottomIndex,
+          footwearIndex,
+          glovesIndex,
+          capeIndex,
+          shieldIndex,
+          swordIndex,
+          timeStamp: new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
+        };
+        postData(requestBody);
     };
 
     const getJpegImage = (numOfTrials) => {
