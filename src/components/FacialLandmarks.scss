@@ -5,9 +5,6 @@
     position: relative;
     height: 900px;
     margin: 0 auto;
-    &.preview-screen {
-        height: 900px;
-    }
     img#invincible {
       width: 25%;
       object-fit: contain;
@@ -31,6 +28,12 @@
             font-size: var(--huge-font-size);
             color: yellow;
             text-shadow: 5px 5px 0 black, 2px 2px 0 black, -2px 2px 0 black, 2px -2px 0 black, -2px -2px 0 black;
+        }
+        &.ready-for-print {
+            width: 50%;
+            bottom: auto;
+            top: 280px;
+            margin-left: 60px;
         }
     }
     .webcam-container {
@@ -131,6 +134,10 @@
                 text-align: 'center';
                 transform-box: fill-box;
             }
+            &.ready-for-print {
+                margin-top: 60px;
+                margin-right: 60px;
+            }
         }
         .warning-container,
         .instruction-container {
@@ -144,10 +151,10 @@
             }
             li {
                 margin: 20px 0;
-                font-size: var(--big-font-size);
+                list-style-type: none;
+                font-size: var(--very-big-font-size);
                 font-family: Arial, Helvetica, sans-serif;
                 list-style-position: inside;
-                text-indent: -35px;
                 padding-left: 30px;
             }
             ul {
@@ -315,6 +322,13 @@ input[type="file"] {
             .instruction-container {
                 margin: 100px 50px auto;
             }
+        }
+        .names-container {
+            display: none;
+        }
+        .photo-container.ready-for-print {
+            margin-left: auto;
+            margin-right: auto;
         }
     }
 }

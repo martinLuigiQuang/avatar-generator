@@ -115,10 +115,16 @@ export const Warning = (props) => {
 };
 
 export const Instruction = (props) => {
-    const { messages } = props;
+    const { language } = props;
+    const messages = Locales[language].INSTRUCTION;
+    const step = Locales[language].STEP;
     return (
         <div className="instruction-container">
-            {messages.map((line, index) => <li key={index}>{line}</li>)}
+            {
+                messages.map((line, index) => {
+                    return <li key={index}><strong>{step} {index + 1}:</strong> {line}</li>;
+                }) 
+            }
         </div>
     );
 };
