@@ -65,7 +65,8 @@
         "RANDOM APPEARANCE": "RANDOM HAIR",
         "RANDOM OUTFITS": "RANDOM OUTFITS",
         "RANDOM ACCESSORIES": "RANDOM ACCESSORIES",
-        "STEP": "STEP"
+        "STEP": "STEP",
+        "DIFFERENT PHOTO": "Please upload a different photo."
     },
     "spanish":{
         "CALA SUPERHERO AVATAR GENERATOR":"GENERADOR AVATAR CALA",
@@ -121,19 +122,20 @@
         "SET OUTFITS": "DEFINE LOS TRAJES",
         "RANDOM": "RANDOM TEST",
         "PREVIEW": "AVANZA",
-        "CANCEL": "CANCEL SP",
+        "CANCEL": "CANCELAR",
         "BLANK": "BLANCO",
         "BLUE": "AZUL",
         "GREEN": "VERDE",
         "MAGENTA": "MAGENTA",
-        "PURPLE": "PURPLE PO",
+        "PURPLE": "PÚRPURA",
         "ORANGE": "NARANJA",
         "RED": "ROJO",
         "YELLOW": "AMARILLO",
         "RANDOM APPEARANCE": "PELO AL AZAR",
         "RANDOM OUTFITS": "TRAJES ALEATORIOS",
         "RANDOM ACCESSORIES": "ACCESORIOS ALEATORIOS",
-        "STEP": "STEP"
+        "STEP": "STEP",
+        "DIFFERENT PHOTO": "Por favor, carga una foto diferente."
     },
     "portuguese":{
         "CALA SUPERHERO AVATAR GENERATOR":"GERADOR DE AVATAR CALA",
@@ -189,18 +191,20 @@
         "SET OUTFITS": "CONFIGURE SEU VISUAL",
         "RANDOM": "RANDOM PO",
         "PREVIEW": "PREVIEW",
-        "CANCEL": "CANCEL PO",
+        "CANCEL": "CANCELAR",
         "BLANK": "EM BRAMCO",
         "BLUE": "AZUL",
         "GREEN": "VERDE",
         "MAGENTA": "MAGENTA",
+        "PURPLE": "ROXO",
         "ORANGE": "LARANJA",
         "RED": "VERMELHO",
         "YELLOW": "AMARELO",
         "RANDOM APPEARANCE": "CABELO ALEATÓRIO",
         "RANDOM OUTFITS": "VISUAL ALEATÓRIO",
         "RANDOM ACCESSORIES": "ACESSÓRIOS ALEATÓRIOS",
-        "STEP": "STEP"
+        "STEP": "STEP",
+        "DIFFERENT PHOTO": "Por favor, faça upload de uma foto diferente."
     }
 }
 

@@ -659,7 +659,7 @@ const FacialLandmarks = (props) => {
                     {isSelectionPanelOpen ? SelectPanel : OpenSelectionPanelButton}
                     {PhotoContainer}
                     {isWebcamOpen ? WebcamContainer : null}
-                    {isPhotoUploaded && faceDetectionErrorCode ? <Warning errorCode={faceDetectionErrorCode}/> : null}
+                    {isPhotoUploaded && faceDetectionErrorCode ? <Warning errorCode={faceDetectionErrorCode} language={language}/> : null}
                     {!isPhotoUploaded && !isWebcamOpen ? <Instruction language={language}/> : null}
                     {isSetCostumesPanelOpen ? SetCostumes : OpenSetCostumesPanelButton}
                 </div>
