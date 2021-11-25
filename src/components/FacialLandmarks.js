@@ -327,7 +327,9 @@ const FacialLandmarks = (props) => {
 
     const handleDownloadButtonClick = () => {
         const avatarElement = document.getElementById('avatar');
+        const namesContainer = document.getElementsByClassName('names-container')[0];
         avatarElement.setAttribute('style', 'width: 1600px');
+        namesContainer.setAttribute('style', 'display: block');
         getJpegImage(1);
         setIsDownloadButtonClicked(true);
     };
@@ -345,6 +347,7 @@ const FacialLandmarks = (props) => {
                     )
                 } else {
                     document.getElementById('avatar').removeAttribute('style');
+                    document.getElementsByClassName('names-container')[0].removeAttribute('style');
                     setDownloadImage(dataUrl);
                 }
             })
@@ -468,7 +471,7 @@ const FacialLandmarks = (props) => {
         < div
             ref={avatarRef}
             style={{ width: IMAGE_STYLE.width }}
-            className={`photo-container ${isLoading ? 'loading' : ''} ${faceDetectionErrorCode || !isPhotoUploaded ? 'hidden' : ''} ${isInPreviewMode ? 'previewImage' : ''}`}
+            className={`photo-container ${isLoading ? 'loading' : ''} ${faceDetectionErrorCode || !isPhotoUploaded ? 'hidden' : ''} ${isInPreviewMode ? 'ready-for-print' : ''}`}
         >
             {UploadedImageContainer}
             <canvas
@@ -612,10 +615,10 @@ const FacialLandmarks = (props) => {
                     {PhotoContainer}
                     {isWebcamOpen ? WebcamContainer : null}
                     {isPhotoUploaded && faceDetectionErrorCode ? <Warning errorCode={faceDetectionErrorCode}/> : null}
-                    {!isPhotoUploaded && !isWebcamOpen ? <Instruction messages={Locales[language].INSTRUCTION}/> : null}
+                    {!isPhotoUploaded && !isWebcamOpen ? <Instruction language={language}/> : null}
                     {isSetCostumesPanelOpen ? SetCostumes : OpenSetCostumesPanelButton}
                 </div>
-                <div className={`names-container ${isLoading || !isPhotoUploaded || faceDetectionErrorCode ? 'hidden' : ''}`}>
+                <div className={`names-container ${isLoading || !isPhotoUploaded || faceDetectionErrorCode ? 'hidden' : ''} ${isInPreviewMode ? 'ready-for-print' : ''}`}>
                     <h2 className="names">{firstName} {lastName}</h2>
                     <h2 className="aka">AKA</h2>
                     <h1 className="superhero-name">{superheroName}</h1>

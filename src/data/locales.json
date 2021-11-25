@@ -63,10 +63,13 @@
         "GREEN": "GREEN",
         "ORANGE": "ORANGE",
         "RED": "RED",
+        "MAGENTA": "MAGENTA",
+        "PURPLE": "PURPLE",
         "YELLOW": "YELLOW",
         "RANDOM APPEARANCE": "RANDOM HAIR",
         "RANDOM OUTFITS": "RANDOM OUTFITS",
-        "RANDOM ACCESSORIES": "RANDOM ACCESSORIES"
+        "RANDOM ACCESSORIES": "RANDOM ACCESSORIES",
+        "STEP": "STEP"
     },
     "spanish":{
         "CALA SUPERHERO AVATAR GENERATOR":"GENERADOR AVATAR CALA",
@@ -131,13 +134,14 @@
         "BLUE": "AZUL",
         "GREEN": "VERDE",
         "MAGENTA": "MAGENTA",
+        "PURPLE": "PURPLE PO",
         "ORANGE": "NARANJA",
         "RED": "ROJO",
         "YELLOW": "AMARILLO",
         "RANDOM APPEARANCE": "PELO AL AZAR",
         "RANDOM OUTFITS": "TRAJES ALEATORIOS",
-        "RANDOM ACCESSORIES": "ACCESORIOS ALEATORIOS"
-
+        "RANDOM ACCESSORIES": "ACCESORIOS ALEATORIOS",
+        "STEP": "STEP"
     },
     "portuguese":{
         "CALA SUPERHERO AVATAR GENERATOR":"GERADOR DE AVATAR CALA",
@@ -201,10 +205,13 @@
         "BLUE": "BLUE PO",
         "GREEN": "GREEN PO",
         "ORANGE": "ORANGE PO",
+        "MAGENTA": "MAGENTA PO",
+        "PURPLE": "PURPLE PO",
         "RED": "RED PO",
         "YELLOW": "YELLOW PO",
         "RANDOM APPEARANCE": "RANDOM HAIR PO",
         "RANDOM OUTFITS": "RANDOM OUTFITS PO",
-        "RANDOM ACCESSORIES": "RANDOM ACCESSORIES PO"
+        "RANDOM ACCESSORIES": "RANDOM ACCESSORIES PO",
+        "STEP": "STEP"
     }
 }
