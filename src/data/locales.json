@@ -57,7 +57,16 @@
         "RANDOM SECTION": "FEELING LUCKY?",
         "RANDOM": "RANDOM",
         "PREVIEW": "PREVIEW",
-        "CANCEL": "CANCEL"
+        "CANCEL": "CANCEL",
+        "BLANK": "BLANK",
+        "BLUE": "BLUE",
+        "GREEN": "GREEN",
+        "ORANGE": "ORANGE",
+        "RED": "RED",
+        "YELLOW": "YELLOW",
+        "RANDOM APPEARANCE": "RANDOM HAIR",
+        "RANDOM OUTFITS": "RANDOM OUTFITS",
+        "RANDOM ACCESSORIES": "RANDOM ACCESSORIES"
     },
     "spanish":{
         "CALA SUPERHERO AVATAR GENERATOR":"GENERADOR AVATAR CALA",
@@ -83,11 +92,12 @@
         "INFUSING INVINCIBILITY":"INVINCIBILIDAD INSPIRADORA",
         "YOUR SUPERHERO NAME IS":"TU NOMBRE DE SUPER HÉROE ES",
         "DOWNLOAD":"DESCARGAR",
-        "DOWNLOADING": "DOWNLOADING...",
+        "DOWNLOADING": "DOWNLOADING SP...",
         "RETURN TO HOMEPAGE":"VOLVER A LA PÁGINA PRINCIPAL",
         "PLEASE ENTER YOUR FIRST AND LAST NAME TO CONTINUE":"POR FAVOR INGRESE SU NOMBRE Y APELLIDO PARA CONTINUAR",
         "INSTRUCTION": [
-            "Comienza por cargar o tomar una foto de ti mismo. Usando el menú en el lado izquierdo de la pantalla, selecciona tu apariencia de superhéroe y accesorios para construir tu avatar. O puedes elegir entre una serie de combinaciones de accesorios preseleccionadas en el menú de la derecha.",
+            "Empieza subiendo o tomándote una foro.",
+            "Usa el menú de la izquierda para crear tu avatar de super héroe, puede ser al azar o seleccionando entre las combinaciones de atuendos preestablecidos en el menú de la derecha.",
             "Descarga tu avatar y comparta con nosotros a través del enlace en el correo electrónico para tener la oportunidad de ganar premios de excelencia de Abbott."
         ],
         "CLOSE": "CLOSE SP",
@@ -109,14 +119,25 @@
         "TOOL": "HERRAMIENTA",
         "PRINT": "IMPRIMIR",
         "AVATAR OPTIONS": "OPCIONES DE AVATAR",
-        "SET OUTFITS": "SET OUTFITS SP",
+        "SET OUTFITS": "DEFINE LOS TRAJES",
         "TOGGLE APPEARANCE": "TOGGLE APPEARANCE SP",
         "TOGGLE OUTFITS": "TOGGLE OUTFIT SP",
         "TOGGLE ACCESSORIES": "TOGGLE ACCESSORIES SP",
         "RANDOM SECTION": "FEELING LUCKY? SP",
-        "RANDOM": "RANDOM SP",
-        "PREVIEW": "PREVIEW SP",
-        "CANCEL": "CANCEL SP"  
+        "RANDOM": "RANDOM TEST",
+        "PREVIEW": "AVANZA",
+        "CANCEL": "CANCEL SP",
+        "BLANK": "BLANCO",
+        "BLUE": "AZUL",
+        "GREEN": "VERDE",
+        "MAGENTA": "MAGENTA",
+        "ORANGE": "NARANJA",
+        "RED": "ROJO",
+        "YELLOW": "AMARILLO",
+        "RANDOM APPEARANCE": "PELO AL AZAR",
+        "RANDOM OUTFITS": "TRAJES ALEATORIOS",
+        "RANDOM ACCESSORIES": "ACCESORIOS ALEATORIOS"
+
     },
     "portuguese":{
         "CALA SUPERHERO AVATAR GENERATOR":"GERADOR DE AVATAR CALA",
@@ -175,6 +196,15 @@
         "RANDOM SECTION": "FEELING LUCKY? PO",
         "RANDOM": "RANDOM PO",
         "PREVIEW": "PREVIEW PO",
-        "CANCEL": "CANCEL PO"
+        "CANCEL": "CANCEL PO",
+        "BLANK": "BLANK PO",
+        "BLUE": "BLUE PO",
+        "GREEN": "GREEN PO",
+        "ORANGE": "ORANGE PO",
+        "RED": "RED PO",
+        "YELLOW": "YELLOW PO",
+        "RANDOM APPEARANCE": "RANDOM HAIR PO",
+        "RANDOM OUTFITS": "RANDOM OUTFITS PO",
+        "RANDOM ACCESSORIES": "RANDOM ACCESSORIES PO"
     }
 }

@@ -171,12 +171,12 @@ export const AvatarAccessoryDisplay = (props) => {
 };
 
 export const SetCostumesOptions = (props) => {
-    const { color, disabled, handleClick } = props;
+    const { color, disabled, handleClick, language } = props;
     const background = `linear-gradient(135deg, whitesmoke, ${disabled ? 'gray' : color === 'blank' ? 'gray' : color})`;
     const wildCardBackground = `linear-gradient(135deg, whitesmoke, ${disabled ? 'gray' : '#e66465, lightblue, whitesmoke'})`;
     return (
         <div className="set-costume-button-container">
-            <label>{color}</label>
+            <label>{Locales[language][color.toUpperCase()]}</label>
             <Button 
                 className="set-costume-button"
                 style={{
