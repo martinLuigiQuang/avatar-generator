@@ -663,7 +663,7 @@ const FacialLandmarks = (props) => {
                     {!isPhotoUploaded && !isWebcamOpen ? <Instruction language={language}/> : null}
                     {isSetCostumesPanelOpen ? SetCostumes : OpenSetCostumesPanelButton}
                 </div>
-                <div className={`names-container ${isLoading || !isPhotoUploaded || faceDetectionErrorCode ? 'hidden' : ''} ${isInPreviewMode ? 'ready-for-print' : ''}`}>
+                <div className={`names-container ${isLoading || !isPhotoUploaded || faceDetectionErrorCode || !isInPreviewMode ? 'hidden' : ''} ${isInPreviewMode ? 'ready-for-print' : ''}`}>
                     <h2 className="names">{firstName} {lastName}</h2>
                     <h2 className="aka">AKA</h2>
                     <h1 className="superhero-name">{superheroName}</h1>
