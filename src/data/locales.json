@@ -71,8 +71,8 @@
     "spanish":{
         "CALA SUPERHERO AVATAR GENERATOR":"GENERADOR AVATAR CALA",
         "PLEASE ENTER YOUR NAME AND SUPERHERO IDENTITY PREVIOUSLY CREATED": "POR FAVOR ESCRIBE TU NOMBRE E IDENTIDAD DE SUPERHÉROE PREVIAMENTE CREADA",
-        "UPLOAD YOUR PHOTO": "CARGAR SU FOTO",
-        "TAKE YOUR PHOTO": "TOMAR SU FOTO",
+        "UPLOAD YOUR PHOTO": "CARGAR TU FOTO",
+        "TAKE YOUR PHOTO": "TOMAR TU FOTO",
         "TAKE PHOTO": "TOMAR FOTO",
         "SCANNING": "SCANNING FACIAL FEATURES ...",
         "SUPERHERO NAME": "IDENTIDAD DE SUPERHÉROE",
@@ -98,7 +98,7 @@
         "INSTRUCTION": [
             "Empieza subiendo o tomándote una foto.",
             "Usa el menú de la izquierda para crear tu avatar de super héroe, puede ser al azar o seleccionando entre las combinaciones de atuendos preestablecidos en el menú de la derecha.",
-            "Descarga tu avatar y comparta con nosotros a través del enlace en el correo electrónico para tener la oportunidad de ganar premios de excelencia de Abbott."
+            "Descarga tu avatar y compártelo con nosotros a través del enlace en el correo electrónico para tener la oportunidad de ganar premios de excelencia de Abbott."
         ],
         "CLOSE": "CERRAR",
         "APPEARANCE": "APARIENCIA",
@@ -106,7 +106,7 @@
         "HAIR": "PELO",
         "BODY": "CUERPO",
         "ACCESSORIES": "ACCESORIOS",
-        "OUTFITS": "OUTFITS",
+        "OUTFITS": "TRAJES",
         "MASK / HEADWEAR": "MÁSCARA/ SOMBREROS",
         "MASK": "MÁSCARA",
         "TOP": "TOP",
